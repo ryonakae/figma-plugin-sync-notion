@@ -1,7 +1,8 @@
 import { css } from '@emotion/react'
 import axios, { AxiosError } from 'axios'
+import { forEach } from 'lodash'
 import React, { ChangeEvent, useEffect } from 'react'
-import { useMount, useUnmount } from 'react-use'
+import { useMount, useUnmount, useUpdateEffect } from 'react-use'
 import Store from '@/ui/Store'
 import Button from '@/ui/components/Button'
 import Divider from '@/ui/components/Divider'
@@ -41,6 +42,7 @@ const Main: React.FC = () => {
 
   async function onSyncClick() {
     console.log('onSyncClick')
+
     const res = await fetch(
       `https://cors.ryonakae.workers.dev/https://api.notion.com/v1/databases/${databaseId}/query`,
       {
@@ -52,10 +54,33 @@ const Main: React.FC = () => {
         }
       }
     )
-    console.log(res)
+    const json = await res.json()
+    const results = json.results as NotionRow[]
+
+    const keyValues: KeyValue[] = []
+    forEach(results, row => {
+      const pageName = row.properties.pageName.title[0].plain_text
+      const key = pageName.replace(/(\[.*\]|\(.*\)|\s)/g, '')
+
+      keyValues.push({
+        id: row.id,
+        key,
+        ja: row.properties.ja.rich_text[0].plain_text
+      })
+    })
+
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: 'sync',
+          keyValues
+        }
+      } as PostMessage,
+      '*'
+    )
   }
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     setOptions()
   }, [integrationToken, databaseId])
 
@@ -64,11 +89,12 @@ const Main: React.FC = () => {
       css={css`
         position: relative;
         height: 100%;
+        padding: 12px;
       `}
     >
       <div>Integration Token</div>
       <input
-        type="text"
+        type="password"
         value={integrationToken}
         onChange={onIntegrationTokenChange}
       />
@@ -76,7 +102,7 @@ const Main: React.FC = () => {
       <Spacer y="16px" />
 
       <div>Database Id</div>
-      <input type="text" value={databaseId} onChange={onDatabaseIdChange} />
+      <input type="password" value={databaseId} onChange={onDatabaseIdChange} />
 
       <Spacer stretch={true} />
 

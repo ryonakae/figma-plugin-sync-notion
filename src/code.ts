@@ -1,3 +1,5 @@
+import { find, forEach } from 'lodash'
+
 const CLIENT_STORAGE_KEY_NAME = 'sync-notion'
 
 const defaultOptions: Options = {
@@ -43,6 +45,31 @@ async function setOptions(msg: SetOptionsMessage) {
   console.log('setOptions success', newOptions)
 }
 
+function onSync(msg: SyncMessage) {
+  console.log('onSync', msg.keyValues)
+
+  const keyValues = msg.keyValues
+  const textNodes = figma.currentPage.findAllWithCriteria({ types: ['TEXT'] })
+
+  forEach(textNodes, async textNode => {
+    if (textNode.name.startsWith('#')) {
+      const key = textNode.name.replace(/#/, '')
+      const keyValue = find(keyValues, keyValue => {
+        return keyValue.key === key
+      })
+      const ja = keyValue?.ja
+      console.log(key, ja)
+
+      const fontName = textNode.getRangeFontName(0, 1) as FontName
+      console.log(fontName)
+      await figma.loadFontAsync(fontName)
+      textNode.characters = ja || ''
+    }
+  })
+}
+
+figma.skipInvisibleInstanceChildren = true
+
 figma.ui.onmessage = (msg: PluginMessage) => {
   switch (msg.type) {
     case 'close-plugin':
@@ -59,6 +86,10 @@ figma.ui.onmessage = (msg: PluginMessage) => {
 
     case 'set-options':
       setOptions(msg)
+      break
+
+    case 'sync':
+      onSync(msg)
       break
 
     default:

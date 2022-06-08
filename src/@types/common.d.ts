@@ -22,6 +22,10 @@ type SetOptionsMessage = {
   type: 'set-options'
   options: Options
 }
+type SyncMessage = {
+  type: 'sync'
+  keyValues: KeyValue[]
+}
 
 type PluginMessage =
   | ClosePluginMessage
@@ -29,7 +33,25 @@ type PluginMessage =
   | GetOptionsMessage
   | GetOptionsSuccessMessage
   | SetOptionsMessage
+  | SyncMessage
 
 type PostMessage = {
   pluginMessage: PluginMessage
+}
+
+type NotionRow = {
+  id: string
+  properties: {
+    pageName: {
+      title: { plain_text: string }[]
+    }
+    ja: {
+      rich_text: { plain_text: string }[]
+    }
+  }
+}
+type KeyValue = {
+  id: string
+  key: string
+  ja: string
 }

@@ -59,17 +59,17 @@ const AppContent: React.FC = () => {
     console.log('postMessage: close-plugin')
   }
 
-  // listen keyboard shortcut
-  useHotkeys(
-    'esc',
-    (event, handler) => {
-      console.log('esc pressed', event, handler)
-      closePlugin()
-    },
-    {
-      enableOnTags: ['INPUT', 'SELECT', 'TEXTAREA']
-    }
-  )
+  // // listen keyboard shortcut
+  // useHotkeys(
+  //   'esc',
+  //   (event, handler) => {
+  //     console.log('esc pressed', event, handler)
+  //     closePlugin()
+  //   },
+  //   {
+  //     enableOnTags: ['INPUT', 'SELECT', 'TEXTAREA']
+  //   }
+  // )
 
   useMount(() => {
     console.log('AppContent mounted')
