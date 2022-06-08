@@ -85,7 +85,7 @@ const Main: React.FC = () => {
           {
             pluginMessage: {
               type: 'notify',
-              message: 'Value Name is wrong.',
+              message: 'Value property name is wrong.',
               options: {
                 error: true
               }
@@ -93,7 +93,7 @@ const Main: React.FC = () => {
           } as PostMessage,
           '*'
         )
-        throw new Error('Value Name is wrong.')
+        throw new Error('Value property name is wrong.')
       }
 
       keyValuesRef.current.push({
@@ -164,7 +164,7 @@ const Main: React.FC = () => {
         onChange={onIntegrationTokenChange}
       />
 
-      <Spacer y={spacing[4]} />
+      <Spacer y={spacing[3]} />
 
       <div>Database ID</div>
       <Spacer y={spacing[1]} />
@@ -175,9 +175,15 @@ const Main: React.FC = () => {
         onChange={onDatabaseIdChange}
       />
 
-      <Spacer y={spacing[4]} />
+      <Spacer y={spacing[3]} />
 
-      <div>Value Name</div>
+      <div>Key Property Name</div>
+      <Spacer y={spacing[1]} />
+      <input css={inputStyle} type="text" disabled />
+
+      <Spacer y={spacing[3]} />
+
+      <div>Value Property Name</div>
       <Spacer y={spacing[1]} />
       <input
         css={inputStyle}
