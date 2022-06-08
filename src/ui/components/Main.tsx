@@ -175,11 +175,11 @@ const Main: React.FC = () => {
         onChange={onDatabaseIdChange}
       />
 
-      <Spacer y={spacing[3]} />
+      {/* <Spacer y={spacing[3]} />
 
       <div>Key Property Name</div>
       <Spacer y={spacing[1]} />
-      <input css={inputStyle} type="text" disabled />
+      <input css={inputStyle} type="text" disabled /> */}
 
       <Spacer y={spacing[3]} />
 
