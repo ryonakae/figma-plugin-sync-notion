@@ -1,10 +1,9 @@
-import { find, forEach } from 'lodash'
-
 const CLIENT_STORAGE_KEY_NAME = 'sync-notion'
 
 const defaultOptions: Options = {
   integrationToken: '',
-  databaseId: ''
+  databaseId: '',
+  valueName: 'ja'
 }
 
 async function closePlugin() {
@@ -45,27 +44,40 @@ async function setOptions(msg: SetOptionsMessage) {
   console.log('setOptions success', newOptions)
 }
 
-function onSync(msg: SyncMessage) {
+async function onSync(msg: SyncMessage) {
   console.log('onSync', msg.keyValues)
 
   const keyValues = msg.keyValues
   const textNodes = figma.currentPage.findAllWithCriteria({ types: ['TEXT'] })
 
-  forEach(textNodes, async textNode => {
-    if (textNode.name.startsWith('#')) {
-      const key = textNode.name.replace(/#/, '')
-      const keyValue = find(keyValues, keyValue => {
-        return keyValue.key === key
-      })
-      const ja = keyValue?.ja
-      console.log(key, ja)
+  await Promise.all(
+    textNodes.map(async textNode => {
+      if (textNode.name.startsWith('#')) {
+        const key = textNode.name.replace(/^#/, '')
+        const keyValue = keyValues.find(keyValue => {
+          return keyValue.key === key
+        })
 
-      const fontName = textNode.getRangeFontName(0, 1) as FontName
-      console.log(fontName)
-      await figma.loadFontAsync(fontName)
-      textNode.characters = ja || ''
-    }
-  })
+        if (!keyValue) {
+          return
+        }
+
+        const value = keyValue.value
+        console.log(key, value)
+
+        let fontName: FontName
+        if (textNode.characters) {
+          fontName = textNode.getRangeFontName(0, 1) as FontName
+        } else {
+          fontName = textNode.fontName as FontName
+        }
+        await figma.loadFontAsync(fontName)
+        textNode.characters = value
+      }
+    })
+  )
+
+  figma.notify('Sync all text in this page with Notion.')
 }
 
 figma.skipInvisibleInstanceChildren = true

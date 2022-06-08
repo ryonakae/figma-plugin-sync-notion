@@ -1,6 +1,5 @@
 import { css, Global } from '@emotion/react'
-import React, { useEffect } from 'react'
-import { useHotkeys } from 'react-hotkeys-hook'
+import React from 'react'
 import 'ress'
 import { useMount } from 'react-use'
 import Store from '@/ui/Store'
@@ -8,7 +7,8 @@ import Main from '@/ui/components/Main'
 import { typography, color } from '@/ui/styles'
 
 const AppContent: React.FC = () => {
-  const { setIntegrationToken, setDatabaseId } = Store.useContainer()
+  const { setIntegrationToken, setDatabaseId, setValueName } =
+    Store.useContainer()
 
   function getOptions() {
     parent.postMessage(
@@ -24,6 +24,7 @@ const AppContent: React.FC = () => {
     const options = pluginMessage.options
     setIntegrationToken(options.integrationToken)
     setDatabaseId(options.databaseId)
+    setValueName(options.valueName)
   }
 
   function listenPluginMessage() {
@@ -46,30 +47,6 @@ const AppContent: React.FC = () => {
       }
     }
   }
-
-  function closePlugin() {
-    parent.postMessage(
-      {
-        pluginMessage: {
-          type: 'close-plugin'
-        }
-      } as PostMessage,
-      '*'
-    )
-    console.log('postMessage: close-plugin')
-  }
-
-  // // listen keyboard shortcut
-  // useHotkeys(
-  //   'esc',
-  //   (event, handler) => {
-  //     console.log('esc pressed', event, handler)
-  //     closePlugin()
-  //   },
-  //   {
-  //     enableOnTags: ['INPUT', 'SELECT', 'TEXTAREA']
-  //   }
-  // )
 
   useMount(() => {
     console.log('AppContent mounted')
