@@ -7,7 +7,7 @@ Useful when managing app text in Notion or for multilingual support.
 
 ## 🔥 How to use
 
-- Create a reverse proxy to avoid CORS errors.
+- Create a reverse proxy to avoid [CORS errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).
   - [More information](#-create-a-reverse-proxy-to-avoid-cors-errors)
 - Create a database in Notion.
 - Add pages with unique key (e.g., page title) and values to the database.
@@ -16,9 +16,9 @@ Useful when managing app text in Notion or for multilingual support.
   - e.g., `#pageTitle`, `#description` and `#signInWithApple`
 - Open this plugin and fill in each field.
 - Press the "Sync Notion" button.
-- Enjoy😎
+- Enjoy😎🏝
 
-## 👨‍💻 Create a reverse proxy to avoid CORS errors
+## ⚙️ Create a reverse proxy to avoid CORS errors
 
 Here are the steps to create a reverse proxy in [Cloudflare Workers](https://workers.cloudflare.com/).  
 (This is just one example.)
