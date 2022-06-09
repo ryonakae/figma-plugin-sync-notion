@@ -134,8 +134,10 @@ async function onSync(msg: SyncMessage) {
   keyValues = []
 }
 
+// find系の高速化
 figma.skipInvisibleInstanceChildren = true
 
+// UIからのメッセージを監視
 figma.ui.onmessage = (msg: PluginMessage) => {
   switch (msg.type) {
     case 'close-plugin':
@@ -163,6 +165,10 @@ figma.ui.onmessage = (msg: PluginMessage) => {
   }
 }
 
+// 右パネルに起動ボタンを表示
+figma.root.setRelaunchData({ open: '' })
+
+// UIを表示
 figma.showUI(__html__, {
   width: 300,
   height: 300
