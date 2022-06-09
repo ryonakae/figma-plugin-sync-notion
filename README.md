@@ -8,7 +8,7 @@ Useful when managing app text in Notion or for multilingual support.
 ## 🔥 How to use
 
 - Create a reverse proxy to avoid [CORS errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).
-  - [More information](#-create-a-reverse-proxy-to-avoid-cors-errors)
+  - [More information](#%EF%B8%8F-create-a-reverse-proxy-to-avoid-cors-errors)
 - Create a database in Notion.
 - Add pages with unique key (e.g., page title) and values to the database.
   - Currently, title, formula, and text properties are supported.
