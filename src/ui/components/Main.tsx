@@ -8,6 +8,7 @@ import HStack from '@/ui/components/HStack'
 import Spacer from '@/ui/components/Spacer'
 import VStack from '@/ui/components/VStack'
 import { color, radius, size, spacing } from '@/ui/styles'
+import { getPropertyValue, notify } from '@/ui/util'
 
 const Main: React.FC = () => {
   const {
@@ -21,12 +22,8 @@ const Main: React.FC = () => {
     setValuePropertyName
   } = Store.useContainer()
   const keyValuesRef = useRef<KeyValue[]>([])
-  const keyPropertyNameRef = useRef(keyPropertyName)
-  const valuePropertyNameRef = useRef(valuePropertyName)
 
   function setOptions(options: Options) {
-    valuePropertyNameRef.current = options.valuePropertyName
-    keyPropertyNameRef.current = options.keyPropertyName
     parent.postMessage(
       {
         pluginMessage: {
@@ -64,16 +61,23 @@ const Main: React.FC = () => {
   }
 
   async function fetchNotion(next_cursor?: string) {
-    console.log('fetchNotion', next_cursor)
+    console.log(
+      'fetchNotion',
+      next_cursor,
+      integrationToken,
+      databaseId,
+      keyPropertyName,
+      valuePropertyName
+    )
 
+    // パラメータを定義
+    // 引数next_cursorがある場合は、start_cursorを設定
     const reqParams = {
       page_size: 100,
-      start_cursor: undefined as string | undefined
-    }
-    if (next_cursor) {
-      reqParams.start_cursor = next_cursor
+      start_cursor: next_cursor || undefined
     }
 
+    // データベースをfetchしてpageの配列を取得
     const res = await fetch(
       `https://cors.ryonakae.workers.dev/https://api.notion.com/v1/databases/${databaseId}/query`,
       {
@@ -86,91 +90,53 @@ const Main: React.FC = () => {
         body: JSON.stringify(reqParams)
       }
     )
-    const json = await res.json()
-    const results = json.results as NotionPage[]
-    console.log(results, valuePropertyNameRef.current)
+    const resJson = await res.json()
+    const pages = resJson.pages as NotionPage[]
+    console.log(pages, valuePropertyName)
 
-    results.forEach(row => {
-      if (!row.properties[valuePropertyNameRef.current]) {
-        parent.postMessage(
-          {
-            pluginMessage: {
-              type: 'notify',
-              message: 'Value property name is wrong.',
-              options: {
-                error: true
-              }
-            }
-          } as PostMessage,
-          '*'
-        )
+    // pageごとに処理実行
+    pages.forEach(row => {
+      // keyPropertyNameと同じプロパティが無かったら処理中断
+      if (!row.properties[keyPropertyName]) {
+        notify('Key property name is wrong.', {
+          error: true
+        })
+        throw new Error('Key property name is wrong.')
+      }
+
+      // valuePropertyNameと同じプロパティが無かったら処理中断
+      if (!row.properties[valuePropertyName]) {
+        notify('Value property name is wrong.', {
+          error: true
+        })
         throw new Error('Value property name is wrong.')
       }
 
-      const keyProperty = row.properties[keyPropertyNameRef.current]
-      let key: string
-      if (keyProperty.type === 'title') {
-        if (keyProperty.title.length) {
-          key = keyProperty.title[0].plain_text
-        } else {
-          key = ''
-        }
-      } else if (keyProperty.type === 'rich_text') {
-        if (keyProperty.rich_text.length) {
-          key = keyProperty.rich_text[0].plain_text
-        } else {
-          key = ''
-        }
-      } else if (keyProperty.type === 'formula') {
-        key = keyProperty.formula.string
-      } else {
-        parent.postMessage(
-          {
-            pluginMessage: {
-              type: 'notify',
-              message: 'Key property type is wrong.',
-              options: {
-                error: true
-              }
-            }
-          } as PostMessage,
-          '*'
-        )
+      // keyPropertyNameからpropertyを探す
+      // propertyのtypeを判別してkeyを取得する
+      const keyProperty = row.properties[keyPropertyName]
+      const key = getPropertyValue(keyProperty)
+      // keyが見つからなかったら処理中断
+      if (!key) {
+        notify('Key property type is wrong.', {
+          error: true
+        })
         throw new Error('Key property type is wrong.')
       }
 
-      const valueProperty = row.properties[valuePropertyNameRef.current]
-      let value: string
-      if (valueProperty.type === 'title') {
-        if (valueProperty.title.length) {
-          value = valueProperty.title[0].plain_text
-        } else {
-          value = ''
-        }
-      } else if (valueProperty.type === 'rich_text') {
-        if (valueProperty.rich_text.length) {
-          value = valueProperty.rich_text[0].plain_text
-        } else {
-          value = ''
-        }
-      } else if (valueProperty.type === 'formula') {
-        value = valueProperty.formula.string
-      } else {
-        parent.postMessage(
-          {
-            pluginMessage: {
-              type: 'notify',
-              message: 'Value property type is wrong.',
-              options: {
-                error: true
-              }
-            }
-          } as PostMessage,
-          '*'
-        )
+      // valuePropertyNameからpropertyを探す
+      // propertyのtypeを判別してvalueを取得する
+      const valueProperty = row.properties[valuePropertyName]
+      const value = getPropertyValue(valueProperty)
+      // valueが見つからなかったら処理中断
+      if (!value) {
+        notify('Value property type is wrong.', {
+          error: true
+        })
         throw new Error('Value property type is wrong.')
       }
 
+      // keyValuesの配列にkeyとvalueを追加
       keyValuesRef.current.push({
         id: row.id,
         key,
@@ -178,8 +144,10 @@ const Main: React.FC = () => {
       })
     })
 
-    if (json.has_more) {
-      await fetchNotion(json.next_cursor)
+    // resのhas_moreフラグがtrueなら再度fetchNotion関数を実行する
+    // falseなら終了
+    if (resJson.has_more) {
+      await fetchNotion(resJson.next_cursor)
     } else {
       return
     }
@@ -190,6 +158,7 @@ const Main: React.FC = () => {
 
     await fetchNotion()
 
+    // fetchNotionで取得したkeyValuesをCode側に送る
     parent.postMessage(
       {
         pluginMessage: {
@@ -199,6 +168,8 @@ const Main: React.FC = () => {
       } as PostMessage,
       '*'
     )
+
+    // 配列を空にしてクリーンアップ
     keyValuesRef.current = []
   }
 
