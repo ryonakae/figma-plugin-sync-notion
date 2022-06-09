@@ -1,7 +1,8 @@
 type Options = {
   integrationToken: string
   databaseId: string
-  valueName: string
+  keyPropertyName: string
+  valuePropertyName: string
 }
 
 type ClosePluginMessage = {
@@ -40,20 +41,28 @@ type PostMessage = {
   pluginMessage: PluginMessage
 }
 
-type NotionColumFomula = {
+type NotionTitle = {
+  type: 'title'
+  title: { plain_text: string }[]
+}
+type NotionFomula = {
+  type: 'formula'
   formula: {
     string: string
   }
 }
-type NotionColumText = {
+type NotionRichText = {
+  type: 'rich_text'
   rich_text: { plain_text: string }[]
 }
-type NotionRow = {
+type NotionPage = {
+  object: 'page'
   id: string
   properties: {
-    [key: string]: NotionColumFomula | NotionColumText
+    [key: string]: NotionTitle | NotionFomula | NotionRichText
   }
 }
+
 type KeyValue = {
   id: string
   key: string

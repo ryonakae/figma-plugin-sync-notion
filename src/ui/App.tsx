@@ -7,8 +7,12 @@ import Main from '@/ui/components/Main'
 import { typography, color } from '@/ui/styles'
 
 const AppContent: React.FC = () => {
-  const { setIntegrationToken, setDatabaseId, setValueName } =
-    Store.useContainer()
+  const {
+    setIntegrationToken,
+    setDatabaseId,
+    setKeyPropertyName,
+    setValuePropertyName
+  } = Store.useContainer()
 
   function getOptions() {
     parent.postMessage(
@@ -24,7 +28,8 @@ const AppContent: React.FC = () => {
     const options = pluginMessage.options
     setIntegrationToken(options.integrationToken)
     setDatabaseId(options.databaseId)
-    setValueName(options.valueName)
+    setKeyPropertyName(options.keyPropertyName)
+    setValuePropertyName(options.valuePropertyName)
   }
 
   function listenPluginMessage() {

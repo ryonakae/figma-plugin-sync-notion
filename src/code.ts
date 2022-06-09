@@ -3,7 +3,8 @@ const CLIENT_STORAGE_KEY_NAME = 'sync-notion'
 const defaultOptions: Options = {
   integrationToken: '',
   databaseId: '',
-  valueName: 'ja'
+  keyPropertyName: '',
+  valuePropertyName: ''
 }
 
 async function closePlugin() {

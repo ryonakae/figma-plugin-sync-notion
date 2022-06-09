@@ -13,16 +13,20 @@ const Main: React.FC = () => {
   const {
     integrationToken,
     databaseId,
-    valueName,
+    keyPropertyName,
+    valuePropertyName,
     setIntegrationToken,
     setDatabaseId,
-    setValueName
+    setKeyPropertyName,
+    setValuePropertyName
   } = Store.useContainer()
   const keyValuesRef = useRef<KeyValue[]>([])
-  const valueNameRef = useRef(valueName)
+  const keyPropertyNameRef = useRef(keyPropertyName)
+  const valuePropertyNameRef = useRef(valuePropertyName)
 
   function setOptions(options: Options) {
-    valueNameRef.current = options.valueName
+    valuePropertyNameRef.current = options.valuePropertyName
+    keyPropertyNameRef.current = options.keyPropertyName
     parent.postMessage(
       {
         pluginMessage: {
@@ -30,7 +34,8 @@ const Main: React.FC = () => {
           options: {
             integrationToken: options.integrationToken,
             databaseId: options.databaseId,
-            valueName: options.valueName
+            keyPropertyName: options.keyPropertyName,
+            valuePropertyName: options.valuePropertyName
           }
         }
       } as PostMessage,
@@ -48,9 +53,14 @@ const Main: React.FC = () => {
     setDatabaseId(event.target.value)
   }
 
-  function onValueNameChange(event: ChangeEvent<HTMLInputElement>) {
-    console.log('onValueNameChange', event)
-    setValueName(event.target.value)
+  function onKeyPropertyNameChange(event: ChangeEvent<HTMLInputElement>) {
+    console.log('onKeyPropertyNameChange', event)
+    setKeyPropertyName(event.target.value)
+  }
+
+  function onValuePropertyNameChange(event: ChangeEvent<HTMLInputElement>) {
+    console.log('onValuePropertyNameChange', event)
+    setValuePropertyName(event.target.value)
   }
 
   async function fetchNotion(next_cursor?: string) {
@@ -77,11 +87,11 @@ const Main: React.FC = () => {
       }
     )
     const json = await res.json()
-    const results = json.results as NotionRow[]
-    console.log(results, valueNameRef.current)
+    const results = json.results as NotionPage[]
+    console.log(results, valuePropertyNameRef.current)
 
     results.forEach(row => {
-      if (!row.properties[valueNameRef.current]) {
+      if (!row.properties[valuePropertyNameRef.current]) {
         parent.postMessage(
           {
             pluginMessage: {
@@ -97,16 +107,68 @@ const Main: React.FC = () => {
         throw new Error('Value property name is wrong.')
       }
 
-      const keyProperty = row.properties.keyName as NotionColumFomula
-      const valueProperty = row.properties[
-        valueNameRef.current
-      ] as NotionColumText
-      const key = keyProperty.formula.string
-      let value: string
-      if (!valueProperty.rich_text.length) {
-        value = ''
+      const keyProperty = row.properties[keyPropertyNameRef.current]
+      let key: string
+      if (keyProperty.type === 'title') {
+        if (keyProperty.title.length) {
+          key = keyProperty.title[0].plain_text
+        } else {
+          key = ''
+        }
+      } else if (keyProperty.type === 'rich_text') {
+        if (keyProperty.rich_text.length) {
+          key = keyProperty.rich_text[0].plain_text
+        } else {
+          key = ''
+        }
+      } else if (keyProperty.type === 'formula') {
+        key = keyProperty.formula.string
       } else {
-        value = valueProperty.rich_text[0].plain_text
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: 'notify',
+              message: 'Key property type is wrong.',
+              options: {
+                error: true
+              }
+            }
+          } as PostMessage,
+          '*'
+        )
+        throw new Error('Key property type is wrong.')
+      }
+
+      const valueProperty = row.properties[valuePropertyNameRef.current]
+      let value: string
+      if (valueProperty.type === 'title') {
+        if (valueProperty.title.length) {
+          value = valueProperty.title[0].plain_text
+        } else {
+          value = ''
+        }
+      } else if (valueProperty.type === 'rich_text') {
+        if (valueProperty.rich_text.length) {
+          value = valueProperty.rich_text[0].plain_text
+        } else {
+          value = ''
+        }
+      } else if (valueProperty.type === 'formula') {
+        value = valueProperty.formula.string
+      } else {
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: 'notify',
+              message: 'Value property type is wrong.',
+              options: {
+                error: true
+              }
+            }
+          } as PostMessage,
+          '*'
+        )
+        throw new Error('Value property type is wrong.')
       }
 
       keyValuesRef.current.push({
@@ -141,8 +203,13 @@ const Main: React.FC = () => {
   }
 
   useUpdateEffect(() => {
-    setOptions({ integrationToken, databaseId, valueName })
-  }, [integrationToken, databaseId, valueName])
+    setOptions({
+      integrationToken,
+      databaseId,
+      keyPropertyName,
+      valuePropertyName
+    })
+  }, [integrationToken, databaseId, keyPropertyName, valuePropertyName])
 
   const inputStyle = css`
     height: ${size.input};
@@ -187,11 +254,16 @@ const Main: React.FC = () => {
         onChange={onDatabaseIdChange}
       />
 
-      {/* <Spacer y={spacing[3]} />
+      <Spacer y={spacing[3]} />
 
       <div>Key Property Name</div>
       <Spacer y={spacing[1]} />
-      <input css={inputStyle} type="text" disabled /> */}
+      <input
+        css={inputStyle}
+        type="text"
+        value={keyPropertyName}
+        onChange={onKeyPropertyNameChange}
+      />
 
       <Spacer y={spacing[3]} />
 
@@ -200,13 +272,22 @@ const Main: React.FC = () => {
       <input
         css={inputStyle}
         type="text"
-        value={valueName}
-        onChange={onValueNameChange}
+        value={valuePropertyName}
+        onChange={onValuePropertyNameChange}
       />
 
       <Spacer stretch={true} />
 
-      <Button type="primary" onClick={onSyncClick}>
+      <Button
+        type="primary"
+        onClick={onSyncClick}
+        disabled={
+          !integrationToken ||
+          !databaseId ||
+          !keyPropertyName ||
+          !valuePropertyName
+        }
+      >
         <span>Sync Notion</span>
       </Button>
     </VStack>

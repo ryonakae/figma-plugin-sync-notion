@@ -4,15 +4,18 @@ import { createContainer } from 'unstated-next'
 function Store() {
   const [integrationToken, setIntegrationToken] = useState('')
   const [databaseId, setDatabaseId] = useState('')
-  const [valueName, setValueName] = useState('')
+  const [keyPropertyName, setKeyPropertyName] = useState('')
+  const [valuePropertyName, setValuePropertyName] = useState('')
 
   return {
     integrationToken,
     databaseId,
-    valueName,
+    keyPropertyName,
+    valuePropertyName,
     setIntegrationToken,
     setDatabaseId,
-    setValueName
+    setKeyPropertyName,
+    setValuePropertyName
   }
 }
 
