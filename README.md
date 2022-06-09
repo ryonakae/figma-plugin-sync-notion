@@ -3,10 +3,10 @@
 Sync text from Notion database to Figma document.  
 Useful when managing app text in Notion or for multilingual support.
 
-## 👉 How to use
+## 🔥 How to use
 
 - Create a reverse proxy to avoid CORS errors.
-  - [More information]()
+  - [More information](#-create-a-reverse-proxy-to-avoid-cors-errors)
 - Create a database in Notion.
 - Add pages with unique key (e.g., page title) and values to the database.
   - Currently, title, formula, and text properties are supported.
@@ -73,7 +73,7 @@ async function handleRequest(request) {
 }
 ```
 
-- Now you can access the API with the URL `https://reverse-proxy.yourname.workers.dev/https://any-api-url` without the CORS error.
+- Now you can access any API with the URL: `https://reverse-proxy.yourname.workers.dev/https://any-api-url` without any CORS errors.
 
 The URL entered into the "Notion API URL" field of this Figma plugin is `https://reverse-proxy.yourname.workers.dev/https://api.notion.com` (not required for "v1" and later).
 
