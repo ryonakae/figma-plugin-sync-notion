@@ -18,7 +18,8 @@ Useful when managing app text in Notion or for multilingual support.
 
 ## 👨‍💻 Create a reverse proxy to avoid CORS errors
 
-Here are the steps to create a reverse proxy in [Cloudflare Workers](https://workers.cloudflare.com/).
+Here are the steps to create a reverse proxy in [Cloudflare Workers](https://workers.cloudflare.com/).  
+(This is just one example.)
 
 - Sign up or login to Cloudflare Workers.
 - Select "Workers" from the menu. Then create a new service.
