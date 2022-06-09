@@ -78,6 +78,7 @@ const Main: React.FC = () => {
     )
     const json = await res.json()
     const results = json.results as NotionRow[]
+    console.log(results, valueNameRef.current)
 
     results.forEach(row => {
       if (!row.properties[valueNameRef.current]) {
@@ -96,11 +97,22 @@ const Main: React.FC = () => {
         throw new Error('Value property name is wrong.')
       }
 
+      const keyProperty = row.properties.keyName as NotionColumFomula
+      const valueProperty = row.properties[
+        valueNameRef.current
+      ] as NotionColumText
+      const key = keyProperty.formula.string
+      let value: string
+      if (!valueProperty.rich_text.length) {
+        value = ''
+      } else {
+        value = valueProperty.rich_text[0].plain_text
+      }
+
       keyValuesRef.current.push({
         id: row.id,
-        key: (row.properties.keyName as NotionColumFomula).formula.string,
-        value: (row.properties[valueNameRef.current] as NotionColumText)
-          .rich_text[0].plain_text
+        key,
+        value
       })
     })
 

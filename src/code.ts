@@ -47,8 +47,13 @@ async function setOptions(msg: SetOptionsMessage) {
 async function onSync(msg: SyncMessage) {
   console.log('onSync', msg.keyValues)
 
-  const keyValues = msg.keyValues
+  let keyValues = msg.keyValues
   const textNodes = figma.currentPage.findAllWithCriteria({ types: ['TEXT'] })
+
+  if (!textNodes) {
+    figma.notify('No text in this page.')
+    return
+  }
 
   await Promise.all(
     textNodes.map(async textNode => {
@@ -78,6 +83,7 @@ async function onSync(msg: SyncMessage) {
   )
 
   figma.notify('Sync all text in this page with Notion.')
+  keyValues = []
 }
 
 figma.skipInvisibleInstanceChildren = true
