@@ -3,8 +3,6 @@ import React, { ChangeEvent, useRef } from 'react'
 import { useUpdateEffect } from 'react-use'
 import Store from '@/ui/Store'
 import Button from '@/ui/components/Button'
-import Divider from '@/ui/components/Divider'
-import HStack from '@/ui/components/HStack'
 import Spacer from '@/ui/components/Spacer'
 import VStack from '@/ui/components/VStack'
 import { color, radius, size, spacing } from '@/ui/styles'
@@ -12,10 +10,12 @@ import { getPropertyValue } from '@/ui/util'
 
 const Main: React.FC = () => {
   const {
+    apiUrl,
     integrationToken,
     databaseId,
     keyPropertyName,
     valuePropertyName,
+    setApiUrl,
     setIntegrationToken,
     setDatabaseId,
     setKeyPropertyName,
@@ -30,6 +30,7 @@ const Main: React.FC = () => {
         pluginMessage: {
           type: 'set-options',
           options: {
+            apiUrl: options.apiUrl,
             integrationToken: options.integrationToken,
             databaseId: options.databaseId,
             keyPropertyName: options.keyPropertyName,
@@ -41,23 +42,23 @@ const Main: React.FC = () => {
     )
   }
 
+  function onApiUrlChange(event: ChangeEvent<HTMLInputElement>) {
+    setApiUrl(event.target.value)
+  }
+
   function onIntegrationTokenChange(event: ChangeEvent<HTMLInputElement>) {
-    console.log('onIntegrationTokenChange')
     setIntegrationToken(event.target.value)
   }
 
   function onDatabaseIdChange(event: ChangeEvent<HTMLInputElement>) {
-    console.log('onDatabaseIdChange', event)
     setDatabaseId(event.target.value)
   }
 
   function onKeyPropertyNameChange(event: ChangeEvent<HTMLInputElement>) {
-    console.log('onKeyPropertyNameChange', event)
     setKeyPropertyName(event.target.value)
   }
 
   function onValuePropertyNameChange(event: ChangeEvent<HTMLInputElement>) {
-    console.log('onValuePropertyNameChange', event)
     setValuePropertyName(event.target.value)
   }
 
@@ -79,18 +80,15 @@ const Main: React.FC = () => {
     }
 
     // データベースをfetchしてpageの配列を取得
-    const res = await fetch(
-      `https://cors.ryonakae.workers.dev/https://api.notion.com/v1/databases/${databaseId}/query`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${integrationToken}`,
-          'Notion-Version': '2021-08-16',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(reqParams)
-      }
-    ).catch((e: Error) => {
+    const res = await fetch(`${apiUrl}/v1/databases/${databaseId}/query`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${integrationToken}`,
+        'Notion-Version': '2021-08-16',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(reqParams)
+    }).catch(() => {
       throw new Error('Failed to fetch database.')
     })
     const resJson = await res.json()
@@ -192,13 +190,14 @@ const Main: React.FC = () => {
     clearTimeout(debounceTimer.current)
     debounceTimer.current = setTimeout(() => {
       setOptions({
+        apiUrl,
         integrationToken,
         databaseId,
         keyPropertyName,
         valuePropertyName
       })
     }, 500)
-  }, [integrationToken, databaseId, keyPropertyName, valuePropertyName])
+  }, [apiUrl, integrationToken, databaseId, keyPropertyName, valuePropertyName])
 
   const inputStyle = css`
     height: ${size.input};
@@ -223,6 +222,37 @@ const Main: React.FC = () => {
         padding: ${spacing[3]};
       `}
     >
+      <div>Notion API URL</div>
+      <Spacer y={spacing[1]} />
+      <input
+        css={inputStyle}
+        type="url"
+        value={apiUrl}
+        onChange={onApiUrlChange}
+      />
+      <Spacer y={spacing[1]} />
+      <p
+        css={css`
+          color: ${color.subText};
+        `}
+      >
+        To avoid CORS errors, a reverse proxy is required.
+        <br />
+        e.g.
+        <br />
+        &quot;https://reverse-proxy-url/https://api.notion.com&quot;
+        <br />
+        <a
+          href="https://www.figma.com/plugin-docs/api/api-reference/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          More information
+        </a>
+      </p>
+
+      <Spacer y={spacing[2]} />
+
       <div>Integration Token</div>
       <Spacer y={spacing[1]} />
       <input
@@ -232,7 +262,7 @@ const Main: React.FC = () => {
         onChange={onIntegrationTokenChange}
       />
 
-      <Spacer y={spacing[3]} />
+      <Spacer y={spacing[2]} />
 
       <div>Database ID</div>
       <Spacer y={spacing[1]} />
@@ -243,7 +273,7 @@ const Main: React.FC = () => {
         onChange={onDatabaseIdChange}
       />
 
-      <Spacer y={spacing[3]} />
+      <Spacer y={spacing[2]} />
 
       <div>Key Property Name</div>
       <Spacer y={spacing[1]} />
@@ -254,7 +284,7 @@ const Main: React.FC = () => {
         onChange={onKeyPropertyNameChange}
       />
 
-      <Spacer y={spacing[3]} />
+      <Spacer y={spacing[2]} />
 
       <div>Value Property Name</div>
       <Spacer y={spacing[1]} />
@@ -271,6 +301,7 @@ const Main: React.FC = () => {
         type="primary"
         onClick={onSyncClick}
         disabled={
+          !apiUrl ||
           !integrationToken ||
           !databaseId ||
           !keyPropertyName ||

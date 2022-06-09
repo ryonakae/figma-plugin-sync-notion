@@ -8,6 +8,7 @@ import { typography, color } from '@/ui/styles'
 
 const AppContent: React.FC = () => {
   const {
+    setApiUrl,
     setIntegrationToken,
     setDatabaseId,
     setKeyPropertyName,
@@ -26,6 +27,7 @@ const AppContent: React.FC = () => {
 
   function updateOptions(pluginMessage: GetOptionsSuccessMessage) {
     const options = pluginMessage.options
+    setApiUrl(options.apiUrl)
     setIntegrationToken(options.integrationToken)
     setDatabaseId(options.databaseId)
     setKeyPropertyName(options.keyPropertyName)
@@ -77,6 +79,10 @@ const AppContent: React.FC = () => {
             color: ${color.primary};
             text-decoration: none;
             cursor: default;
+
+            &:hover {
+              cursor: pointer;
+            }
           }
 
           #plugin {

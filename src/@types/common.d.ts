@@ -1,4 +1,5 @@
 type Options = {
+  apiUrl: string
   integrationToken: string
   databaseId: string
   keyPropertyName: string

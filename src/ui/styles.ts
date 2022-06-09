@@ -9,7 +9,8 @@ export const typography = {
 
 export const color = {
   bg: '#fff',
-  text: '#333',
+  text: 'rgba(0, 0, 0, 0.9)',
+  subText: 'rgba(0, 0, 0, 0.5)',
   alert: '#F24822',
   primary: '#18a0fb',
   inactive: '#b3b3b3',
@@ -17,7 +18,7 @@ export const color = {
   border: '#e5e5e5',
   borderButton: '#333',
   primaryButtonText: '#fff',
-  primaryButtonActiveBorder: 'rgba(0, 0, 0, 0.3)',
+  primaryButtonActiveBorder: 'rgba(0, 0, 0, 0.15)',
   ghostButtonHoverBg: 'rgba(0, 0, 0, 0.06)',
   input: '#e5e5e5',
   inputHover: '#ccc'

@@ -1,6 +1,7 @@
 const CLIENT_STORAGE_KEY_NAME = 'sync-notion'
 
 const defaultOptions: Options = {
+  apiUrl: '',
   integrationToken: '',
   databaseId: '',
   keyPropertyName: '',
@@ -77,14 +78,30 @@ async function onSync(msg: SyncMessage) {
   }
 
   // textNodeが1つも無かったら処理を中断
-  if (!textNodes) {
-    figma.notify('No text in this page.')
+  if (!textNodes.length) {
+    // 選択状態によってトーストを出し分け
+    if (figma.currentPage.selection.length) {
+      figma.notify('No text in selection.')
+    } else {
+      figma.notify('No text in this page.')
+    }
     return
   }
 
-  // textNodeごとに処理を実行
+  // textNodeの中からレイヤー名が#で始まるものだけを探して新しい配列を作る
+  const matchedTextNodes = textNodes.filter(textNode => {
+    return textNode.name.startsWith('#')
+  })
+
+  // matchedTextNodesが空なら処理中断
+  if (!matchedTextNodes.length) {
+    figma.notify('No matching text.')
+    return
+  }
+
+  // matchedTextNodesごとに処理を実行
   await Promise.all(
-    textNodes.map(async textNode => {
+    matchedTextNodes.map(async textNode => {
       // レイヤー名が#で始まるもの以外は処理しない
       if (!textNode.name.startsWith('#')) {
         return
@@ -171,5 +188,5 @@ figma.root.setRelaunchData({ open: '' })
 // UIを表示
 figma.showUI(__html__, {
   width: 300,
-  height: 300
+  height: 420
 })
