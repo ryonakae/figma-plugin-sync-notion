@@ -238,9 +238,7 @@ const Main: React.FC = () => {
       >
         To avoid CORS errors, a reverse proxy is required.
         <br />
-        e.g.
-        <br />
-        &quot;https://reverse-proxy-url/https://api.notion.com&quot;
+        e.g. https://reverse-proxy-url/https://api.notion.com
         <br />
         <a
           href="https://www.figma.com/plugin-docs/api/api-reference/"

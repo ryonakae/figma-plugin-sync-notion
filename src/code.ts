@@ -188,5 +188,5 @@ figma.root.setRelaunchData({ open: '' })
 // UIを表示
 figma.showUI(__html__, {
   width: 300,
-  height: 420
+  height: 400
 })
