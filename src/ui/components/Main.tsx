@@ -8,7 +8,7 @@ import HStack from '@/ui/components/HStack'
 import Spacer from '@/ui/components/Spacer'
 import VStack from '@/ui/components/VStack'
 import { color, radius, size, spacing } from '@/ui/styles'
-import { getPropertyValue, notify } from '@/ui/util'
+import { getPropertyValue } from '@/ui/util'
 
 const Main: React.FC = () => {
   const {
@@ -22,6 +22,7 @@ const Main: React.FC = () => {
     setValuePropertyName
   } = Store.useContainer()
   const keyValuesRef = useRef<KeyValue[]>([])
+  const debounceTimer = useRef(0)
 
   function setOptions(options: Options) {
     parent.postMessage(
@@ -89,26 +90,27 @@ const Main: React.FC = () => {
         },
         body: JSON.stringify(reqParams)
       }
-    )
+    ).catch((e: Error) => {
+      throw new Error('Failed to fetch database.')
+    })
     const resJson = await res.json()
-    const pages = resJson.pages as NotionPage[]
-    console.log(pages, valuePropertyName)
+    console.log(resJson)
+    const pages = resJson.results as NotionPage[]
+
+    // pagesが無かったら処理中断
+    if (!pages) {
+      throw new Error('No pages in this database.')
+    }
 
     // pageごとに処理実行
     pages.forEach(row => {
       // keyPropertyNameと同じプロパティが無かったら処理中断
       if (!row.properties[keyPropertyName]) {
-        notify('Key property name is wrong.', {
-          error: true
-        })
         throw new Error('Key property name is wrong.')
       }
 
       // valuePropertyNameと同じプロパティが無かったら処理中断
       if (!row.properties[valuePropertyName]) {
-        notify('Value property name is wrong.', {
-          error: true
-        })
         throw new Error('Value property name is wrong.')
       }
 
@@ -116,11 +118,8 @@ const Main: React.FC = () => {
       // propertyのtypeを判別してkeyを取得する
       const keyProperty = row.properties[keyPropertyName]
       const key = getPropertyValue(keyProperty)
-      // keyが見つからなかったら処理中断
+      // keyが見つからなかった(title, formula, textでない)場合は処理中断
       if (!key) {
-        notify('Key property type is wrong.', {
-          error: true
-        })
         throw new Error('Key property type is wrong.')
       }
 
@@ -128,11 +127,8 @@ const Main: React.FC = () => {
       // propertyのtypeを判別してvalueを取得する
       const valueProperty = row.properties[valuePropertyName]
       const value = getPropertyValue(valueProperty)
-      // valueが見つからなかったら処理中断
+      // valueが見つからなかった(title, formula, textでない)場合は処理中断
       if (!value) {
-        notify('Value property type is wrong.', {
-          error: true
-        })
         throw new Error('Value property type is wrong.')
       }
 
@@ -156,7 +152,26 @@ const Main: React.FC = () => {
   async function onSyncClick() {
     console.log('onSyncClick')
 
-    await fetchNotion()
+    await fetchNotion().catch((e: Error) => {
+      // エラートースト表示
+      parent.postMessage(
+        {
+          pluginMessage: {
+            type: 'notify',
+            message: e.message,
+            options: {
+              error: true
+            }
+          }
+        } as PostMessage,
+        '*'
+      )
+
+      // 配列を空にしてクリーンアップ
+      keyValuesRef.current = []
+
+      throw new Error(e.message)
+    })
 
     // fetchNotionで取得したkeyValuesをCode側に送る
     parent.postMessage(
@@ -174,12 +189,15 @@ const Main: React.FC = () => {
   }
 
   useUpdateEffect(() => {
-    setOptions({
-      integrationToken,
-      databaseId,
-      keyPropertyName,
-      valuePropertyName
-    })
+    clearTimeout(debounceTimer.current)
+    debounceTimer.current = setTimeout(() => {
+      setOptions({
+        integrationToken,
+        databaseId,
+        keyPropertyName,
+        valuePropertyName
+      })
+    }, 500)
   }, [integrationToken, databaseId, keyPropertyName, valuePropertyName])
 
   const inputStyle = css`

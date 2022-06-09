@@ -121,7 +121,13 @@ async function onSync(msg: SyncMessage) {
     })
   )
 
-  figma.notify('Sync all text in this page with Notion.')
+  // 完了の旨をトーストで表示
+  // 選択中かそうでないかで分岐
+  if (figma.currentPage.selection.length) {
+    figma.notify('Sync all text in selection with Notion.')
+  } else {
+    figma.notify('Sync all text in this page with Notion.')
+  }
 
   // 配列を空にしてメモリ解放
   textNodes = []

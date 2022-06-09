@@ -1,16 +1,3 @@
-export function notify(msg: string, options?: NotificationOptions) {
-  parent.postMessage(
-    {
-      pluginMessage: {
-        type: 'notify',
-        message: msg,
-        options
-      }
-    } as PostMessage,
-    '*'
-  )
-}
-
 export function getPropertyValue(
   property: NotionTitle | NotionFomula | NotionRichText
 ): string | null {
