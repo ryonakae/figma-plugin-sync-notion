@@ -1,5 +1,7 @@
 # Sync Notion Figma Plugin
 
+![](./cover.png)
+
 Sync text from Notion database to Figma document.  
 Useful when managing app text in Notion or for multilingual support.
 
@@ -89,5 +91,3 @@ This plugin is made by Ryo Nakae 🙎‍♂️.
 - https://brdr.jp
 - https://twitter.com/ryo_dg
 - https://github.com/ryonakae
-
-<!-- <img width="367" alt="CleanShot 2022-06-09 at 21 04 31@2x" src="https://user-images.githubusercontent.com/6018455/172842719-7ed928ab-4664-41db-863b-5ef158ec1dc7.png"> -->
