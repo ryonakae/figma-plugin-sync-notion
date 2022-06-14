@@ -241,7 +241,7 @@ const Main: React.FC = () => {
         e.g. https://reverse-proxy-url/https://api.notion.com
         <br />
         <a
-          href="https://github.com/ryonakae/figma-plugin-sync-notion#-create-a-reverse-proxy-to-avoid-cors-errors"
+          href="https://github.com/ryonakae/figma-plugin-sync-notion#%EF%B8%8F-create-a-reverse-proxy-to-avoid-cors-errors"
           target="_blank"
           rel="noreferrer"
         >
