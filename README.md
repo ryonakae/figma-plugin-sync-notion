@@ -9,7 +9,9 @@ Useful when managing app text in Notion or for multilingual support.
 
 - Create a reverse proxy to avoid [CORS errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).
   - [More information](#%EF%B8%8F-create-a-reverse-proxy-to-avoid-cors-errors)
+- [Create an integration.](https://developers.notion.com/docs/getting-started#step-1-create-an-integration)
 - Create a database in Notion.
+- [Share a database with your integration.](https://developers.notion.com/docs/getting-started#step-2-share-a-database-with-your-integration)
 - Add pages with unique key (e.g., page title) and values to the database.
   - Currently, title, formula, and text properties are supported.
 - In Figma, rename text layers you want to sync to `#<Key Property Name of Notion>`.
