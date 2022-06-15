@@ -68,7 +68,9 @@ async function onSync(msg: SyncMessage) {
       } else if (
         selection.type === 'GROUP' ||
         selection.type === 'FRAME' ||
-        selection.type === 'COMPONENT'
+        selection.type === 'COMPONENT' ||
+        selection.type === 'COMPONENT_SET' ||
+        selection.type === 'INSTANCE'
       ) {
         textNodes = selection.findAllWithCriteria({ types: ['TEXT'] })
       }
