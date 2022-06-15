@@ -1,7 +1,7 @@
 export function getPropertyValue(
   property: NotionTitle | NotionFomula | NotionRichText
-): string | null {
-  let value: string | null
+): string {
+  let value: string
 
   if (property.type === 'title') {
     if (property.title.length) {
@@ -18,7 +18,7 @@ export function getPropertyValue(
   } else if (property.type === 'formula') {
     value = property.formula.string
   } else {
-    value = null
+    value = ''
   }
 
   return value
