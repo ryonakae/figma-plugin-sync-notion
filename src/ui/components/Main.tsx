@@ -113,22 +113,30 @@ const Main: React.FC = () => {
       }
 
       // keyPropertyNameからpropertyを探す
-      // propertyのtypeを判別してkeyを取得する
       const keyProperty = row.properties[keyPropertyName]
-      const key = getPropertyValue(keyProperty)
-      // keyが見つからなかった(title, formula, textでない)場合は処理中断
-      if (!key) {
+      // keyのtypeがtitle, formula, textでない場合は処理中断
+      if (
+        keyProperty.type !== 'title' &&
+        keyProperty.type !== 'rich_text' &&
+        keyProperty.type !== 'formula'
+      ) {
         throw new Error('Key property type is wrong.')
       }
+      // propertyのtypeを判別してkeyを取得する
+      const key = getPropertyValue(keyProperty)
 
       // valuePropertyNameからpropertyを探す
-      // propertyのtypeを判別してvalueを取得する
       const valueProperty = row.properties[valuePropertyName]
-      const value = getPropertyValue(valueProperty)
-      // valueが見つからなかった(title, formula, textでない)場合は処理中断
-      if (!value) {
+      // valueのtypeがtitle, formula, textでない場合は処理中断
+      if (
+        valueProperty.type !== 'title' &&
+        valueProperty.type !== 'rich_text' &&
+        valueProperty.type !== 'formula'
+      ) {
         throw new Error('Value property type is wrong.')
       }
+      // propertyのtypeを判別してvalueを取得する
+      const value = getPropertyValue(valueProperty)
 
       // keyValuesの配列にkeyとvalueを追加
       keyValuesRef.current.push({
