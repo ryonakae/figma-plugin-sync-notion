@@ -18,26 +18,22 @@ function notify(msg: NotifyMessage) {
   figma.notify(message, options)
 }
 
-async function getOptions() {
-  // オプションをclientStorageから取得、無かったらdefaultOptionsを参照
-  const options: Options =
-    (await figma.clientStorage.getAsync(CLIENT_STORAGE_KEY_NAME)) ||
-    defaultOptions
+function getOptions(): Options {
+  // オプションをDocumentから取得、無かったらdefaultOptionsを参照
+  const options: Options = {
+    apiUrl: figma.root.getPluginData('apiUrl') || '',
+    integrationToken: figma.root.getPluginData('integrationToken') || '',
+    databaseId: figma.root.getPluginData('databaseId') || '',
+    keyPropertyName: figma.root.getPluginData('keyPropertyName') || '',
+    valuePropertyName: figma.root.getPluginData('valuePropertyName') || ''
+  }
 
-  // UIに送信
-  figma.ui.postMessage({
-    type: 'get-options-success',
-    options
-  } as PluginMessage)
-
-  console.log('getOptions success', options)
+  return options
 }
 
 async function setOptions(msg: SetOptionsMessage) {
-  // 現在のオプションをclientStorageから取得、無かったらdefaultOptionsを参照
-  const currentOptions: Options =
-    (await figma.clientStorage.getAsync(CLIENT_STORAGE_KEY_NAME)) ||
-    defaultOptions
+  // 現在のオプションをDocumentから取得、無かったらdefaultOptionsを参照
+  const currentOptions = getOptions()
 
   // UIから送られてきたオプションを現在のものとマージ
   const newOptions: Options = {
@@ -45,8 +41,12 @@ async function setOptions(msg: SetOptionsMessage) {
     ...msg.options
   }
 
-  // 新しいオプションをclientStorageに保存
-  await figma.clientStorage.setAsync(CLIENT_STORAGE_KEY_NAME, newOptions)
+  // 新しいオプションをDocumentに保存
+  figma.root.setPluginData('apiUrl', newOptions.apiUrl)
+  figma.root.setPluginData('integrationToken', newOptions.integrationToken)
+  figma.root.setPluginData('databaseId', newOptions.databaseId)
+  figma.root.setPluginData('keyPropertyName', newOptions.keyPropertyName)
+  figma.root.setPluginData('valuePropertyName', newOptions.valuePropertyName)
 
   console.log('setOptions success', newOptions)
 }
@@ -168,7 +168,13 @@ figma.ui.onmessage = (msg: PluginMessage) => {
       break
 
     case 'get-options':
-      getOptions()
+      const options = getOptions()
+      // UIに送信
+      figma.ui.postMessage({
+        type: 'get-options-success',
+        options
+      } as PluginMessage)
+      console.log('getOptions success', options)
       break
 
     case 'set-options':
