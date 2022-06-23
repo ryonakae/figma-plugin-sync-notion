@@ -7,18 +7,21 @@ Useful when managing app text in Notion or for multilingual support.
 
 ## 🔥 How to use
 
-- Create a reverse proxy to avoid [CORS errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).
+- \[Notion\] Create a reverse proxy to avoid [CORS errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).
   - [More information](#%EF%B8%8F-create-a-reverse-proxy-to-avoid-cors-errors)
-- [Create a Notion integration.](https://developers.notion.com/docs/getting-started#step-1-create-an-integration)
-- Create a database in Notion.
-- [Share the database with your integration.](https://developers.notion.com/docs/getting-started#step-2-share-a-database-with-your-integration)
-- Add pages with unique key (e.g., page title) and values to the database.
+- \[Notion\] [Create a Notion integration.](https://developers.notion.com/docs/getting-started#step-1-create-an-integration)
+- \[Notion\] Create a database.
+- \[Notion\] [Share the database with your integration.](https://developers.notion.com/docs/getting-started#step-2-share-a-database-with-your-integration)
+- \[Notion\] Add pages with unique key (e.g., page title) and values to the database.
   - Currently, title, formula, and text properties are supported.
-- In Figma, rename text layers you want to sync to `#<Key Property Name of Notion>`.
+  - Variables can be embedded. e.g., `{name} follows you. (Age: {age})`
+- \[Figma\] Rename text layers you want to sync to `#<Key Property Name of Notion>`.
   - e.g., `#pageTitle`, `#description` and `#signInWithApple`
-- Open this plugin and fill in each field.
-- Select a frames or text layers. Or, select nothing. If nothing is selected, all text in the current page will be synced.
-- Press the "Sync Notion" button.
+  - You can pass parameters. e.g., `#notification?name=Alistair Warren&age=24`. If there are variables in Notion database value, it will replace the text with that value in it.
+  - In this example, the text will replaced by `Alistair Warren follows you. (Age: 24)`
+- \[Figma\] Open this plugin and fill in each field.
+- \[Figma\] Select a frames or text layers. Or, select nothing. If nothing is selected, all text in the current page will be synced.
+- \[Figma\] Press the "Sync Notion" button.
 - Enjoy😎🏝
 
 ## ⚙️ Create a reverse proxy to avoid CORS errors

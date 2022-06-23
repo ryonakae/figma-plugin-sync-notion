@@ -1,4 +1,4 @@
-const CLIENT_STORAGE_KEY_NAME = 'sync-notion'
+import { parse } from 'query-string'
 
 const defaultOptions: Options = {
   apiUrl: '',
@@ -18,26 +18,22 @@ function notify(msg: NotifyMessage) {
   figma.notify(message, options)
 }
 
-async function getOptions() {
-  // オプションをclientStorageから取得、無かったらdefaultOptionsを参照
-  const options: Options =
-    (await figma.clientStorage.getAsync(CLIENT_STORAGE_KEY_NAME)) ||
-    defaultOptions
+function getOptions(): Options {
+  // オプションをDocumentから取得、無かったらdefaultOptionsを参照
+  const options: Options = {
+    apiUrl: figma.root.getPluginData('apiUrl') || '',
+    integrationToken: figma.root.getPluginData('integrationToken') || '',
+    databaseId: figma.root.getPluginData('databaseId') || '',
+    keyPropertyName: figma.root.getPluginData('keyPropertyName') || '',
+    valuePropertyName: figma.root.getPluginData('valuePropertyName') || ''
+  }
 
-  // UIに送信
-  figma.ui.postMessage({
-    type: 'get-options-success',
-    options
-  } as PluginMessage)
-
-  console.log('getOptions success', options)
+  return options
 }
 
 async function setOptions(msg: SetOptionsMessage) {
-  // 現在のオプションをclientStorageから取得、無かったらdefaultOptionsを参照
-  const currentOptions: Options =
-    (await figma.clientStorage.getAsync(CLIENT_STORAGE_KEY_NAME)) ||
-    defaultOptions
+  // 現在のオプションをDocumentから取得、無かったらdefaultOptionsを参照
+  const currentOptions = getOptions()
 
   // UIから送られてきたオプションを現在のものとマージ
   const newOptions: Options = {
@@ -45,8 +41,12 @@ async function setOptions(msg: SetOptionsMessage) {
     ...msg.options
   }
 
-  // 新しいオプションをclientStorageに保存
-  await figma.clientStorage.setAsync(CLIENT_STORAGE_KEY_NAME, newOptions)
+  // 新しいオプションをDocumentに保存
+  figma.root.setPluginData('apiUrl', newOptions.apiUrl)
+  figma.root.setPluginData('integrationToken', newOptions.integrationToken)
+  figma.root.setPluginData('databaseId', newOptions.databaseId)
+  figma.root.setPluginData('keyPropertyName', newOptions.keyPropertyName)
+  figma.root.setPluginData('valuePropertyName', newOptions.valuePropertyName)
 
   console.log('setOptions success', newOptions)
 }
@@ -104,13 +104,13 @@ async function onSync(msg: SyncMessage) {
   // matchedTextNodesごとに処理を実行
   await Promise.all(
     matchedTextNodes.map(async textNode => {
-      // レイヤー名が#で始まるもの以外は処理しない
-      if (!textNode.name.startsWith('#')) {
-        return
-      }
+      // クエリパラメータを取得する
+      // ?から後ろの部分をクエリパラメータと見なす
+      const param = parse(textNode.name.split('?')[1])
 
       // レイヤー名から#を取ってkey名にする
-      const key = textNode.name.replace(/^#/, '')
+      // #から、?までの部分をkey名と見なす
+      const key = textNode.name.split('?')[0].replace(/^#/, '')
 
       // key名を使ってkeyValuesからオブジェクトを検索する
       const keyValue = keyValues.find(keyValue => {
@@ -124,7 +124,7 @@ async function onSync(msg: SyncMessage) {
 
       // 見つかったkeyValueオブジェクトからvalueを取り出す
       const value = keyValue.value
-      console.log(key, value)
+      // console.log(key, value, param)
 
       // テキスト置換のために事前にフォントをロード
       let fontName: FontName
@@ -136,7 +136,35 @@ async function onSync(msg: SyncMessage) {
       await figma.loadFontAsync(fontName)
 
       // テキストをvalueに置換
-      textNode.characters = value
+      // paramがある場合→valueの中の{paramKey}の置き換えを試みる
+      if (Object.keys(param).length) {
+        // valueの中に{paramKeyがあるか探す}
+        const matchedParamKeys = value.match(/(?<=\{).*?(?=\})/g)
+
+        // 無い場合、仕方がないので普通にvalueを入れる
+        if (!matchedParamKeys) {
+          return (textNode.characters = value)
+        }
+
+        // value内にある{paramKey}毎に置換
+        let replacedValue = value
+
+        matchedParamKeys.forEach(paramKey => {
+          replacedValue = replacedValue.replace(
+            new RegExp('{' + paramKey + '}', 'g'),
+            param[paramKey] !== undefined
+              ? String(param[paramKey])
+              : '{' + paramKey + '}'
+          )
+        })
+
+        // replacedValueをテキスト本文にする
+        textNode.characters = replacedValue
+      }
+      // paramが無い場合→普通にvalueを入れる
+      else {
+        textNode.characters = value
+      }
     })
   )
 
@@ -168,7 +196,13 @@ figma.ui.onmessage = (msg: PluginMessage) => {
       break
 
     case 'get-options':
-      getOptions()
+      const options = getOptions()
+      // UIに送信
+      figma.ui.postMessage({
+        type: 'get-options-success',
+        options
+      } as PluginMessage)
+      console.log('getOptions success', options)
       break
 
     case 'set-options':
