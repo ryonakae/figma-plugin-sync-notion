@@ -1,5 +1,7 @@
 import { parse } from 'query-string'
 
+const CLIENT_STORAGE_KEY_NAME = 'sync-notion'
+
 const defaultOptions: Options = {
   apiUrl: '',
   integrationToken: '',
@@ -18,15 +20,26 @@ function notify(msg: NotifyMessage) {
   figma.notify(message, options)
 }
 
-function getOptions(): Options {
+async function getOptions(): Promise<Options> {
   // オプションをDocumentから取得、無かったらdefaultOptionsを参照
-  const options: Options = {
-    apiUrl: figma.root.getPluginData('apiUrl') || '',
-    integrationToken: figma.root.getPluginData('integrationToken') || '',
-    databaseId: figma.root.getPluginData('databaseId') || '',
-    keyPropertyName: figma.root.getPluginData('keyPropertyName') || '',
-    valuePropertyName: figma.root.getPluginData('valuePropertyName') || ''
+  const documentOptions: DocumentOptions = {
+    apiUrl: figma.root.getPluginData('apiUrl') || defaultOptions.apiUrl,
+    integrationToken:
+      figma.root.getPluginData('integrationToken') ||
+      defaultOptions.integrationToken,
+    databaseId:
+      figma.root.getPluginData('databaseId') || defaultOptions.databaseId
   }
+
+  // オプションをclientStorageから取得、無かったらdefaultOptionsを参照
+  const clientStorageOptions: ClientStorageOptions =
+    (await figma.clientStorage.getAsync(CLIENT_STORAGE_KEY_NAME)) || {
+      keyPropertyName: defaultOptions.keyPropertyName,
+      valuePropertyName: defaultOptions.valuePropertyName
+    }
+
+  // documentOptionsとclientStorageをマージ
+  const options: Options = { ...documentOptions, ...clientStorageOptions }
 
   return options
 }
@@ -45,8 +58,12 @@ async function setOptions(msg: SetOptionsMessage) {
   figma.root.setPluginData('apiUrl', newOptions.apiUrl)
   figma.root.setPluginData('integrationToken', newOptions.integrationToken)
   figma.root.setPluginData('databaseId', newOptions.databaseId)
-  figma.root.setPluginData('keyPropertyName', newOptions.keyPropertyName)
-  figma.root.setPluginData('valuePropertyName', newOptions.valuePropertyName)
+
+  // 新しいオプションをclientStorageに保存
+  await figma.clientStorage.setAsync(CLIENT_STORAGE_KEY_NAME, {
+    keyPropertyName: newOptions.keyPropertyName,
+    valuePropertyName: newOptions.valuePropertyName
+  } as ClientStorageOptions)
 
   console.log('setOptions success', newOptions)
 }
@@ -83,10 +100,17 @@ async function onSync(msg: SyncMessage) {
   if (!textNodes.length) {
     // 選択状態によってトーストを出し分け
     if (figma.currentPage.selection.length) {
-      figma.notify('No text in selection.')
+      figma.notify('No text layers in selection.')
     } else {
-      figma.notify('No text in this page.')
+      figma.notify('No text layers in this page.')
     }
+
+    // 失敗の旨をUIに送信
+    figma.ui.postMessage({
+      type: 'sync-failed'
+    } as PluginMessage)
+    console.error('sync failed: No text layers')
+
     return
   }
 
@@ -98,6 +122,13 @@ async function onSync(msg: SyncMessage) {
   // matchedTextNodesが空なら処理中断
   if (!matchedTextNodes.length) {
     figma.notify('No matching text.')
+
+    // 失敗の旨をUIに送信
+    figma.ui.postMessage({
+      type: 'sync-failed'
+    } as PluginMessage)
+    console.error('sync failed: No matching text')
+
     return
   }
 
@@ -179,13 +210,22 @@ async function onSync(msg: SyncMessage) {
   // 配列を空にしてメモリ解放
   textNodes = []
   keyValues = []
+
+  // 完了の旨をUIに送信
+  figma.ui.postMessage({
+    type: 'sync-success'
+  } as PluginMessage)
+  console.log('sync success')
 }
 
 // find系の高速化
 figma.skipInvisibleInstanceChildren = true
 
+// 右パネルに起動ボタンを表示
+figma.root.setRelaunchData({ open: '' })
+
 // UIからのメッセージを監視
-figma.ui.onmessage = (msg: PluginMessage) => {
+figma.ui.onmessage = async (msg: PluginMessage) => {
   switch (msg.type) {
     case 'close-plugin':
       closePlugin()
@@ -196,8 +236,10 @@ figma.ui.onmessage = (msg: PluginMessage) => {
       break
 
     case 'get-options':
-      const options = getOptions()
-      // UIに送信
+      // オプションを取得
+      const options = await getOptions()
+
+      // オプションをUIに送信
       figma.ui.postMessage({
         type: 'get-options-success',
         options
@@ -217,9 +259,6 @@ figma.ui.onmessage = (msg: PluginMessage) => {
       break
   }
 }
-
-// 右パネルに起動ボタンを表示
-figma.root.setRelaunchData({ open: '' })
 
 // UIを表示
 figma.showUI(__html__, {

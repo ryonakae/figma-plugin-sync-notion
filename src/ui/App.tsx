@@ -12,7 +12,8 @@ const AppContent: React.FC = () => {
     setIntegrationToken,
     setDatabaseId,
     setKeyPropertyName,
-    setValuePropertyName
+    setValuePropertyName,
+    setSyncing
   } = Store.useContainer()
 
   function getOptions() {
@@ -47,6 +48,14 @@ const AppContent: React.FC = () => {
       switch (pluginMessage.type) {
         case 'get-options-success':
           updateOptions(pluginMessage)
+          break
+
+        case 'sync-failed':
+          setSyncing(false)
+          break
+
+        case 'sync-success':
+          setSyncing(false)
           break
 
         default:

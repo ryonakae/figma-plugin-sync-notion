@@ -6,6 +6,7 @@ import { color, spacing, radius, size } from '@/ui/styles'
 type ButtonProps = JSX.IntrinsicElements['div'] & {
   type?: 'primary' | 'border' | 'ghost'
   disabled?: boolean
+  loading?: boolean
   padding?: boolean
   onClick?: React.MouseEventHandler<HTMLDivElement>
 }
@@ -13,6 +14,7 @@ type ButtonProps = JSX.IntrinsicElements['div'] & {
 const Button: React.FC<ButtonProps> = ({
   type = 'primary',
   disabled = false,
+  loading = false,
   padding = true,
   onClick = () => {
     console.log('Button onClick')
@@ -52,29 +54,39 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <div
-      css={css`
-        background-color: ${backgroundColor};
-        border: 1px solid ${borderColor};
-        border-radius: ${borderRadius};
-        min-width: ${size.button};
-        height: ${size.button};
-        padding: ${padding ? `0 ${spacing[3]}` : 0};
-        color: ${textColor};
-        pointer-events: ${disabled ? 'none' : 'auto'};
+      css={[
+        css`
+          background-color: ${backgroundColor};
+          border: 1px solid ${borderColor};
+          border-radius: ${borderRadius};
+          min-width: ${size.button};
+          height: ${size.button};
+          padding: ${padding ? `0 ${spacing[3]}` : 0};
+          color: ${textColor};
 
-        &:hover {
-          background-color: ${hoverBackgroundColor};
-        }
+          &:hover {
+            background-color: ${hoverBackgroundColor};
+          }
 
-        &:active {
-          border: ${activeBorderStyle};
-          padding: ${padding ? '0 11px' : 0};
-        }
+          &:active {
+            border: ${activeBorderStyle};
+            padding: ${padding ? '0 11px' : 0};
+          }
 
-        & svg {
-          fill: ${textColor};
-        }
-      `}
+          & svg {
+            fill: ${textColor};
+          }
+        `,
+        disabled &&
+          css`
+            pointer-events: none;
+          `,
+        loading &&
+          css`
+            pointer-events: none;
+            opacity: 0.3;
+          `
+      ]}
       onClick={onClick}
       {...delegated}
     >

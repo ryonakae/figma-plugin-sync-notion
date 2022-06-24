@@ -15,11 +15,13 @@ const Main: React.FC = () => {
     databaseId,
     keyPropertyName,
     valuePropertyName,
+    syncing,
     setApiUrl,
     setIntegrationToken,
     setDatabaseId,
     setKeyPropertyName,
-    setValuePropertyName
+    setValuePropertyName,
+    setSyncing
   } = Store.useContainer()
   const keyValuesRef = useRef<KeyValue[]>([])
   const debounceTimer = useRef(0)
@@ -158,6 +160,9 @@ const Main: React.FC = () => {
   async function onSyncClick() {
     console.log('onSyncClick')
 
+    // ボタンをsync中にする
+    setSyncing(true)
+
     await fetchNotion().catch((e: Error) => {
       // エラートースト表示
       parent.postMessage(
@@ -175,6 +180,9 @@ const Main: React.FC = () => {
 
       // 配列を空にしてクリーンアップ
       keyValuesRef.current = []
+
+      // ボタンを通常に戻す
+      setSyncing(false)
 
       throw new Error(e.message)
     })
@@ -195,6 +203,7 @@ const Main: React.FC = () => {
   }
 
   useUpdateEffect(() => {
+    // 設定値が変更されたら、debounceさせてから設定を保存
     clearTimeout(debounceTimer.current)
     debounceTimer.current = setTimeout(() => {
       setOptions({
@@ -313,8 +322,9 @@ const Main: React.FC = () => {
           !keyPropertyName ||
           !valuePropertyName
         }
+        loading={syncing}
       >
-        <span>Sync Notion</span>
+        <span>{syncing ? 'Syncing...' : 'Sync Notion'}</span>
       </Button>
     </VStack>
   )
