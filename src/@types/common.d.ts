@@ -2,9 +2,9 @@ type DocumentOptions = {
   apiUrl: string
   integrationToken: string
   databaseId: string
+  keyPropertyName: string
 }
 type ClientStorageOptions = {
-  keyPropertyName: string
   valuePropertyName: string
 }
 

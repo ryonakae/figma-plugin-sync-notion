@@ -28,13 +28,15 @@ async function getOptions(): Promise<Options> {
       figma.root.getPluginData('integrationToken') ||
       defaultOptions.integrationToken,
     databaseId:
-      figma.root.getPluginData('databaseId') || defaultOptions.databaseId
+      figma.root.getPluginData('databaseId') || defaultOptions.databaseId,
+    keyPropertyName:
+      figma.root.getPluginData('keyPropertyName') ||
+      defaultOptions.keyPropertyName
   }
 
   // オプションをclientStorageから取得、無かったらdefaultOptionsを参照
   const clientStorageOptions: ClientStorageOptions =
     (await figma.clientStorage.getAsync(CLIENT_STORAGE_KEY_NAME)) || {
-      keyPropertyName: defaultOptions.keyPropertyName,
       valuePropertyName: defaultOptions.valuePropertyName
     }
 
@@ -58,10 +60,10 @@ async function setOptions(msg: SetOptionsMessage) {
   figma.root.setPluginData('apiUrl', newOptions.apiUrl)
   figma.root.setPluginData('integrationToken', newOptions.integrationToken)
   figma.root.setPluginData('databaseId', newOptions.databaseId)
+  figma.root.setPluginData('keyPropertyName', newOptions.keyPropertyName)
 
   // 新しいオプションをclientStorageに保存
   await figma.clientStorage.setAsync(CLIENT_STORAGE_KEY_NAME, {
-    keyPropertyName: newOptions.keyPropertyName,
     valuePropertyName: newOptions.valuePropertyName
   } as ClientStorageOptions)
 
