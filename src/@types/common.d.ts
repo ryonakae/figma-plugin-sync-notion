@@ -1,10 +1,14 @@
-type Options = {
+type DocumentOptions = {
   apiUrl: string
   integrationToken: string
   databaseId: string
+}
+type ClientStorageOptions = {
   keyPropertyName: string
   valuePropertyName: string
 }
+
+type Options = DocumentOptions & ClientStorageOptions
 
 type ClosePluginMessage = {
   type: 'close-plugin'
@@ -29,6 +33,12 @@ type SyncMessage = {
   type: 'sync'
   keyValues: KeyValue[]
 }
+type SyncSuccessMessage = {
+  type: 'sync-success'
+}
+type SyncFailedMessage = {
+  type: 'sync-failed'
+}
 
 type PluginMessage =
   | ClosePluginMessage
@@ -37,6 +47,8 @@ type PluginMessage =
   | GetOptionsSuccessMessage
   | SetOptionsMessage
   | SyncMessage
+  | SyncSuccessMessage
+  | SyncFailedMessage
 
 type PostMessage = {
   pluginMessage: PluginMessage

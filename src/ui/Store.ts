@@ -7,6 +7,7 @@ function Store() {
   const [databaseId, setDatabaseId] = useState('')
   const [keyPropertyName, setKeyPropertyName] = useState('')
   const [valuePropertyName, setValuePropertyName] = useState('')
+  const [syncing, setSyncing] = useState(false)
 
   return {
     apiUrl,
@@ -14,11 +15,13 @@ function Store() {
     databaseId,
     keyPropertyName,
     valuePropertyName,
+    syncing,
     setApiUrl,
     setIntegrationToken,
     setDatabaseId,
     setKeyPropertyName,
-    setValuePropertyName
+    setValuePropertyName,
+    setSyncing
   }
 }
 
