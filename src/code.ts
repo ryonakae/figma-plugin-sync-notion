@@ -265,5 +265,5 @@ figma.ui.onmessage = async (msg: PluginMessage) => {
 // UIを表示
 figma.showUI(__html__, {
   width: 300,
-  height: 400
+  height: 450
 })
