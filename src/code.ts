@@ -82,21 +82,31 @@ async function onSync(msg: SyncMessage) {
   let textNodes: TextNode[] = []
   if (figma.currentPage.selection.length) {
     figma.currentPage.selection.forEach(selection => {
+      // 要素がテキストの場合、textNodesに追加
       if (selection.type === 'TEXT') {
         textNodes.push(selection)
-      } else if (
+      }
+      // 要素がグループ、フレーム、コンポーネント、インスタンスなら、要素内のすべてのテキストをtextNodesに追加
+      else if (
         selection.type === 'GROUP' ||
         selection.type === 'FRAME' ||
         selection.type === 'COMPONENT' ||
         selection.type === 'COMPONENT_SET' ||
         selection.type === 'INSTANCE'
       ) {
-        textNodes = selection.findAllWithCriteria({ types: ['TEXT'] })
+        textNodes = [
+          ...textNodes,
+          ...selection.findAllWithCriteria({ types: ['TEXT'] })
+        ]
       }
+      // それ以外の場合は何もしない
+      // else {}
     })
   } else {
     textNodes = figma.currentPage.findAllWithCriteria({ types: ['TEXT'] })
   }
+
+  console.log('textNodes', textNodes)
 
   // textNodeが1つも無かったら処理を中断
   if (!textNodes.length) {
@@ -118,8 +128,11 @@ async function onSync(msg: SyncMessage) {
 
   // textNodeの中からレイヤー名が#で始まるものだけを探して新しい配列を作る
   const matchedTextNodes = textNodes.filter(textNode => {
+    console.log(textNode.name)
     return textNode.name.startsWith('#')
   })
+
+  console.log('matchedTextNodes', matchedTextNodes)
 
   // matchedTextNodesが空なら処理中断
   if (!matchedTextNodes.length) {
