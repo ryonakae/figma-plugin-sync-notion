@@ -268,6 +268,17 @@ const Main: React.FC = () => {
 
       <Spacer y={spacing[2]} />
 
+      <div>Database ID</div>
+      <Spacer y={spacing[1]} />
+      <input
+        css={inputStyle}
+        type="text"
+        value={databaseId}
+        onChange={onDatabaseIdChange}
+      />
+
+      <Spacer y={spacing[2]} />
+
       <div>Integration Token</div>
       <Spacer y={spacing[1]} />
       <input
@@ -275,17 +286,6 @@ const Main: React.FC = () => {
         type="password"
         value={integrationToken}
         onChange={onIntegrationTokenChange}
-      />
-
-      <Spacer y={spacing[2]} />
-
-      <div>Database ID</div>
-      <Spacer y={spacing[1]} />
-      <input
-        css={inputStyle}
-        type="password"
-        value={databaseId}
-        onChange={onDatabaseIdChange}
       />
 
       <Spacer y={spacing[2]} />
@@ -326,6 +326,18 @@ const Main: React.FC = () => {
       >
         <span>{syncing ? 'Syncing...' : 'Sync Notion'}</span>
       </Button>
+
+      <Spacer y={spacing[1]} />
+      <p
+        css={css`
+          color: ${color.subText};
+          text-align: center;
+        `}
+      >
+        Sync all text contained in the selected element.
+        <br />
+        If nothing is selected, all text on this page will be synced.
+      </p>
     </VStack>
   )
 }

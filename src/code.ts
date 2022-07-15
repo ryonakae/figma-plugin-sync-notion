@@ -28,13 +28,15 @@ async function getOptions(): Promise<Options> {
       figma.root.getPluginData('integrationToken') ||
       defaultOptions.integrationToken,
     databaseId:
-      figma.root.getPluginData('databaseId') || defaultOptions.databaseId
+      figma.root.getPluginData('databaseId') || defaultOptions.databaseId,
+    keyPropertyName:
+      figma.root.getPluginData('keyPropertyName') ||
+      defaultOptions.keyPropertyName
   }
 
   // オプションをclientStorageから取得、無かったらdefaultOptionsを参照
   const clientStorageOptions: ClientStorageOptions =
     (await figma.clientStorage.getAsync(CLIENT_STORAGE_KEY_NAME)) || {
-      keyPropertyName: defaultOptions.keyPropertyName,
       valuePropertyName: defaultOptions.valuePropertyName
     }
 
@@ -58,10 +60,10 @@ async function setOptions(msg: SetOptionsMessage) {
   figma.root.setPluginData('apiUrl', newOptions.apiUrl)
   figma.root.setPluginData('integrationToken', newOptions.integrationToken)
   figma.root.setPluginData('databaseId', newOptions.databaseId)
+  figma.root.setPluginData('keyPropertyName', newOptions.keyPropertyName)
 
   // 新しいオプションをclientStorageに保存
   await figma.clientStorage.setAsync(CLIENT_STORAGE_KEY_NAME, {
-    keyPropertyName: newOptions.keyPropertyName,
     valuePropertyName: newOptions.valuePropertyName
   } as ClientStorageOptions)
 
@@ -80,21 +82,31 @@ async function onSync(msg: SyncMessage) {
   let textNodes: TextNode[] = []
   if (figma.currentPage.selection.length) {
     figma.currentPage.selection.forEach(selection => {
+      // 要素がテキストの場合、textNodesに追加
       if (selection.type === 'TEXT') {
         textNodes.push(selection)
-      } else if (
+      }
+      // 要素がグループ、フレーム、コンポーネント、インスタンスなら、要素内のすべてのテキストをtextNodesに追加
+      else if (
         selection.type === 'GROUP' ||
         selection.type === 'FRAME' ||
         selection.type === 'COMPONENT' ||
         selection.type === 'COMPONENT_SET' ||
         selection.type === 'INSTANCE'
       ) {
-        textNodes = selection.findAllWithCriteria({ types: ['TEXT'] })
+        textNodes = [
+          ...textNodes,
+          ...selection.findAllWithCriteria({ types: ['TEXT'] })
+        ]
       }
+      // それ以外の場合は何もしない
+      // else {}
     })
   } else {
     textNodes = figma.currentPage.findAllWithCriteria({ types: ['TEXT'] })
   }
+
+  console.log('textNodes', textNodes)
 
   // textNodeが1つも無かったら処理を中断
   if (!textNodes.length) {
@@ -116,8 +128,11 @@ async function onSync(msg: SyncMessage) {
 
   // textNodeの中からレイヤー名が#で始まるものだけを探して新しい配列を作る
   const matchedTextNodes = textNodes.filter(textNode => {
+    console.log(textNode.name)
     return textNode.name.startsWith('#')
   })
+
+  console.log('matchedTextNodes', matchedTextNodes)
 
   // matchedTextNodesが空なら処理中断
   if (!matchedTextNodes.length) {
@@ -263,5 +278,5 @@ figma.ui.onmessage = async (msg: PluginMessage) => {
 // UIを表示
 figma.showUI(__html__, {
   width: 300,
-  height: 400
+  height: 450
 })
