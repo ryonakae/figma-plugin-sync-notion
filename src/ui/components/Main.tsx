@@ -16,12 +16,14 @@ const Main: React.FC = () => {
     keyPropertyName,
     valuePropertyName,
     syncing,
+    highlighting,
     setApiUrl,
     setIntegrationToken,
     setDatabaseId,
     setKeyPropertyName,
     setValuePropertyName,
-    setSyncing
+    setSyncing,
+    setHighlighting
   } = Store.useContainer()
   const keyValuesRef = useRef<KeyValue[]>([])
   const debounceTimer = useRef(0)
@@ -114,6 +116,23 @@ const Main: React.FC = () => {
 
     // 配列を空にしてクリーンアップ
     keyValuesRef.current = []
+  }
+
+  function onHighlightClick() {
+    console.log('onHighlightClick')
+
+    // ボタンをsync中にする
+    setHighlighting(true)
+
+    // Code側に送信
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: 'highlight'
+        }
+      } as PostMessage,
+      '*'
+    )
   }
 
   useUpdateEffect(() => {
@@ -240,7 +259,6 @@ const Main: React.FC = () => {
       >
         <span>{syncing ? 'Syncing...' : 'Sync Notion'}</span>
       </Button>
-
       <Spacer y={spacing[1]} />
       <p
         css={css`
@@ -251,6 +269,23 @@ const Main: React.FC = () => {
         Sync all text contained in the selected element.
         <br />
         If nothing is selected, all text on this page will be synced.
+      </p>
+
+      <Spacer y={spacing[2]} />
+
+      <Button type="border" onClick={onHighlightClick} loading={highlighting}>
+        <span>{highlighting ? 'Highlighting...' : 'Highlight Text'}</span>
+      </Button>
+      <Spacer y={spacing[1]} />
+      <p
+        css={css`
+          color: ${color.subText};
+          text-align: center;
+        `}
+      >
+        Highlight the text that has correct layer name:
+        <br />
+        {'#KeyPropertyNameOfNotion'}.
       </p>
     </VStack>
   )
