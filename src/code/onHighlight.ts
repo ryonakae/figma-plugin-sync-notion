@@ -62,6 +62,7 @@ export default async function onHighlight() {
         return
       }
 
+      // rectを作って、サイズとかstrokeとか設定
       const rect = figma.createRectangle()
       rect.x = textNode.absoluteRenderBounds.x
       rect.y = textNode.absoluteRenderBounds.y
@@ -76,6 +77,7 @@ export default async function onHighlight() {
       rect.strokeWeight = 2
       rect.name = textNode.name
 
+      // rectNodes配列にrectを追加
       rectNodes.push(rect)
     })
   )
