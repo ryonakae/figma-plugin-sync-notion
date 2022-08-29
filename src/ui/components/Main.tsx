@@ -5,8 +5,8 @@ import Store from '@/ui/Store'
 import Button from '@/ui/components/Button'
 import Spacer from '@/ui/components/Spacer'
 import VStack from '@/ui/components/VStack'
+import fetchNotion from '@/ui/functions/fetchNotion'
 import { color, radius, size, spacing } from '@/ui/styles'
-import { getPropertyValue } from '@/ui/util'
 
 const Main: React.FC = () => {
   const {
@@ -64,106 +64,20 @@ const Main: React.FC = () => {
     setValuePropertyName(event.target.value)
   }
 
-  async function fetchNotion(next_cursor?: string) {
-    console.log(
-      'fetchNotion',
-      next_cursor,
-      integrationToken,
-      databaseId,
-      keyPropertyName,
-      valuePropertyName
-    )
-
-    // パラメータを定義
-    // 引数next_cursorがある場合は、start_cursorを設定
-    const reqParams = {
-      page_size: 100,
-      start_cursor: next_cursor || undefined
-    }
-
-    // データベースをfetchしてpageの配列を取得
-    const res = await fetch(`${apiUrl}/v1/databases/${databaseId}/query`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${integrationToken}`,
-        'Notion-Version': '2021-08-16',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(reqParams)
-    }).catch(() => {
-      throw new Error('Failed to fetch database.')
-    })
-    const resJson = await res.json()
-    console.log(resJson)
-    const pages = resJson.results as NotionPage[]
-
-    // pagesが無かったら処理中断
-    if (!pages) {
-      throw new Error('No pages in this database.')
-    }
-
-    // pageごとに処理実行
-    pages.forEach(row => {
-      // keyPropertyNameと同じプロパティが無かったら処理中断
-      if (!row.properties[keyPropertyName]) {
-        throw new Error('Key property name is wrong.')
-      }
-
-      // valuePropertyNameと同じプロパティが無かったら処理中断
-      if (!row.properties[valuePropertyName]) {
-        throw new Error('Value property name is wrong.')
-      }
-
-      // keyPropertyNameからpropertyを探す
-      const keyProperty = row.properties[keyPropertyName]
-      // keyのtypeがtitle, formula, textでない場合は処理中断
-      if (
-        keyProperty.type !== 'title' &&
-        keyProperty.type !== 'rich_text' &&
-        keyProperty.type !== 'formula'
-      ) {
-        throw new Error('Key property type is wrong.')
-      }
-      // propertyのtypeを判別してkeyを取得する
-      const key = getPropertyValue(keyProperty)
-
-      // valuePropertyNameからpropertyを探す
-      const valueProperty = row.properties[valuePropertyName]
-      // valueのtypeがtitle, formula, textでない場合は処理中断
-      if (
-        valueProperty.type !== 'title' &&
-        valueProperty.type !== 'rich_text' &&
-        valueProperty.type !== 'formula'
-      ) {
-        throw new Error('Value property type is wrong.')
-      }
-      // propertyのtypeを判別してvalueを取得する
-      const value = getPropertyValue(valueProperty)
-
-      // keyValuesの配列にkeyとvalueを追加
-      keyValuesRef.current.push({
-        id: row.id,
-        key,
-        value
-      })
-    })
-
-    // resのhas_moreフラグがtrueなら再度fetchNotion関数を実行する
-    // falseなら終了
-    if (resJson.has_more) {
-      await fetchNotion(resJson.next_cursor)
-    } else {
-      return
-    }
-  }
-
   async function onSyncClick() {
     console.log('onSyncClick')
 
     // ボタンをsync中にする
     setSyncing(true)
 
-    await fetchNotion().catch((e: Error) => {
+    await fetchNotion({
+      apiUrl,
+      integrationToken,
+      databaseId,
+      keyPropertyName,
+      valuePropertyName,
+      keyValuesArray: keyValuesRef.current
+    }).catch((e: Error) => {
       // エラートースト表示
       parent.postMessage(
         {
