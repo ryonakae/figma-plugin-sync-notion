@@ -1,5 +1,7 @@
-export default async function onHighlight() {
+export default async function onHighlight(msg: HighlightMessage) {
   console.log('onHighlight')
+
+  let keyValues = msg.keyValues
 
   // Rectangleを格納する配列を用意
   let rectNodes: RectangleNode[] = []
@@ -55,12 +57,19 @@ export default async function onHighlight() {
   // matchedTextNodesごとに処理を実行
   await Promise.all(
     matchedTextNodes.map(async textNode => {
-      console.log(textNode)
-
       // textNodeのabsoluteRenderBoundsが無い場合（非表示の場合）はスキップ
       if (!textNode.absoluteRenderBounds) {
         return
       }
+
+      // レイヤー名から#を取ってkey名にする
+      // #から、?までの部分をkey名と見なす
+      const key = textNode.name.split('?')[0].replace(/^#/, '')
+
+      // key名を使ってkeyValuesからオブジェクトを検索する
+      const keyValue = keyValues.find(keyValue => {
+        return keyValue.key === key
+      })
 
       // rectを作って、サイズとかstrokeとか設定
       const rect = figma.createRectangle()
@@ -71,22 +80,35 @@ export default async function onHighlight() {
         textNode.absoluteRenderBounds.height
       )
       rect.fills = []
-      rect.strokes = [
-        { type: 'SOLID', color: { r: 1, g: 0, b: 0 }, opacity: 0.5 }
-      ]
       rect.strokeWeight = 2
-      rect.name = textNode.name
+
+      // keyValueオブジェクトが見つかったら、rectを青い枠線にする
+      if (keyValue) {
+        console.log('keyValue found', key)
+        rect.strokes = [
+          { type: 'SOLID', color: { r: 0, g: 0, b: 1 }, opacity: 0.5 }
+        ]
+        rect.name = `⭕️ ${textNode.name}`
+      }
+      // keyValueオブジェクトが見つからない場合
+      // （レイヤー名は#で始まっているがkeyが間違っている場合）は、rectを赤い枠線にする
+      else {
+        console.log('keyValue not found', key)
+        rect.strokes = [
+          { type: 'SOLID', color: { r: 1, g: 0, b: 0 }, opacity: 0.5 }
+        ]
+        rect.name = `❌ ${textNode.name}`
+      }
 
       // rectNodes配列にrectを追加
       rectNodes.push(rect)
     })
   )
 
-  // rectをグルーピングする
-  // rectNodesが1つ以上あるときだけ
+  // rectをグルーピングする（rectNodesが1つ以上あるときだけ）
   if (rectNodes.length > 0) {
     const group = figma.group(rectNodes, figma.currentPage)
-    group.name = `🟥 ${rectNodes.length} Highlights (Generated with Sync Notion)`
+    group.name = `${rectNodes.length} Highlights (Generated with Sync Notion)`
 
     // groupをロック
     group.locked = true
@@ -116,5 +138,6 @@ export default async function onHighlight() {
 
   // 配列を空にしてメモリ解放
   textNodes = []
+  keyValues = []
   rectNodes = []
 }

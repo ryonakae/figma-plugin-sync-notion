@@ -41,7 +41,7 @@ figma.ui.onmessage = async (msg: PluginMessage) => {
       break
 
     case 'highlight':
-      onHighlight()
+      onHighlight(msg)
       break
 
     default:

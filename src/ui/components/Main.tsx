@@ -118,21 +118,56 @@ const Main: React.FC = () => {
     keyValuesRef.current = []
   }
 
-  function onHighlightClick() {
+  async function onHighlightClick() {
     console.log('onHighlightClick')
 
     // ボタンをsync中にする
     setHighlighting(true)
 
-    // Code側に送信
+    await fetchNotion({
+      apiUrl,
+      integrationToken,
+      databaseId,
+      keyPropertyName,
+      valuePropertyName,
+      keyValuesArray: keyValuesRef.current
+    }).catch((e: Error) => {
+      // エラートースト表示
+      parent.postMessage(
+        {
+          pluginMessage: {
+            type: 'notify',
+            message: e.message,
+            options: {
+              error: true
+            }
+          }
+        } as PostMessage,
+        '*'
+      )
+
+      // 配列を空にしてクリーンアップ
+      keyValuesRef.current = []
+
+      // ボタンを通常に戻す
+      setSyncing(false)
+
+      throw new Error(e.message)
+    })
+
+    // fetchNotionで取得したkeyValuesをCode側に送る
     parent.postMessage(
       {
         pluginMessage: {
-          type: 'highlight'
+          type: 'highlight',
+          keyValues: keyValuesRef.current
         }
       } as PostMessage,
       '*'
     )
+
+    // 配列を空にしてクリーンアップ
+    keyValuesRef.current = []
   }
 
   useUpdateEffect(() => {

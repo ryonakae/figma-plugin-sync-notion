@@ -41,6 +41,7 @@ type SyncFailedMessage = {
 }
 type HighlightMessage = {
   type: 'highlight'
+  keyValues: KeyValue[]
 }
 type HighlightSuccessMessage = {
   type: 'highlight-success'
