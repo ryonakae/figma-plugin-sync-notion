@@ -208,8 +208,11 @@ export default async function onSync(msg: SyncMessage) {
     const group = figma.group(rectNodes, figma.currentPage)
     group.name = `${rectNodes.length} Highlights (⭕️ ${correctRectNodes.length} / ❌ ${incorrectRectNodes.length}) - Generated with Sync Notion`
 
-    // groupをロック
+    // をロック
     group.locked = true
+
+    // 折りたたむ
+    group.expanded = false
 
     // 生成したgroupのidをgeneratedGroupIdに保存する
     figma.root.setPluginData('generatedGroupId', group.id)
