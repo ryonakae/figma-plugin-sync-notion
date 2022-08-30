@@ -15,14 +15,22 @@ Useful when managing app text in Notion or for multilingual support.
 - \[Notion\] Add pages with unique key (e.g., page title) and values to the database.
   - Currently, title, formula, and text properties are supported.
   - Variables can be embedded. e.g., `{name} follows you. (Age: {age})`
-- \[Figma\] Rename text layers you want to sync to `#<Key Property Name of Notion>`.
+- \[Figma\] Rename text layers you want to sync to `#<Key Name of Notion>`.
   - e.g., `#pageTitle`, `#description` and `#signInWithApple`
   - You can pass parameters. e.g., `#notification?name=Alistair Warren&age=24`. If there are variables in Notion database value, it will replace the text with that value in it.
   - In this example, the text will replaced by `Alistair Warren follows you. (Age: 24)`
 - \[Figma\] Open this plugin and fill in each field.
-- \[Figma\] Select a frames or text layers. Or, select nothing. If nothing is selected, all text in the current page will be synced.
 - \[Figma\] Press the "Sync Notion" button.
 - Enjoy😎🏝
+
+### "Sync Notion" button
+
+Sync all text contained in the selected element. If nothing is selected, all text on this page will be synced.
+
+### "Highlight Text" button
+
+Highlight all text that has correct layer name format: `#<Key Name of Notion>`.  
+Text is highlighted in blue if the key is correct and in red if it's incorrect.
 
 ## ⚙️ Create a reverse proxy to avoid CORS errors
 

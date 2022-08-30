@@ -95,6 +95,7 @@ export default async function onSync(msg: SyncMessage) {
 
       // keyValueオブジェクトが見つからなかったら処理中断
       if (!keyValue) {
+        console.log('keyValue not found', key)
         return
       }
 

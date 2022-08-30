@@ -39,6 +39,16 @@ type SyncSuccessMessage = {
 type SyncFailedMessage = {
   type: 'sync-failed'
 }
+type HighlightMessage = {
+  type: 'highlight'
+  keyValues: KeyValue[]
+}
+type HighlightSuccessMessage = {
+  type: 'highlight-success'
+}
+type HighlightFailedMessage = {
+  type: 'highlight-failed'
+}
 
 type PluginMessage =
   | ClosePluginMessage
@@ -49,6 +59,9 @@ type PluginMessage =
   | SyncMessage
   | SyncSuccessMessage
   | SyncFailedMessage
+  | HighlightMessage
+  | HighlightSuccessMessage
+  | HighlightFailedMessage
 
 type PostMessage = {
   pluginMessage: PluginMessage

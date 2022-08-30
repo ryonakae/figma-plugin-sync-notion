@@ -13,7 +13,8 @@ const AppContent: React.FC = () => {
     setDatabaseId,
     setKeyPropertyName,
     setValuePropertyName,
-    setSyncing
+    setSyncing,
+    setHighlighting
   } = Store.useContainer()
 
   function getOptions() {
@@ -56,6 +57,14 @@ const AppContent: React.FC = () => {
 
         case 'sync-success':
           setSyncing(false)
+          break
+
+        case 'highlight-failed':
+          setHighlighting(false)
+          break
+
+        case 'highlight-success':
+          setHighlighting(false)
           break
 
         default:
