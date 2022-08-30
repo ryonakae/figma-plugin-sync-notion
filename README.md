@@ -27,10 +27,11 @@ Useful when managing app text in Notion or for multilingual support.
 
 Sync all text contained in the selected element. If nothing is selected, all text on this page will be synced.
 
-### "Highlight Text" button
+### "Sync with Highlight" option
 
-Highlight all text that has correct layer name format: `#<Key Name of Notion>`.  
-Text is highlighted in blue if the key is correct and in red if it's incorrect.
+If this option is enabled, highlight all text that has correct layer name format: `#<Key Name of Notion>`.  
+Text is highlighted in blue if the key is correct and in red if it's incorrect.  
+It is useful to check that the layer names are formatted correctly or that they have no typos.
 
 ## ⚙️ Create a reverse proxy to avoid CORS errors
 
