@@ -1,4 +1,3 @@
-import onHighlight from '@/code/onHighlight'
 import onSync from '@/code/onSync'
 import { getOptions, setOptions } from '@/code/options'
 import { closePlugin, notify } from '@/code/util'
@@ -40,10 +39,6 @@ figma.ui.onmessage = async (msg: PluginMessage) => {
       onSync(msg)
       break
 
-    case 'highlight':
-      onHighlight(msg)
-      break
-
     default:
       break
   }
@@ -52,5 +47,5 @@ figma.ui.onmessage = async (msg: PluginMessage) => {
 // UIを表示
 figma.showUI(__html__, {
   width: 300,
-  height: 390
+  height: 380
 })

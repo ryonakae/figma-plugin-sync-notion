@@ -13,8 +13,8 @@ const AppContent: React.FC = () => {
     setDatabaseId,
     setKeyPropertyName,
     setValuePropertyName,
-    setSyncing,
-    setHighlighting
+    setWithHighlight,
+    setSyncing
   } = Store.useContainer()
 
   function getOptions() {
@@ -34,6 +34,7 @@ const AppContent: React.FC = () => {
     setDatabaseId(options.databaseId)
     setKeyPropertyName(options.keyPropertyName)
     setValuePropertyName(options.valuePropertyName)
+    setWithHighlight(options.withHighlight)
   }
 
   function listenPluginMessage() {
@@ -57,14 +58,6 @@ const AppContent: React.FC = () => {
 
         case 'sync-success':
           setSyncing(false)
-          break
-
-        case 'highlight-failed':
-          setHighlighting(false)
-          break
-
-        case 'highlight-success':
-          setHighlighting(false)
           break
 
         default:
