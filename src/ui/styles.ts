@@ -21,11 +21,13 @@ export const color = {
   primaryButtonActiveBorder: 'rgba(0, 0, 0, 0.15)',
   ghostButtonHoverBg: 'rgba(0, 0, 0, 0.06)',
   input: '#e5e5e5',
-  inputHover: '#ccc'
+  inputHover: '#ccc',
+  segmentedControl: '#e4e4e4'
 }
 
 export const radius = {
   input: '2px',
+  segmentedControl: '2px',
   button: '6px',
   ghostButton: '2px'
 }
@@ -45,8 +47,10 @@ export const spacing = {
 }
 
 export const size = {
-  button: '32px',
-  input: '28px'
+  icon: '16px',
+  segmentedControl: '24px',
+  input: '28px',
+  button: '32px'
 }
 
 export const zIndex = {

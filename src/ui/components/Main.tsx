@@ -4,10 +4,12 @@ import { useUpdateEffect } from 'react-use'
 import Store from '@/ui/Store'
 import Button from '@/ui/components/Button'
 import HStack from '@/ui/components/HStack'
+import Input from '@/ui/components/Input'
+import SegmentedControl from '@/ui/components/SegmentedControl'
 import Spacer from '@/ui/components/Spacer'
 import VStack from '@/ui/components/VStack'
 import fetchNotion from '@/ui/functions/fetchNotion'
-import { color, radius, size, spacing } from '@/ui/styles'
+import { spacing } from '@/ui/styles'
 
 const Main: React.FC = () => {
   const {
@@ -16,15 +18,15 @@ const Main: React.FC = () => {
     databaseId,
     keyPropertyName,
     valuePropertyName,
+    withHighlight,
     syncing,
-    highlighting,
     setApiUrl,
     setIntegrationToken,
     setDatabaseId,
     setKeyPropertyName,
     setValuePropertyName,
-    setSyncing,
-    setHighlighting
+    setWithHighlight,
+    setSyncing
   } = Store.useContainer()
   const keyValuesRef = useRef<KeyValue[]>([])
   const debounceTimer = useRef(0)
@@ -39,7 +41,8 @@ const Main: React.FC = () => {
             integrationToken: options.integrationToken,
             databaseId: options.databaseId,
             keyPropertyName: options.keyPropertyName,
-            valuePropertyName: options.valuePropertyName
+            valuePropertyName: options.valuePropertyName,
+            withHighlight: options.withHighlight
           }
         }
       } as PostMessage,
@@ -68,7 +71,7 @@ const Main: React.FC = () => {
   }
 
   async function onSyncClick() {
-    console.log('onSyncClick')
+    console.log('onSyncClick, withHighlight:', withHighlight)
 
     // ボタンをsync中にする
     setSyncing(true)
@@ -109,7 +112,8 @@ const Main: React.FC = () => {
       {
         pluginMessage: {
           type: 'sync',
-          keyValues: keyValuesRef.current
+          keyValues: keyValuesRef.current,
+          withHighlight
         }
       } as PostMessage,
       '*'
@@ -119,56 +123,8 @@ const Main: React.FC = () => {
     keyValuesRef.current = []
   }
 
-  async function onHighlightClick() {
-    console.log('onHighlightClick')
-
-    // ボタンをsync中にする
-    setHighlighting(true)
-
-    await fetchNotion({
-      apiUrl,
-      integrationToken,
-      databaseId,
-      keyPropertyName,
-      valuePropertyName,
-      keyValuesArray: keyValuesRef.current
-    }).catch((e: Error) => {
-      // エラートースト表示
-      parent.postMessage(
-        {
-          pluginMessage: {
-            type: 'notify',
-            message: e.message,
-            options: {
-              error: true
-            }
-          }
-        } as PostMessage,
-        '*'
-      )
-
-      // 配列を空にしてクリーンアップ
-      keyValuesRef.current = []
-
-      // ボタンを通常に戻す
-      setSyncing(false)
-
-      throw new Error(e.message)
-    })
-
-    // fetchNotionで取得したkeyValuesをCode側に送る
-    parent.postMessage(
-      {
-        pluginMessage: {
-          type: 'highlight',
-          keyValues: keyValuesRef.current
-        }
-      } as PostMessage,
-      '*'
-    )
-
-    // 配列を空にしてクリーンアップ
-    keyValuesRef.current = []
+  function onSyncWithHighlightClick() {
+    setWithHighlight(!withHighlight)
   }
 
   useUpdateEffect(() => {
@@ -180,25 +136,18 @@ const Main: React.FC = () => {
         integrationToken,
         databaseId,
         keyPropertyName,
-        valuePropertyName
+        valuePropertyName,
+        withHighlight
       })
-    }, 500)
-  }, [apiUrl, integrationToken, databaseId, keyPropertyName, valuePropertyName])
-
-  const inputStyle = css`
-    height: ${size.input};
-    border: 1px solid ${color.input};
-    border-radius: ${radius.input};
-    padding: 0 ${spacing[2]};
-
-    &:hover {
-      border-color: ${color.inputHover};
-    }
-    &:focus {
-      border: 2px solid ${color.primary};
-      margin: 0 -1px;
-    }
-  `
+    }, 300)
+  }, [
+    apiUrl,
+    integrationToken,
+    databaseId,
+    keyPropertyName,
+    valuePropertyName,
+    withHighlight
+  ])
 
   return (
     <VStack
@@ -208,30 +157,27 @@ const Main: React.FC = () => {
         padding: ${spacing[3]};
       `}
     >
-      <HStack justify="space-between">
-        <span>Notion API URL</span>
-        <a
-          href="https://github.com/ryonakae/figma-plugin-sync-notion#%EF%B8%8F-create-a-reverse-proxy-to-avoid-cors-errors"
-          target="_blank"
-          rel="noreferrer"
-        >
-          More information
-        </a>
-      </HStack>
-      <Spacer y={spacing[1]} />
-      <input
-        css={inputStyle}
+      <Input
+        title="Notion API URL"
+        rightContent={
+          <a
+            href="https://github.com/ryonakae/figma-plugin-sync-notion#%EF%B8%8F-create-a-reverse-proxy-to-avoid-cors-errors"
+            target="_blank"
+            rel="noreferrer"
+          >
+            More information
+          </a>
+        }
         type="url"
         value={apiUrl}
+        placeholder="https://reverse-proxy.yourname.workers.dev/https://api.notion.com"
         onChange={onApiUrlChange}
       />
 
       <Spacer y={spacing[2]} />
 
-      <div>Database ID</div>
-      <Spacer y={spacing[1]} />
-      <input
-        css={inputStyle}
+      <Input
+        title="Database ID"
         type="text"
         value={databaseId}
         onChange={onDatabaseIdChange}
@@ -239,10 +185,8 @@ const Main: React.FC = () => {
 
       <Spacer y={spacing[2]} />
 
-      <div>Integration Token</div>
-      <Spacer y={spacing[1]} />
-      <input
-        css={inputStyle}
+      <Input
+        title="Integration Token"
         type="password"
         value={integrationToken}
         onChange={onIntegrationTokenChange}
@@ -250,10 +194,8 @@ const Main: React.FC = () => {
 
       <Spacer y={spacing[2]} />
 
-      <div>Key Name</div>
-      <Spacer y={spacing[1]} />
-      <input
-        css={inputStyle}
+      <Input
+        title="Key Name"
         type="text"
         value={keyPropertyName}
         onChange={onKeyPropertyNameChange}
@@ -261,10 +203,8 @@ const Main: React.FC = () => {
 
       <Spacer y={spacing[2]} />
 
-      <div>Value Name</div>
-      <Spacer y={spacing[1]} />
-      <input
-        css={inputStyle}
+      <Input
+        title="Value Name"
         type="text"
         value={valuePropertyName}
         onChange={onValuePropertyNameChange}
@@ -289,9 +229,14 @@ const Main: React.FC = () => {
 
       <Spacer y={spacing[2]} />
 
-      <Button type="border" onClick={onHighlightClick} loading={highlighting}>
-        <span>{highlighting ? 'Highlighting...' : 'Highlight Text'}</span>
-      </Button>
+      <HStack justify="space-between">
+        <span>Sync with Highlight</span>
+
+        <SegmentedControl
+          state={withHighlight}
+          onClick={onSyncWithHighlightClick}
+        />
+      </HStack>
     </VStack>
   )
 }

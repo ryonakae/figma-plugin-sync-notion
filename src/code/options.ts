@@ -1,11 +1,12 @@
 const CLIENT_STORAGE_KEY_NAME = 'sync-notion'
 
-const defaultOptions: Options = {
+export const defaultOptions: Options = {
   apiUrl: '',
   integrationToken: '',
   databaseId: '',
   keyPropertyName: '',
-  valuePropertyName: ''
+  valuePropertyName: '',
+  withHighlight: false
 }
 
 export async function getOptions(): Promise<Options> {
@@ -25,7 +26,8 @@ export async function getOptions(): Promise<Options> {
   // オプションをclientStorageから取得、無かったらdefaultOptionsを参照
   const clientStorageOptions: ClientStorageOptions =
     (await figma.clientStorage.getAsync(CLIENT_STORAGE_KEY_NAME)) || {
-      valuePropertyName: defaultOptions.valuePropertyName
+      valuePropertyName: defaultOptions.valuePropertyName,
+      withHighlight: defaultOptions.withHighlight
     }
 
   // documentOptionsとclientStorageをマージ
@@ -52,7 +54,8 @@ export async function setOptions(msg: SetOptionsMessage) {
 
   // 新しいオプションをclientStorageに保存
   await figma.clientStorage.setAsync(CLIENT_STORAGE_KEY_NAME, {
-    valuePropertyName: newOptions.valuePropertyName
+    valuePropertyName: newOptions.valuePropertyName,
+    withHighlight: newOptions.withHighlight
   } as ClientStorageOptions)
 
   console.log('setOptions success', newOptions)

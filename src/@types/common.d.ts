@@ -3,9 +3,11 @@ type DocumentOptions = {
   integrationToken: string
   databaseId: string
   keyPropertyName: string
+  generatedGroupId?: string
 }
 type ClientStorageOptions = {
   valuePropertyName: string
+  withHighlight: boolean
 }
 
 type Options = DocumentOptions & ClientStorageOptions
@@ -32,22 +34,13 @@ type SetOptionsMessage = {
 type SyncMessage = {
   type: 'sync'
   keyValues: KeyValue[]
+  withHighlight: boolean
 }
 type SyncSuccessMessage = {
   type: 'sync-success'
 }
 type SyncFailedMessage = {
   type: 'sync-failed'
-}
-type HighlightMessage = {
-  type: 'highlight'
-  keyValues: KeyValue[]
-}
-type HighlightSuccessMessage = {
-  type: 'highlight-success'
-}
-type HighlightFailedMessage = {
-  type: 'highlight-failed'
 }
 
 type PluginMessage =
@@ -59,9 +52,6 @@ type PluginMessage =
   | SyncMessage
   | SyncSuccessMessage
   | SyncFailedMessage
-  | HighlightMessage
-  | HighlightSuccessMessage
-  | HighlightFailedMessage
 
 type PostMessage = {
   pluginMessage: PluginMessage

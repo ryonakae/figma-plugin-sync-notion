@@ -1,14 +1,23 @@
 import { useState } from 'react'
 import { createContainer } from 'unstated-next'
+import { defaultOptions } from '@/code/options'
 
 function Store() {
-  const [apiUrl, setApiUrl] = useState('')
-  const [integrationToken, setIntegrationToken] = useState('')
-  const [databaseId, setDatabaseId] = useState('')
-  const [keyPropertyName, setKeyPropertyName] = useState('')
-  const [valuePropertyName, setValuePropertyName] = useState('')
+  const [apiUrl, setApiUrl] = useState(defaultOptions.apiUrl)
+  const [integrationToken, setIntegrationToken] = useState(
+    defaultOptions.integrationToken
+  )
+  const [databaseId, setDatabaseId] = useState(defaultOptions.databaseId)
+  const [keyPropertyName, setKeyPropertyName] = useState(
+    defaultOptions.keyPropertyName
+  )
+  const [valuePropertyName, setValuePropertyName] = useState(
+    defaultOptions.valuePropertyName
+  )
+  const [withHighlight, setWithHighlight] = useState(
+    defaultOptions.withHighlight
+  )
   const [syncing, setSyncing] = useState(false)
-  const [highlighting, setHighlighting] = useState(false)
 
   return {
     apiUrl,
@@ -16,15 +25,15 @@ function Store() {
     databaseId,
     keyPropertyName,
     valuePropertyName,
+    withHighlight,
     syncing,
-    highlighting,
     setApiUrl,
     setIntegrationToken,
     setDatabaseId,
     setKeyPropertyName,
     setValuePropertyName,
-    setSyncing,
-    setHighlighting
+    setWithHighlight,
+    setSyncing
   }
 }
 
