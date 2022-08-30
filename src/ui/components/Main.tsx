@@ -3,6 +3,7 @@ import React, { ChangeEvent, useRef } from 'react'
 import { useUpdateEffect } from 'react-use'
 import Store from '@/ui/Store'
 import Button from '@/ui/components/Button'
+import HStack from '@/ui/components/HStack'
 import Spacer from '@/ui/components/Spacer'
 import VStack from '@/ui/components/VStack'
 import fetchNotion from '@/ui/functions/fetchNotion'
@@ -207,24 +208,8 @@ const Main: React.FC = () => {
         padding: ${spacing[3]};
       `}
     >
-      <div>Notion API URL</div>
-      <Spacer y={spacing[1]} />
-      <input
-        css={inputStyle}
-        type="url"
-        value={apiUrl}
-        onChange={onApiUrlChange}
-      />
-      <Spacer y={spacing[1]} />
-      <p
-        css={css`
-          color: ${color.subText};
-        `}
-      >
-        To avoid CORS errors, a reverse proxy is required.
-        <br />
-        e.g. https://reverse-proxy-url/https://api.notion.com
-        <br />
+      <HStack justify="space-between">
+        <span>Notion API URL</span>
         <a
           href="https://github.com/ryonakae/figma-plugin-sync-notion#%EF%B8%8F-create-a-reverse-proxy-to-avoid-cors-errors"
           target="_blank"
@@ -232,7 +217,14 @@ const Main: React.FC = () => {
         >
           More information
         </a>
-      </p>
+      </HStack>
+      <Spacer y={spacing[1]} />
+      <input
+        css={inputStyle}
+        type="url"
+        value={apiUrl}
+        onChange={onApiUrlChange}
+      />
 
       <Spacer y={spacing[2]} />
 
@@ -258,7 +250,7 @@ const Main: React.FC = () => {
 
       <Spacer y={spacing[2]} />
 
-      <div>Key Property Name</div>
+      <div>Key Name</div>
       <Spacer y={spacing[1]} />
       <input
         css={inputStyle}
@@ -269,7 +261,7 @@ const Main: React.FC = () => {
 
       <Spacer y={spacing[2]} />
 
-      <div>Value Property Name</div>
+      <div>Value Name</div>
       <Spacer y={spacing[1]} />
       <input
         css={inputStyle}
@@ -294,34 +286,12 @@ const Main: React.FC = () => {
       >
         <span>{syncing ? 'Syncing...' : 'Sync Notion'}</span>
       </Button>
-      <Spacer y={spacing[1]} />
-      <p
-        css={css`
-          color: ${color.subText};
-          text-align: center;
-        `}
-      >
-        Sync all text contained in the selected element.
-        <br />
-        If nothing is selected, all text on this page will be synced.
-      </p>
 
       <Spacer y={spacing[2]} />
 
       <Button type="border" onClick={onHighlightClick} loading={highlighting}>
         <span>{highlighting ? 'Highlighting...' : 'Highlight Text'}</span>
       </Button>
-      <Spacer y={spacing[1]} />
-      <p
-        css={css`
-          color: ${color.subText};
-          text-align: center;
-        `}
-      >
-        Highlight the text that has correct layer name:
-        <br />
-        {'#KeyPropertyNameOfNotion'}.
-      </p>
     </VStack>
   )
 }
