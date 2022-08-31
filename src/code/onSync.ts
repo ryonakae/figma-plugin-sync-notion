@@ -1,4 +1,5 @@
 import { parse } from 'query-string'
+import createHighlight from '@/code/createHighlight'
 
 export default async function onSync(msg: SyncMessage) {
   console.log('onSync', msg.keyValues, msg.withHighlight)
@@ -7,12 +8,9 @@ export default async function onSync(msg: SyncMessage) {
   let keyValues = msg.keyValues
   const withHighlight = msg.withHighlight
 
-  // Rectangleを格納する配列を用意
-  let correctRectNodes: RectangleNode[] = []
-  let incorrectRectNodes: RectangleNode[] = []
-
   // textNodeを格納する配列を用意
   let textNodes: TextNode[] = []
+  let matchedTextNodes: TextNode[] = []
 
   // textNodeを検索
   // 要素を選択している時は各選択ごとに処理
@@ -64,8 +62,8 @@ export default async function onSync(msg: SyncMessage) {
     return
   }
 
-  // textNodeの中からレイヤー名が#で始まるものだけを探して新しい配列を作る
-  const matchedTextNodes = textNodes.filter(textNode => {
+  // textNodeの中からレイヤー名が#で始まるものだけを探してmatchedTextNodesに追加する
+  matchedTextNodes = textNodes.filter(textNode => {
     console.log(textNode.name)
     return textNode.name.startsWith('#')
   })
@@ -83,17 +81,6 @@ export default async function onSync(msg: SyncMessage) {
     console.error('sync failed: No matching text')
 
     return
-  }
-
-  // withHighlightがtrueの場合、以前生成したgroupを探して、削除
-  if (withHighlight) {
-    const generatedGroupId = figma.root.getPluginData('generatedGroupId')
-    const previousGeneratedGroup = figma.currentPage.findOne(
-      node => node.id === generatedGroupId
-    )
-    if (previousGeneratedGroup) {
-      previousGeneratedGroup.remove()
-    }
   }
 
   // matchedTextNodesごとに処理を実行
@@ -165,57 +152,12 @@ export default async function onSync(msg: SyncMessage) {
       else {
         console.log('keyValue not found', key)
       }
-
-      // ハイライト用のrectを作る（レイヤーが表示されているものだけ）
-      if (withHighlight && textNode.absoluteRenderBounds) {
-        // rectを作って、サイズとかstrokeとか設定
-        const rect = figma.createRectangle()
-        rect.x = textNode.absoluteRenderBounds.x
-        rect.y = textNode.absoluteRenderBounds.y
-        rect.resize(
-          textNode.absoluteRenderBounds.width,
-          textNode.absoluteRenderBounds.height
-        )
-
-        // keyValueオブジェクトが見つかったら、rectを青で塗りつぶす
-        if (keyValue) {
-          rect.fills = [
-            { type: 'SOLID', color: { r: 0, g: 0, b: 1 }, opacity: 0.3 }
-          ]
-          rect.name = `⭕️ ${textNode.name}`
-          // correctRectNodes配列にrectを追加
-          correctRectNodes.push(rect)
-        }
-        // keyValueオブジェクトが見つからない場合
-        // （レイヤー名は#で始まっているがkeyが間違っている場合）は、rectを赤で塗りつぶす
-        else {
-          rect.fills = [
-            { type: 'SOLID', color: { r: 1, g: 0, b: 0 }, opacity: 0.3 }
-          ]
-          rect.name = `❌ ${textNode.name}`
-          // incorrectRectNodes配列にrectを追加
-          incorrectRectNodes.push(rect)
-        }
-      }
     })
   )
 
-  // correctRectNodesとincorrectRectNodesから新しい配列を作る
-  let rectNodes = [...correctRectNodes, ...incorrectRectNodes]
-
-  // withHighlightがtrueかつrectNodesが1つ以上ある場合、rectをグルーピングする
-  if (withHighlight && rectNodes.length > 0) {
-    const group = figma.group(rectNodes, figma.currentPage)
-    group.name = `${rectNodes.length} Highlights (⭕️ ${correctRectNodes.length} / ❌ ${incorrectRectNodes.length}) - Generated with Sync Notion`
-
-    // をロック
-    group.locked = true
-
-    // 折りたたむ
-    group.expanded = false
-
-    // 生成したgroupのidをgeneratedGroupIdに保存する
-    figma.root.setPluginData('generatedGroupId', group.id)
+  // withHighlightがtrueの場合、createHighlightを実行する
+  if (withHighlight) {
+    await createHighlight(keyValues)
   }
 
   // 完了の旨をトーストで表示
@@ -227,11 +169,9 @@ export default async function onSync(msg: SyncMessage) {
   }
 
   // 配列を空にしておく
-  textNodes = []
   keyValues = []
-  correctRectNodes = []
-  incorrectRectNodes = []
-  rectNodes = []
+  textNodes = []
+  matchedTextNodes = []
 
   // 完了の旨をUIに送信
   figma.ui.postMessage({
