@@ -3,7 +3,6 @@ type DocumentOptions = {
   integrationToken: string
   databaseId: string
   keyPropertyName: string
-  generatedGroupId?: string
 }
 type ClientStorageOptions = {
   valuePropertyName: string
