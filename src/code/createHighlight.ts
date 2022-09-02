@@ -20,7 +20,7 @@ export default async function createHighlight(keyValues: KeyValue[]) {
   })
 
   // 以前生成したgroupを探して、削除
-  const generatedGroupId = figma.root.getPluginData('generatedGroupId')
+  const generatedGroupId = figma.currentPage.getPluginData('generatedGroupId')
   const previousGeneratedGroup = figma.currentPage.findOne(
     node => node.id === generatedGroupId
   )
@@ -88,8 +88,8 @@ export default async function createHighlight(keyValues: KeyValue[]) {
     // 折りたたむ
     group.expanded = false
 
-    // 生成したgroupのidをgeneratedGroupIdに保存する
-    figma.root.setPluginData('generatedGroupId', group.id)
+    // 生成したgroupのidをcurrentPageのgeneratedGroupIdに保存する
+    figma.currentPage.setPluginData('generatedGroupId', group.id)
   }
 
   console.log('createHighlight success')
