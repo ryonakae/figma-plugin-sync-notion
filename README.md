@@ -5,6 +5,17 @@
 Sync text from Notion database to Figma document.  
 Useful when managing app text in Notion or for multilingual support.
 
+---
+
+<h1>
+<a href="https://github.com/ryonakae/figma-plugin-sync-notion/wiki/Sync-Notion%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AE%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97%E6%96%B9%E6%B3%95">
+I have written a detailed description of how to set up this plugin. Please check here.<br>
+プラグインのセットアップ方法を詳しくまとめました。こちらを確認してください。
+</a>
+</h1>
+
+---
+
 ## 🔥 How to use
 
 - \[Notion\] Create a reverse proxy to avoid [CORS errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).
