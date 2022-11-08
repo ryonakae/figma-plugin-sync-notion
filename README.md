@@ -13,12 +13,14 @@ Useful when managing app text in Notion or for multilingual support.
 - \[Notion\] Create a database.
 - \[Notion\] [Share the database with your integration.](https://developers.notion.com/docs/getting-started#step-2-share-a-database-with-your-integration)
 - \[Notion\] Add pages with unique key (e.g., page title) and values to the database.
-  - Currently, title, formula, and text properties are supported.
+  - Currently, title, formula and text properties are supported.
   - Variables can be embedded. e.g., `{name} follows you. (Age: {age})`
 - \[Figma\] Rename text layers you want to sync to `#<Key Name of Notion>`.
   - e.g., `#pageTitle`, `#description` and `#signInWithApple`
   - You can pass parameters. e.g., `#notification?name=Alistair Warren&age=24`. If there are variables in Notion database value, it will replace the text with that value in it.
-  - In this example, the text will replaced by `Alistair Warren follows you. (Age: 24)`
+  - In this example, the text will replaced by `Alistair Warren follows you. (Age: 24)`.
+  - Warning: If the text passed as a parameter contains `&`, replace it with `%26`.
+  - e.g., `#notification?name=Alistair Warren %26 Kevin Lara`. The text will replaced by `Alistair Warren & Kevin Lara follows you.`.
 - \[Figma\] Open this plugin and fill in each field.
 - \[Figma\] Press the "Sync Notion" button.
 - Enjoy😎🏝

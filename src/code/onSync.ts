@@ -1,4 +1,4 @@
-import { parse } from 'query-string'
+import { parse, type ParsedQuery } from 'query-string'
 import createHighlight from '@/code/createHighlight'
 
 export default async function onSync(msg: SyncMessage) {
@@ -88,7 +88,16 @@ export default async function onSync(msg: SyncMessage) {
     matchedTextNodes.map(async textNode => {
       // クエリパラメータを取得する
       // ?から後ろの部分をクエリパラメータと見なす
-      const param = parse(textNode.name.split('?')[1])
+      // 一部の文字がうまくパースされないので、パース前にエンコードする
+      const originalParam = textNode.name.split('?')[1] as string | undefined
+      let param: ParsedQuery<string>
+      if (originalParam) {
+        const replacedParam = originalParam.replace(/\+/g, '%2B')
+        // console.log('replacedParam:', replacedParam)
+        param = parse(replacedParam)
+      } else {
+        param = parse('')
+      }
 
       // レイヤー名から#を取ってkey名にする
       // #から、?までの部分をkey名と見なす
