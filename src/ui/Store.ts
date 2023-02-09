@@ -17,6 +17,8 @@ function Store() {
   const [withHighlight, setWithHighlight] = useState(
     defaultOptions.withHighlight
   )
+  const [usingCache, setUsingCache] = useState(defaultOptions.usingCache)
+  const [cache, setCache] = useState<KeyValue[]>([])
   const [syncing, setSyncing] = useState(false)
 
   return {
@@ -26,6 +28,8 @@ function Store() {
     keyPropertyName,
     valuePropertyName,
     withHighlight,
+    usingCache,
+    cache,
     syncing,
     setApiUrl,
     setIntegrationToken,
@@ -33,6 +37,8 @@ function Store() {
     setKeyPropertyName,
     setValuePropertyName,
     setWithHighlight,
+    setUsingCache,
+    setCache,
     setSyncing
   }
 }

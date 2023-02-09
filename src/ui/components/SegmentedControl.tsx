@@ -7,31 +7,40 @@ import { radius, color, size } from '@/ui/styles'
 type SegmentedControlProps = JSX.IntrinsicElements['div'] & {
   state: boolean
   onClick?: React.MouseEventHandler<HTMLDivElement>
+  disabled?: boolean
 }
 
 const SegmentedControl: React.FC<SegmentedControlProps> = ({
   state,
   onClick,
+  disabled,
   ...delegated
 }) => {
   return (
     <div
-      css={css`
-        position: relative;
-        display: flex;
-        border: ${radius.segmentedControl} solid transparent;
+      css={[
+        css`
+          position: relative;
+          display: flex;
+          border: ${radius.segmentedControl} solid transparent;
 
-        &:hover {
-          &::before {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            content: '';
-            border: 1px solid ${color.segmentedControl};
-            border-radius: ${radius.segmentedControl};
+          &:hover {
+            &::before {
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              content: '';
+              border: 1px solid ${color.segmentedControl};
+              border-radius: ${radius.segmentedControl};
+            }
           }
-        }
-      `}
+        `,
+        disabled &&
+          css`
+            pointer-events: none;
+            opacity: 0.3;
+          `
+      ]}
       onClick={onClick}
       {...delegated}
     >

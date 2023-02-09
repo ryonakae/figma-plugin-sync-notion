@@ -1,3 +1,5 @@
+import { getCache, setCache } from '@/code/cache'
+import { UI_WIDTH, UI_HEIGHT } from '@/code/constants'
 import onSync from '@/code/onSync'
 import { getOptions, setOptions } from '@/code/options'
 import { closePlugin, notify } from '@/code/util'
@@ -35,6 +37,22 @@ figma.ui.onmessage = async (msg: PluginMessage) => {
       setOptions(msg)
       break
 
+    case 'get-cache':
+      // キャッシュを取得
+      const keyValues = await getCache()
+
+      // キャッシュをUIに送信
+      figma.ui.postMessage({
+        type: 'get-cache-success',
+        keyValues
+      } as PluginMessage)
+      console.log('getCache success', keyValues)
+      break
+
+    case 'set-cache':
+      setCache(msg.keyValues)
+      break
+
     case 'sync':
       onSync(msg)
       break
@@ -46,6 +64,6 @@ figma.ui.onmessage = async (msg: PluginMessage) => {
 
 // UIを表示
 figma.showUI(__html__, {
-  width: 300,
-  height: 380
+  width: UI_WIDTH,
+  height: UI_HEIGHT
 })

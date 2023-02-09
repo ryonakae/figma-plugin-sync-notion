@@ -1,5 +1,5 @@
 import { css, Global } from '@emotion/react'
-import React from 'react'
+import React, { useState } from 'react'
 import 'ress'
 import { useMount } from 'react-use'
 import Store from '@/ui/Store'
@@ -14,7 +14,9 @@ const AppContent: React.FC = () => {
     setKeyPropertyName,
     setValuePropertyName,
     setWithHighlight,
-    setSyncing
+    setSyncing,
+    setUsingCache,
+    setCache
   } = Store.useContainer()
 
   function getOptions() {
@@ -35,6 +37,16 @@ const AppContent: React.FC = () => {
     setKeyPropertyName(options.keyPropertyName)
     setValuePropertyName(options.valuePropertyName)
     setWithHighlight(options.withHighlight)
+    setUsingCache(options.usingCache)
+  }
+
+  function getCache() {
+    parent.postMessage(
+      {
+        pluginMessage: { type: 'get-cache' }
+      } as PostMessage,
+      '*'
+    )
   }
 
   function listenPluginMessage() {
@@ -50,6 +62,10 @@ const AppContent: React.FC = () => {
       switch (pluginMessage.type) {
         case 'get-options-success':
           updateOptions(pluginMessage)
+          break
+
+        case 'get-cache-success':
+          setCache(pluginMessage.keyValues)
           break
 
         case 'sync-failed':
@@ -69,6 +85,7 @@ const AppContent: React.FC = () => {
   useMount(() => {
     console.log('AppContent mounted')
     getOptions()
+    getCache()
     listenPluginMessage()
   })
 

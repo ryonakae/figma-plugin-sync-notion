@@ -7,6 +7,7 @@ type DocumentOptions = {
 type ClientStorageOptions = {
   valuePropertyName: string
   withHighlight: boolean
+  usingCache: boolean
 }
 
 type Options = DocumentOptions & ClientStorageOptions
@@ -41,6 +42,17 @@ type SyncSuccessMessage = {
 type SyncFailedMessage = {
   type: 'sync-failed'
 }
+type GetCacheMessage = {
+  type: 'get-cache'
+}
+type GetCacheSuccessMessage = {
+  type: 'get-cache-success'
+  keyValues: KeyValue[]
+}
+type SetCacheMessage = {
+  type: 'set-cache'
+  keyValues: KeyValue[]
+}
 
 type PluginMessage =
   | ClosePluginMessage
@@ -51,6 +63,9 @@ type PluginMessage =
   | SyncMessage
   | SyncSuccessMessage
   | SyncFailedMessage
+  | GetCacheMessage
+  | GetCacheSuccessMessage
+  | SetCacheMessage
 
 type PostMessage = {
   pluginMessage: PluginMessage
