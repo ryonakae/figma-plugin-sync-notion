@@ -26,7 +26,13 @@ const Input: React.FC<InputProps> = ({
   return (
     <VStack {...delegated}>
       <HStack justify="space-between">
-        <span>{title}</span>
+        <span
+          css={css`
+            color: ${color.subText};
+          `}
+        >
+          {title}
+        </span>
         {rightContent && rightContent}
       </HStack>
       <Spacer y={spacing[1]} />

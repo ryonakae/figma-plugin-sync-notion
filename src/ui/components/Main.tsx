@@ -9,7 +9,7 @@ import SegmentedControl from '@/ui/components/SegmentedControl'
 import Spacer from '@/ui/components/Spacer'
 import VStack from '@/ui/components/VStack'
 import fetchNotion from '@/ui/functions/fetchNotion'
-import { spacing } from '@/ui/styles'
+import { color, spacing } from '@/ui/styles'
 
 const Main: React.FC = () => {
   const {
@@ -19,6 +19,8 @@ const Main: React.FC = () => {
     keyPropertyName,
     valuePropertyName,
     withHighlight,
+    usingCache,
+    cache,
     syncing,
     setApiUrl,
     setIntegrationToken,
@@ -26,6 +28,8 @@ const Main: React.FC = () => {
     setKeyPropertyName,
     setValuePropertyName,
     setWithHighlight,
+    setUsingCache,
+    setCache: setCacheToStore,
     setSyncing
   } = Store.useContainer()
   const keyValuesRef = useRef<KeyValue[]>([])
@@ -42,12 +46,29 @@ const Main: React.FC = () => {
             databaseId: options.databaseId,
             keyPropertyName: options.keyPropertyName,
             valuePropertyName: options.valuePropertyName,
-            withHighlight: options.withHighlight
+            withHighlight: options.withHighlight,
+            usingCache: options.usingCache
           }
         }
       } as PostMessage,
       '*'
     )
+  }
+
+  function setCache(keyValues: KeyValue[]) {
+    // codeにkeyValuesを送信
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: 'set-cache',
+          keyValues
+        }
+      } as PostMessage,
+      '*'
+    )
+
+    // Storeにも保存
+    setCacheToStore(keyValues)
   }
 
   function onApiUrlChange(event: ChangeEvent<HTMLInputElement>) {
@@ -76,36 +97,46 @@ const Main: React.FC = () => {
     // ボタンをsync中にする
     setSyncing(true)
 
-    await fetchNotion({
-      apiUrl,
-      integrationToken,
-      databaseId,
-      keyPropertyName,
-      valuePropertyName,
-      keyValuesArray: keyValuesRef.current
-    }).catch((e: Error) => {
-      // エラートースト表示
-      parent.postMessage(
-        {
-          pluginMessage: {
-            type: 'notify',
-            message: e.message,
-            options: {
-              error: true
+    // usingCacheがtrueかつ、cacheが1つ以上あったらcacheを使う
+    // そうじゃなかったらfetchNotionを実行
+    if (usingCache && cache.length > 0) {
+      console.log('using cache, fetchNotion is skipped')
+      keyValuesRef.current = cache
+    } else {
+      await fetchNotion({
+        apiUrl,
+        integrationToken,
+        databaseId,
+        keyPropertyName,
+        valuePropertyName,
+        keyValuesArray: keyValuesRef.current
+      }).catch((e: Error) => {
+        // エラートースト表示
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: 'notify',
+              message: e.message,
+              options: {
+                error: true
+              }
             }
-          }
-        } as PostMessage,
-        '*'
-      )
+          } as PostMessage,
+          '*'
+        )
 
-      // 配列を空にしてクリーンアップ
-      keyValuesRef.current = []
+        // 配列を空にしてクリーンアップ
+        keyValuesRef.current = []
 
-      // ボタンを通常に戻す
-      setSyncing(false)
+        // ボタンを通常に戻す
+        setSyncing(false)
 
-      throw new Error(e.message)
-    })
+        throw new Error(e.message)
+      })
+
+      // 取得したkeyValueをclientStorageに保存しておく
+      setCache(keyValuesRef.current)
+    }
 
     // fetchNotionで取得したkeyValuesをCode側に送る
     parent.postMessage(
@@ -127,6 +158,10 @@ const Main: React.FC = () => {
     setWithHighlight(!withHighlight)
   }
 
+  function onUsingCacheClick() {
+    setUsingCache(!usingCache)
+  }
+
   useUpdateEffect(() => {
     // 設定値が変更されたら、debounceさせてから設定を保存
     clearTimeout(debounceTimer.current)
@@ -137,7 +172,8 @@ const Main: React.FC = () => {
         databaseId,
         keyPropertyName,
         valuePropertyName,
-        withHighlight
+        withHighlight,
+        usingCache
       })
     }, 300)
   }, [
@@ -146,7 +182,8 @@ const Main: React.FC = () => {
     databaseId,
     keyPropertyName,
     valuePropertyName,
-    withHighlight
+    withHighlight,
+    usingCache
   ])
 
   return (
@@ -210,6 +247,53 @@ const Main: React.FC = () => {
         onChange={onValuePropertyNameChange}
       />
 
+      <Spacer y={spacing[3]} />
+
+      <VStack>
+        <span
+          css={css`
+            color: ${color.subText};
+          `}
+        >
+          Options
+        </span>
+
+        <Spacer y={spacing[1]} />
+
+        <HStack justify="space-between">
+          <span
+            css={
+              cache.length === 0 &&
+              css`
+                color: ${color.disabled};
+              `
+            }
+          >
+            <span>Using Cache </span>
+            <span>
+              {cache.length > 0 ? (
+                <span>(Cached {cache.length} items)</span>
+              ) : (
+                <span>(No cache)</span>
+              )}
+            </span>
+          </span>
+          <SegmentedControl
+            state={usingCache}
+            onClick={onUsingCacheClick}
+            disabled={cache.length === 0}
+          />
+        </HStack>
+
+        <HStack justify="space-between">
+          <span>Overlay Highlight</span>
+          <SegmentedControl
+            state={withHighlight}
+            onClick={onSyncWithHighlightClick}
+          />
+        </HStack>
+      </VStack>
+
       <Spacer stretch={true} />
 
       <Button
@@ -226,17 +310,6 @@ const Main: React.FC = () => {
       >
         <span>{syncing ? 'Syncing...' : 'Sync Notion'}</span>
       </Button>
-
-      <Spacer y={spacing[2]} />
-
-      <HStack justify="space-between">
-        <span>Sync with Highlight</span>
-
-        <SegmentedControl
-          state={withHighlight}
-          onClick={onSyncWithHighlightClick}
-        />
-      </HStack>
     </VStack>
   )
 }
