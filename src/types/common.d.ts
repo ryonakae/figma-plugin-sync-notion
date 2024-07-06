@@ -1,10 +1,10 @@
-type DocumentOptions = {
+export type DocumentOptions = {
   apiUrl: string
   integrationToken: string
   databaseId: string
   keyPropertyName: string
 }
-type ClientStorageOptions = {
+export type ClientStorageOptions = {
   valuePropertyName: string
   withHighlight: boolean
   usingCache: boolean
