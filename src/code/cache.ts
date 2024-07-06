@@ -1,15 +1,24 @@
-import { CLIENT_STORAGE_CACHE_KEY_NAME } from '@/code/constants'
-
 export async function getCache(): Promise<KeyValue[]> {
-  // キャッシュをclientStorageから取得、KeyValue[]を返す
-  // 無かったら空配列を返す
-  const cache: KeyValue[] =
-    (await figma.clientStorage.getAsync(CLIENT_STORAGE_CACHE_KEY_NAME)) || []
+  console.log('getCache')
+
+  let cache: KeyValue[]
+
+  // キャッシュのデータをDodumentから取得
+  const data = figma.root.getPluginData('cache')
+  console.log('data', data)
+
+  // データがあったらパース、無かったら空配列を返す
+  if (data) {
+    cache = JSON.parse(data)
+  } else {
+    cache = []
+  }
+
   return cache
 }
 
 export async function setCache(keyValues: KeyValue[]) {
-  // キャッシュをclientStorageに保存
-  await figma.clientStorage.setAsync(CLIENT_STORAGE_CACHE_KEY_NAME, keyValues)
+  // キャッシュをDocumentに保存
+  figma.root.setPluginData('cache', JSON.stringify(keyValues))
   console.log('setCache success', keyValues)
 }
