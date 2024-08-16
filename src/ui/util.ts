@@ -1,5 +1,7 @@
+import type { NotionFomula, NotionRichText, NotionTitle } from '@/types/common'
+
 export function getPropertyValue(
-  property: NotionTitle | NotionFomula | NotionRichText
+  property: NotionTitle | NotionFomula | NotionRichText,
 ): string {
   let value: string
 

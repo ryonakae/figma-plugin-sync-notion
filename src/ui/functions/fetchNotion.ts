@@ -1,5 +1,7 @@
 import { getPropertyValue } from '@/ui/util'
 
+import type { KeyValue, NotionPage } from '@/types/common'
+
 type Options = {
   apiUrl: string
   integrationToken: string
@@ -18,14 +20,14 @@ export default async function fetchNotion(options: Options) {
     options.databaseId,
     options.keyPropertyName,
     options.valuePropertyName,
-    options.next_cursor
+    options.next_cursor,
   )
 
   // パラメータを定義
   // 引数next_cursorがある場合は、start_cursorを設定
   const reqParams = {
     page_size: 100,
-    start_cursor: options.next_cursor || undefined
+    start_cursor: options.next_cursor || undefined,
   }
 
   // データベースをfetchしてpageの配列を取得
@@ -36,10 +38,10 @@ export default async function fetchNotion(options: Options) {
       headers: {
         Authorization: `Bearer ${options.integrationToken}`,
         'Notion-Version': '2021-08-16',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(reqParams)
-    }
+      body: JSON.stringify(reqParams),
+    },
   ).catch(() => {
     throw new Error('Failed to fetch database.')
   })
@@ -94,7 +96,7 @@ export default async function fetchNotion(options: Options) {
     options.keyValuesArray.push({
       id: row.id,
       key,
-      value
+      value,
     })
   })
 

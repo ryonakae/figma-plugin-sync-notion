@@ -1,15 +1,13 @@
-import type { ClientStorageOptions, DocumentOptions } from '@/types/common'
+import type { Options } from '@/types/common'
 
 export const SETTINGS_KEY = 'sync-message-studio'
 
-export const DEFAULT_DOCUMENT_OPTIONS: DocumentOptions = {
+export const DEFAULT_OPTIONS: Options = {
+  selectedTab: '設定',
   apiUrl: '',
   integrationToken: '',
   databaseId: '',
   keyPropertyName: '',
-}
-
-export const DEFAULT_CLIENT_STORAGE_OPTIONS: ClientStorageOptions = {
   valuePropertyName: '',
   withHighlight: false,
   usingCache: false,
