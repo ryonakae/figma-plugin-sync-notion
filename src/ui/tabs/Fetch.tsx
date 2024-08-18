@@ -125,7 +125,7 @@ export default function Fetch() {
             !options.valuePropertyName
           }
         >
-          Fetche text from Notion
+          Fetch text from Notion
         </Button>
         <p className="text-secondary">
           Fetches text from a database in Notion. The data is cached in the
