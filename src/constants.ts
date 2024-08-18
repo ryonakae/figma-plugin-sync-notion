@@ -1,9 +1,12 @@
 import type { Options } from '@/types/common'
 
-export const SETTINGS_KEY = 'sync-message-studio'
+export const SETTINGS_KEY = 'sync-notion'
+
+export const DEFAULT_WIDTH = 400
 
 export const DEFAULT_OPTIONS: Options = {
-  selectedTab: '設定',
+  selectedTab: 'Fetch',
+  proxyUrl: '',
   apiUrl: '',
   integrationToken: '',
   databaseId: '',

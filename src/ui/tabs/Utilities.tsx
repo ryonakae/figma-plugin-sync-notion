@@ -8,25 +8,26 @@ import { useStore } from '@/ui/Store'
 import useOptions from '@/ui/hooks/useOptions'
 import useResizeWindow from '@/ui/hooks/useResizeWindow'
 
-export default function Settings() {
-  const options = useOptions()
+export default function Utilities() {
+  const options = useStore()
+  const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
 
   useMount(() => {
-    console.log('Settings mounted')
+    console.log('Utilities mounted')
 
-    window.requestAnimationFrame(resizeWindow)
+    window.requestAnimationFrame(() => resizeWindow())
   })
 
   useUnmount(() => {
-    console.log('Settings unmounted')
+    console.log('Utilities unmounted')
   })
 
   return (
     <Container space="medium">
       <VerticalSpace space="medium" />
 
-      <h1>Settings</h1>
+      <h1>Utilities</h1>
       <div>ほげほげ</div>
 
       <VerticalSpace space="medium" />

@@ -1,7 +1,8 @@
-export type SelectedTab = '設定'
+export type SelectedTab = 'Fetch' | 'List' | 'Utilities'
 
 export type Options = {
   selectedTab: SelectedTab
+  proxyUrl: string
   apiUrl: string
   integrationToken: string
   databaseId: string
