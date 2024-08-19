@@ -3,9 +3,14 @@ export default {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      fontSize: {
+        11: 'var(--font-size-11)',
+        12: 'var(--font-size-12)',
+      },
       textColor: {
         primary: 'var(--figma-color-text)',
         secondary: 'var(--figma-color-text-secondary)',
+        link: 'var(--figma-color-text-brand)',
       },
       backgroundColor: {
         secondary: 'var(--figma-color-bg-secondary)',
@@ -22,6 +27,10 @@ export default {
       },
       maxHeight: {
         500: '500px',
+      },
+      inset: {
+        '0_5': '2px',
+        '1_5': '6px',
       },
     },
   },
