@@ -1,57 +1,60 @@
 /** @jsx h */
-import { type JSX, h } from 'preact'
+import { Fragment, type JSX, h } from 'preact'
 import { useState } from 'preact/hooks'
 
+import { Divider, Textbox } from '@create-figma-plugin/ui'
 import {
-  Container,
-  Divider,
-  Link,
-  Textbox,
-  VerticalSpace,
-  useInitialFocus,
-} from '@create-figma-plugin/ui'
-import { useList, useMount, useUnmount, useUpdateEffect } from 'react-use'
+  useDebounce,
+  useList,
+  useMount,
+  useUnmount,
+  useUpdateEffect,
+} from 'react-use'
 
-import { useKeyValuesStore, useStore } from '@/ui/Store'
-import useOptions from '@/ui/hooks/useOptions'
+import { useKeyValuesStore } from '@/ui/Store'
 import useResizeWindow from '@/ui/hooks/useResizeWindow'
 
 import type { NotionKeyValue } from '@/types/common'
 import Row from '@/ui/components/Row'
 
 export default function List() {
-  const options = useStore()
   const { keyValues } = useKeyValuesStore()
-  const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
   const [rows, { filter, reset }] = useList<NotionKeyValue>(keyValues)
   const [filterString, setFilterString] = useState('')
-  const initialFocus = useInitialFocus()
 
-  function hundleFilterInput(event: JSX.TargetedEvent<HTMLInputElement>) {
+  // filterStringがアップデートされたらdebounceさせてから配列をフィルター
+  const [, cancel] = useDebounce(
+    () => {
+      console.log('debounced', filterString)
+
+      // リストをリセット
+      reset()
+
+      // filterStringがkeyもしくはvalue propertyを含んでいたらそれに絞り込む
+      filter(rows => {
+        const keyProperty = rows.key.toLowerCase()
+        const valueProperty = rows.value.toLowerCase()
+        return (
+          keyProperty.includes(filterString.toLowerCase()) ||
+          valueProperty.includes(filterString.toLowerCase())
+        )
+      })
+    },
+    100,
+    [filterString],
+  )
+
+  function handleFilterInput(event: JSX.TargetedEvent<HTMLInputElement>) {
     const inputValue = event.currentTarget.value
-    console.log('hundleFilterInput', inputValue)
+    console.log('handleFilterInput', inputValue)
 
     // stateを更新
     setFilterString(inputValue)
-
-    // いったんリストをリセット
-    reset()
-
-    // inputValueがkeyもしくはvalue propertyを含んでいたらそれに絞り込む
-    filter(rows => {
-      const keyProperty = rows.key.toLowerCase()
-      const valueProperty = rows.value.toLowerCase()
-      return (
-        keyProperty.includes(inputValue.toLowerCase()) ||
-        valueProperty.includes(inputValue.toLowerCase())
-      )
-    })
   }
 
-  function hundleClearClick() {
+  function handleClearClick() {
     setFilterString('')
-    reset()
   }
 
   useMount(() => {
@@ -69,45 +72,58 @@ export default function List() {
 
   return (
     <div>
-      {/* filter */}
-      <Container space="extraSmall">
-        <VerticalSpace space="extraSmall" />
-        <div className="flex gap-1">
-          <div className="flex-1">
-            <Textbox
-              {...initialFocus}
-              variant="border"
-              onInput={hundleFilterInput}
-              value={filterString}
-              placeholder="Filter key or value property"
-            />
+      {keyValues.length > 0 ? (
+        <Fragment>
+          {/* filter */}
+          <div className="p-2 flex gap-1">
+            <div className="flex-1">
+              <Textbox
+                variant="border"
+                onInput={handleFilterInput}
+                icon={
+                  <span className="material-symbols-outlined">filter_list</span>
+                }
+                value={filterString}
+                placeholder="Filter key or value property"
+              />
+            </div>
+
+            {/* clear button */}
+            {filterString.length > 0 && (
+              <button
+                type="button"
+                className="h-7 p-1 hover:bg-hover rounded-2 text-link"
+                onClick={handleClearClick}
+              >
+                Clear
+              </button>
+            )}
           </div>
 
-          {/* clear button */}
-          {filterString.length > 0 && (
-            <button
-              type="button"
-              className="h-7 p-1 hover:bg-hover rounded-2 text-link"
-              onClick={hundleClearClick}
-            >
-              Clear
-            </button>
+          <Divider />
+
+          {/* list */}
+          {rows.length > 0 ? (
+            <ul className="h-500 overflow-x-hidden overflow-y-auto">
+              {rows.map((row, index) => (
+                <Row key={row.id} keyValue={row} />
+              ))}
+            </ul>
+          ) : (
+            <div className="h-500 px-4 py-16 text-center">
+              <span className="text-secondary">No items.</span>
+            </div>
           )}
-        </div>
-        <VerticalSpace space="extraSmall" />
-      </Container>
 
-      <Divider />
+          <Divider />
 
-      {/* list */}
-      {rows.length > 0 ? (
-        <ul className="max-h-500 overflow-x-hidden overflow-y-auto">
-          {rows.map((row, index) => (
-            <Row key={row.id} keyValue={row} />
-          ))}
-        </ul>
+          {/* status */}
+          <div className="p-2">
+            <span className="text-secondary">{rows.length} items</span>
+          </div>
+        </Fragment>
       ) : (
-        <div className="px-4 py-20 text-center">
+        <div className="h-500 px-4 py-16 text-center">
           <span className="text-secondary">No items.</span>
         </div>
       )}

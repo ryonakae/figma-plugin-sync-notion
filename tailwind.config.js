@@ -13,7 +13,9 @@ export default {
         link: 'var(--figma-color-text-brand)',
       },
       backgroundColor: {
+        primary: 'var(--figma-color-bg)',
         secondary: 'var(--figma-color-bg-secondary)',
+        tertiary: 'var(--figma-color-bg-tertiary)',
         selected: 'var(--figma-color-bg-selected)',
         hover: 'var(--figma-color-bg-hover)',
       },
@@ -25,7 +27,7 @@ export default {
         2: 'var(--border-radius-2)',
         6: 'var(--border-radius-6)',
       },
-      maxHeight: {
+      height: {
         500: '500px',
       },
       inset: {

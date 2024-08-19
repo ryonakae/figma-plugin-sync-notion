@@ -30,7 +30,7 @@ export default function Fetch() {
   const { saveCacheToDocument } = useCache()
   const keyValuesRef = useRef<NotionKeyValue[]>([])
 
-  function hundleInput(key: keyof Options) {
+  function handleInput(key: keyof Options) {
     return (event: JSX.TargetedEvent<HTMLInputElement>) => {
       updateOptions({
         [key]: event.currentTarget.value,
@@ -40,6 +40,10 @@ export default function Fetch() {
 
   async function handleFetchClick() {
     updateOptions({ fetching: true })
+
+    emit<NotifyHandler>('NOTIFY', {
+      message: 'Please wait a moment.',
+    })
 
     // keyValuesRefをクリア
     keyValuesRef.current = []
@@ -71,6 +75,24 @@ export default function Fetch() {
     saveCacheToDocument(keyValuesRef.current)
 
     updateOptions({ fetching: false })
+
+    emit<NotifyHandler>('NOTIFY', {
+      message: 'Fetch finish.',
+    })
+  }
+
+  function handleClearClick() {
+    console.log('handleClearClick')
+
+    // keyValuesStoreに空配列を入れる
+    useKeyValuesStore.setState({ keyValues: [] })
+
+    // 空配列をドキュメントにキャッシュ
+    saveCacheToDocument([])
+
+    emit<NotifyHandler>('NOTIFY', {
+      message: 'Cache cleared.',
+    })
   }
 
   useMount(() => {
@@ -100,7 +122,7 @@ export default function Fetch() {
           </div>
           <Textbox
             variant="border"
-            onInput={hundleInput('proxyUrl')}
+            onInput={handleInput('proxyUrl')}
             value={options.proxyUrl}
             placeholder="https://reverse-proxy.yourname.workers.dev/"
             disabled={options.fetching}
@@ -111,7 +133,7 @@ export default function Fetch() {
           <div>Database ID</div>
           <Textbox
             variant="border"
-            onInput={hundleInput('databaseId')}
+            onInput={handleInput('databaseId')}
             value={options.databaseId}
             disabled={options.fetching}
           />
@@ -121,7 +143,7 @@ export default function Fetch() {
           <div>Integration token</div>
           <Textbox
             variant="border"
-            onInput={hundleInput('integrationToken')}
+            onInput={handleInput('integrationToken')}
             value={options.integrationToken}
             disabled={options.fetching}
           />
@@ -131,7 +153,7 @@ export default function Fetch() {
           <div>Key property name</div>
           <Textbox
             variant="border"
-            onInput={hundleInput('keyPropertyName')}
+            onInput={handleInput('keyPropertyName')}
             value={options.keyPropertyName}
             disabled={options.fetching}
           />
@@ -141,7 +163,7 @@ export default function Fetch() {
           <div>Value property name</div>
           <Textbox
             variant="border"
-            onInput={hundleInput('valuePropertyName')}
+            onInput={handleInput('valuePropertyName')}
             value={options.valuePropertyName}
             disabled={options.fetching}
           />
@@ -150,28 +172,34 @@ export default function Fetch() {
 
       <VerticalSpace space="medium" />
 
-      <div className="flex flex-col gap-1">
-        <Button
-          fullWidth
-          onClick={handleFetchClick}
-          disabled={
-            !options.proxyUrl ||
-            !options.databaseId ||
-            !options.integrationToken ||
-            !options.keyPropertyName ||
-            !options.valuePropertyName ||
-            options.fetching
-          }
-          loading={options.fetching}
-        >
-          Fetch text from Notion
+      <Stack space="small">
+        <div className="flex flex-col gap-1">
+          <Button
+            fullWidth
+            onClick={handleFetchClick}
+            disabled={
+              !options.proxyUrl ||
+              !options.databaseId ||
+              !options.integrationToken ||
+              !options.keyPropertyName ||
+              !options.valuePropertyName ||
+              options.fetching
+            }
+            loading={options.fetching}
+          >
+            Fetch text from Notion
+          </Button>
+          <p className="text-secondary">
+            Fetches text from a database in Notion. The data is cached in the
+            plugin and restored the next time it is launched. If you have
+            updated the Notion database, click this button again.
+          </p>
+        </div>
+
+        <Button secondary fullWidth onClick={handleClearClick}>
+          Clear cache
         </Button>
-        <p className="text-secondary">
-          Fetches text from a database in Notion. The data is cached in the
-          plugin and restored the next time it is launched. If you have updated
-          the Notion database, click this button again.
-        </p>
-      </div>
+      </Stack>
 
       <VerticalSpace space="medium" />
     </Container>
