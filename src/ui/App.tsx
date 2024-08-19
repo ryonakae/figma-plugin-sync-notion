@@ -73,7 +73,7 @@ export default function App() {
   }, [options])
 
   if (!mounted) {
-    return
+    return null
   }
 
   return (
