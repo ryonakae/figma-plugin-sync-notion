@@ -32,7 +32,7 @@ function CopyButton({ title, value, className }: CopyButtonProps) {
     <div className={className}>
       <button
         type="button"
-        className="bg-primary rounded-2 p-1 hover:bg-tertiary active:bg-primary"
+        className="bg-primary rounded-2 w-5 h-5 flex items-center justify-center hover:bg-tertiary active:bg-primary"
         onClick={handleClick}
       >
         <span className="material-symbols-outlined text-12 cursor-pointer">
