@@ -15,7 +15,8 @@ export default function useCache() {
       console.log('loadCacheFromDocument')
 
       once<LoadCacheFromMainHandler>('LOAD_CACHE_FROM_MAIN', keyValues => {
-        useKeyValuesStore.setState(keyValues)
+        console.log('cached keyValues', keyValues)
+        useKeyValuesStore.setState({ keyValues })
         resolve(keyValues)
       })
 

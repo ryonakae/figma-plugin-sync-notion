@@ -5,4 +5,8 @@ import type { NotionKeyValue, Options } from '@/types/common'
 
 export const useStore = create<Options>(set => DEFAULT_OPTIONS)
 
-export const useKeyValuesStore = create<NotionKeyValue[]>(set => [])
+export const useKeyValuesStore = create<{ keyValues: NotionKeyValue[] }>(
+  set => ({
+    keyValues: [],
+  }),
+)

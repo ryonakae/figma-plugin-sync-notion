@@ -37,7 +37,6 @@ export default async function () {
       DEFAULT_OPTIONS,
       SETTINGS_KEY,
     )
-    console.log('options', options)
     emit<LoadOptionsFromMainHandler>('LOAD_OPTIONS_FROM_MAIN', options)
   })
 
@@ -65,8 +64,6 @@ export default async function () {
     } else {
       cache = []
     }
-
-    console.log('cache', cache)
 
     // UIに送る
     emit<LoadCacheFromMainHandler>('LOAD_CACHE_FROM_MAIN', cache)

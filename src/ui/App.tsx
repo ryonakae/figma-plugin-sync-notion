@@ -1,5 +1,6 @@
 /** @jsx h */
 import { type JSX, h } from 'preact'
+import { useState } from 'preact/hooks'
 
 import { Tabs, type TabsOption } from '@create-figma-plugin/ui'
 import { useMount, useUnmount, useUpdateEffect } from 'react-use'
@@ -23,6 +24,7 @@ export default function App() {
   } = useOptions()
   const { resizeWindow } = useResizeWindow()
   const { loadCacheFromDocument } = useCache()
+  const [mounted, setMounted] = useState(false)
 
   const tabOptions: TabsOption[] = [
     {
@@ -45,14 +47,18 @@ export default function App() {
     })
   }
 
-  useMount(() => {
-    console.log('App mounted')
+  useMount(async () => {
+    console.log('App mounted start')
 
     // 設定をclientStorageから取得
-    loadOptionsFromClientStorage()
+    await loadOptionsFromClientStorage()
 
     // keyValuesのキャッシュをドキュメントから取得
-    loadCacheFromDocument()
+    await loadCacheFromDocument()
+
+    // マウント完了
+    console.log('App mounted done')
+    setMounted(true)
 
     resizeWindow({ delay: 100 })
   })
@@ -65,6 +71,10 @@ export default function App() {
   useUpdateEffect(() => {
     saveOptionsToClientStorage(options)
   }, [options])
+
+  if (!mounted) {
+    return
+  }
 
   return (
     <div id="wrapper">

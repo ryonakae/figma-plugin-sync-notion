@@ -65,7 +65,7 @@ export default function Fetch() {
     console.log('fetch done', keyValuesRef.current)
 
     // keyValuesをkeyValuesStoreに保存
-    useKeyValuesStore.setState(keyValuesRef.current)
+    useKeyValuesStore.setState({ keyValues: keyValuesRef.current })
 
     // keyValuesをドキュメントにキャッシュ
     saveCacheToDocument(keyValuesRef.current)
