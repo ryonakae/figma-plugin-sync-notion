@@ -13,7 +13,8 @@ import type { NotionKeyValue, Options } from '@/types/common'
 import type {
   LoadCacheFromMainHandler,
   LoadCacheFromUIHandler,
-  LoadOptionsHandler,
+  LoadOptionsFromMainHandler,
+  LoadOptionsFromUIHandler,
   NotifyHandler,
   ResizeWindowHandler,
   SaveCacheHandler,
@@ -30,14 +31,16 @@ export default async function () {
     height: 0,
   })
 
-  // clientStorageから設定をロードしてUIに送る
-  const options = await loadSettingsAsync<Options>(
-    DEFAULT_OPTIONS,
-    SETTINGS_KEY,
-  )
-  emit<LoadOptionsHandler>('LOAD_OPTIONS', options)
-
   // register event handlers
+  on<LoadOptionsFromUIHandler>('LOAD_OPTIONS_FROM_UI', async () => {
+    const options = await loadSettingsAsync<Options>(
+      DEFAULT_OPTIONS,
+      SETTINGS_KEY,
+    )
+    console.log('options', options)
+    emit<LoadOptionsFromMainHandler>('LOAD_OPTIONS_FROM_MAIN', options)
+  })
+
   on<SaveOptionsHandler>('SAVE_OPTIONS', async options => {
     await saveSettingsAsync<Options>(options, SETTINGS_KEY)
   })

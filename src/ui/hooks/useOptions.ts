@@ -1,17 +1,42 @@
-import { emit } from '@create-figma-plugin/utilities'
+import { emit, once } from '@create-figma-plugin/utilities'
 
 import { useStore } from '@/ui/Store'
 
 import type { Options } from '@/types/common'
-import type { SaveOptionsHandler } from '@/types/eventHandler'
+import type {
+  LoadOptionsFromMainHandler,
+  LoadOptionsFromUIHandler,
+  SaveOptionsHandler,
+} from '@/types/eventHandler'
 
-export default function useOptions() {
+export default function useOptions(isApp?: boolean) {
   function updateOptions(keyValue: { [T in keyof Options]?: Options[T] }) {
     console.log('updateOptions', {
       ...useStore.getState(),
       ...keyValue,
     })
+
+    // Storeを更新
     useStore.setState({ ...useStore.getState(), ...keyValue })
+  }
+
+  function loadOptionsFromClientStorage() {
+    return new Promise<Options>(resolve => {
+      console.log('loadOptionsFromClientStorage')
+
+      once<LoadOptionsFromMainHandler>(
+        'LOAD_OPTIONS_FROM_MAIN',
+        (options: Options) => {
+          updateOptions({
+            ...options,
+            fetching: false, // fetchingだけ絶対falseにする
+          })
+          resolve(options)
+        },
+      )
+
+      emit<LoadOptionsFromUIHandler>('LOAD_OPTIONS_FROM_UI')
+    })
   }
 
   function saveOptionsToClientStorage(options: Options) {
@@ -19,5 +44,9 @@ export default function useOptions() {
     emit<SaveOptionsHandler>('SAVE_OPTIONS', options)
   }
 
-  return { updateOptions, saveOptionsToClientStorage }
+  return {
+    updateOptions,
+    loadOptionsFromClientStorage,
+    saveOptionsToClientStorage,
+  }
 }

@@ -1,8 +1,13 @@
 import type { NotionKeyValue, Options } from '@/types/common'
 import type { EventHandler } from '@create-figma-plugin/utilities'
 
-interface LoadOptionsHandler extends EventHandler {
-  name: 'LOAD_OPTIONS'
+interface LoadOptionsFromUIHandler extends EventHandler {
+  name: 'LOAD_OPTIONS_FROM_UI'
+  handler: () => void
+}
+
+interface LoadOptionsFromMainHandler extends EventHandler {
+  name: 'LOAD_OPTIONS_FROM_MAIN'
   handler: (options: Options) => void
 }
 

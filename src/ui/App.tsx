@@ -2,7 +2,6 @@
 import { type JSX, h } from 'preact'
 
 import { Tabs, type TabsOption } from '@create-figma-plugin/ui'
-import { once } from '@create-figma-plugin/utilities'
 import { useMount, useUnmount, useUpdateEffect } from 'react-use'
 
 import { useStore } from '@/ui/Store'
@@ -13,12 +12,15 @@ import Fetch from '@/ui/tabs/Fetch'
 import List from '@/ui/tabs/List'
 import Utilities from '@/ui/tabs/Utilities'
 
-import type { Options, SelectedTab } from '@/types/common'
-import type { LoadOptionsHandler } from '@/types/eventHandler'
+import type { SelectedTab } from '@/types/common'
 
 export default function App() {
   const options = useStore()
-  const { updateOptions, saveOptionsToClientStorage } = useOptions()
+  const {
+    updateOptions,
+    loadOptionsFromClientStorage,
+    saveOptionsToClientStorage,
+  } = useOptions()
   const { resizeWindow } = useResizeWindow()
   const { loadCacheFromDocument } = useCache()
 
@@ -46,14 +48,8 @@ export default function App() {
   useMount(() => {
     console.log('App mounted')
 
-    // 設定をmainから受け取ってUIに反映
-    // fetchingだけ絶対falseにする
-    once<LoadOptionsHandler>('LOAD_OPTIONS', (options: Options) => {
-      updateOptions({
-        ...options,
-        fetching: false,
-      })
-    })
+    // 設定をclientStorageから取得
+    loadOptionsFromClientStorage()
 
     // keyValuesのキャッシュをドキュメントから取得
     loadCacheFromDocument()
@@ -65,7 +61,7 @@ export default function App() {
     console.log('App unmounted')
   })
 
-  // UI側で設定が更新されたら設定をclientStorageに保存
+  // UI側で設定が更新されたら設定をアップデート
   useUpdateEffect(() => {
     saveOptionsToClientStorage(options)
   }, [options])

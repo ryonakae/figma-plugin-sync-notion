@@ -13,7 +13,7 @@ import {
 import { emit } from '@create-figma-plugin/utilities'
 import { useMount, useUnmount } from 'react-use'
 
-import { useStore } from '@/ui/Store'
+import { useKeyValuesStore, useStore } from '@/ui/Store'
 import useCache from '@/ui/hooks/useCache'
 import useNotion from '@/ui/hooks/useNotion'
 import useOptions from '@/ui/hooks/useOptions'
@@ -63,6 +63,9 @@ export default function Fetch() {
     })
 
     console.log('fetch done', keyValuesRef.current)
+
+    // keyValuesをkeyValuesStoreに保存
+    useKeyValuesStore.setState(keyValuesRef.current)
 
     // keyValuesをドキュメントにキャッシュ
     saveCacheToDocument(keyValuesRef.current)
