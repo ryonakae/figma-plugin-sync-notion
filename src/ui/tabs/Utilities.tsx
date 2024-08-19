@@ -15,8 +15,7 @@ export default function Utilities() {
 
   useMount(() => {
     console.log('Utilities mounted')
-
-    window.requestAnimationFrame(() => resizeWindow())
+    resizeWindow()
   })
 
   useUnmount(() => {

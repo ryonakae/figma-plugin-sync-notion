@@ -15,8 +15,7 @@ export default function List() {
 
   useMount(() => {
     console.log('List mounted')
-
-    window.requestAnimationFrame(() => resizeWindow())
+    resizeWindow()
   })
 
   useUnmount(() => {

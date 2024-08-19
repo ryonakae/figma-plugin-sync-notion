@@ -3,13 +3,13 @@ export type SelectedTab = 'Fetch' | 'List' | 'Utilities'
 export type Options = {
   selectedTab: SelectedTab
   proxyUrl: string
-  apiUrl: string
   integrationToken: string
   databaseId: string
   keyPropertyName: string
   valuePropertyName: string
   withHighlight: boolean
   usingCache: boolean
+  fetching: boolean
 }
 
 export type NotionTitle = {
@@ -34,7 +34,7 @@ export type NotionPage = {
   }
 }
 
-export type KeyValue = {
+export type NotionKeyValue = {
   id: string
   key: string
   value: string

@@ -7,11 +7,11 @@ export const DEFAULT_WIDTH = 400
 export const DEFAULT_OPTIONS: Options = {
   selectedTab: 'Fetch',
   proxyUrl: '',
-  apiUrl: '',
   integrationToken: '',
   databaseId: '',
   keyPropertyName: '',
   valuePropertyName: '',
   withHighlight: false,
   usingCache: false,
+  fetching: false,
 }
