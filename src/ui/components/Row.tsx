@@ -51,7 +51,7 @@ export default function Row({ keyValue }: RowProps) {
         <div className="w-10 py-1 text-secondary">Key</div>
         <div className="flex-1 p-1 rounded-2 hover:bg-hover group">
           <div className="relative">
-            <span className="select-text">{keyValue.key}</span>
+            <span>{keyValue.key}</span>
             <CopyButton
               title="Key property"
               value={keyValue.key}
@@ -66,7 +66,7 @@ export default function Row({ keyValue }: RowProps) {
         <div className="w-10 py-1 text-secondary">Value</div>
         <div className="flex-1 p-1 rounded-2 hover:bg-hover group">
           <div className="relative">
-            <span className="select-text">{keyValue.value}</span>
+            <span>{keyValue.value}</span>
             <CopyButton
               title="Value property"
               value={keyValue.value}
