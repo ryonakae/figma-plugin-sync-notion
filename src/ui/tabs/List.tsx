@@ -5,9 +5,9 @@ import { useState } from 'preact/hooks'
 import {
   Container,
   Divider,
-  Text,
   Textbox,
   VerticalSpace,
+  useInitialFocus,
 } from '@create-figma-plugin/ui'
 import { useList, useMount, useUnmount, useUpdateEffect } from 'react-use'
 
@@ -22,9 +22,9 @@ export default function List() {
   const { keyValues } = useKeyValuesStore()
   const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
-  const [rows, { set, push, sort, filter, reset }] =
-    useList<NotionKeyValue>(keyValues)
+  const [rows, { filter, reset }] = useList<NotionKeyValue>(keyValues)
   const [filterString, setFilterString] = useState('')
+  const initialFocus = useInitialFocus()
 
   function hundleFilterInput(event: JSX.TargetedEvent<HTMLInputElement>) {
     const inputValue = event.currentTarget.value
@@ -47,6 +47,11 @@ export default function List() {
     })
   }
 
+  function hundleClearClick() {
+    setFilterString('')
+    reset()
+  }
+
   useMount(() => {
     console.log('List mounted', keyValues)
     resizeWindow()
@@ -61,23 +66,39 @@ export default function List() {
   }, [rows])
 
   return (
-    <div className="max-h-[500px] overflow-auto" style="max-height: 500px;">
+    <div>
       {/* filter */}
-      <Container space="medium">
-        <VerticalSpace space="small" />
-        <Textbox
-          variant="border"
-          onInput={hundleFilterInput}
-          value={filterString}
-          placeholder="Filter key or value property"
-        />
-        <VerticalSpace space="small" />
+      <Container space="extraSmall">
+        <VerticalSpace space="extraSmall" />
+        <div className="flex gap-1">
+          <div className="flex-1">
+            <Textbox
+              {...initialFocus}
+              variant="border"
+              onInput={hundleFilterInput}
+              value={filterString}
+              placeholder="Filter key or value property"
+            />
+          </div>
+
+          {/* clear button */}
+          {filterString.length > 0 && (
+            <button
+              type="button"
+              className="h-7 p-1 hover:bg-hover rounded-2"
+              onClick={hundleClearClick}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+        <VerticalSpace space="extraSmall" />
       </Container>
 
       <Divider />
 
       {/* list */}
-      <ul>
+      <ul className="max-h-500 overflow-auto">
         {rows.length > 0 ? (
           rows.map((row, index) => (
             <li key={row.id}>
@@ -87,11 +108,9 @@ export default function List() {
             </li>
           ))
         ) : (
-          <Container space="medium">
-            <VerticalSpace space="extraLarge" />
-            <Text align="center">No items are listed.</Text>
-            <VerticalSpace space="extraLarge" />
-          </Container>
+          <div className="px-4 py-20 text-center">
+            <span className="text-secondary">No items.</span>
+          </div>
         )}
       </ul>
     </div>
