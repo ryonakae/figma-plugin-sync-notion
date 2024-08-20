@@ -9,8 +9,10 @@ import {
 
 import { DEFAULT_OPTIONS, DEFAULT_WIDTH, SETTINGS_KEY } from '@/constants'
 
+import applyKeyValue from '@/main/applyKeyValue'
 import type { NotionKeyValue, Options } from '@/types/common'
 import type {
+  ApplyKeyValueHandler,
   LoadCacheFromMainHandler,
   LoadCacheFromUIHandler,
   LoadOptionsFromMainHandler,
@@ -73,5 +75,9 @@ export default async function () {
     // キャッシュをDocumentに保存
     figma.root.setPluginData('cache', JSON.stringify(keyValues))
     console.log('save cache success', keyValues)
+  })
+
+  on<ApplyKeyValueHandler>('APPLY_KEY_VALUE', keyValue => {
+    applyKeyValue(keyValue)
   })
 }
