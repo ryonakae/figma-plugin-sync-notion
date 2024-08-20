@@ -17,11 +17,12 @@ export default {
         secondary: 'var(--figma-color-bg-secondary)',
         tertiary: 'var(--figma-color-bg-tertiary)',
         selected: 'var(--figma-color-bg-selected)',
+        selectedSecondary: 'var(--figma-color-bg-selected-secondary)',
+        selectedTertiary: 'var(--figma-color-bg-selected-tertiary)',
         hover: 'var(--figma-color-bg-hover)',
       },
       borderColor: {
         primary: 'var(--figma-color-border)',
-        onselected: 'var(--figma-color-border-onselected)',
       },
       borderRadius: {
         2: 'var(--border-radius-2)',

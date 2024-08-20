@@ -7,7 +7,7 @@ import {
   showUI,
 } from '@create-figma-plugin/utilities'
 
-import { DEFAULT_OPTIONS, SETTINGS_KEY } from '@/constants'
+import { DEFAULT_OPTIONS, DEFAULT_WIDTH, SETTINGS_KEY } from '@/constants'
 
 import type { NotionKeyValue, Options } from '@/types/common'
 import type {
@@ -27,7 +27,7 @@ export default async function () {
 
   // show ui
   showUI({
-    width: 300,
+    width: DEFAULT_WIDTH,
     height: 0,
   })
 

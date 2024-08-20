@@ -8,7 +8,8 @@
     "rules": {
       "recommended": true,
       "a11y": {
-        "useValidAnchor": "warn"
+        "useValidAnchor": "warn",
+        "useKeyWithClickEvents": "warn"
       },
       "complexity": {
         "noForEach": "off"

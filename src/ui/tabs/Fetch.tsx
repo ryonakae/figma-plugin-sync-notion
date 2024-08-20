@@ -24,6 +24,7 @@ import type { NotifyHandler } from '@/types/eventHandler'
 
 export default function Fetch() {
   const options = useStore()
+  const { keyValues } = useKeyValuesStore()
   const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
   const { fetchNotion } = useNotion()
@@ -196,8 +197,13 @@ export default function Fetch() {
           </p>
         </div>
 
-        <Button secondary fullWidth onClick={handleClearClick}>
-          Clear cache
+        <Button
+          secondary
+          fullWidth
+          onClick={handleClearClick}
+          disabled={keyValues.length === 0}
+        >
+          Clear cache ({keyValues.length} items)
         </Button>
       </Stack>
 

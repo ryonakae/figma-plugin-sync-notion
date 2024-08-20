@@ -40,3 +40,8 @@ interface SaveCacheHandler extends EventHandler {
   name: 'SAVE_CACHE'
   handler: (keyValues: NotionKeyValue[]) => void
 }
+
+interface ApplyKeyValueHandler extends EventHandler {
+  name: 'APPLY_KEY_VALUE'
+  handler: (keyValue: NotionKeyValue) => void
+}
