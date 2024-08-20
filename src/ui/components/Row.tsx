@@ -12,6 +12,7 @@ import type { ApplyKeyValueHandler, NotifyHandler } from '@/types/eventHandler'
 type CopyButtonProps = {
   title: string
   value: string
+  selected: boolean
   className?: string
 }
 type RowProps = {
@@ -20,10 +21,13 @@ type RowProps = {
   selected: boolean
 }
 
-function CopyButton({ title, value, className }: CopyButtonProps) {
+function CopyButton({ title, value, selected, className }: CopyButtonProps) {
   const [state, copyToClipboard] = useCopyToClipboard()
 
-  function handleClick() {
+  function handleClick(event: JSX.TargetedMouseEvent<HTMLButtonElement>) {
+    // 親要素へのバブリングを止める
+    event.stopPropagation()
+
     copyToClipboard(value)
     console.log('copied', value)
 
@@ -36,7 +40,11 @@ function CopyButton({ title, value, className }: CopyButtonProps) {
     <div className={className}>
       <button
         type="button"
-        className="bg-primary rounded-2 w-5 h-5 flex items-center justify-center hover:bg-tertiary active:bg-primary"
+        className={clsx(
+          'bg-primary rounded-2 w-5 h-5 flex items-center justify-center hover:bg-tertiary active:bg-primary',
+          selected &&
+            'bg-selected hover:bg-selectedTertiary active:bg-selected',
+        )}
         onClick={handleClick}
       >
         <span className="icon text-12 cursor-pointer">content_copy</span>
@@ -46,7 +54,10 @@ function CopyButton({ title, value, className }: CopyButtonProps) {
 }
 
 export default function Row({ keyValue, onClick, selected }: RowProps) {
-  function handleApplyClick() {
+  function handleApplyClick(event: JSX.TargetedMouseEvent<HTMLButtonElement>) {
+    // 親要素へのバブリングを止める
+    event.stopPropagation()
+
     console.log('handleApplyClick', keyValue)
     emit<ApplyKeyValueHandler>('APPLY_KEY_VALUE', keyValue)
   }
@@ -73,6 +84,7 @@ export default function Row({ keyValue, onClick, selected }: RowProps) {
             <CopyButton
               title="Key property"
               value={keyValue.key}
+              selected={selected}
               className="absolute -right-0_5 -bottom-0_5 hidden group-hover:block"
             />
           </div>
@@ -93,6 +105,7 @@ export default function Row({ keyValue, onClick, selected }: RowProps) {
             <CopyButton
               title="Value property"
               value={keyValue.value}
+              selected={selected}
               className="absolute -right-0_5 -bottom-0_5 hidden group-hover:block"
             />
           </div>
