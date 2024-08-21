@@ -27,10 +27,7 @@ export default function useOptions(isApp?: boolean) {
       once<LoadOptionsFromMainHandler>(
         'LOAD_OPTIONS_FROM_MAIN',
         (options: Options) => {
-          updateOptions({
-            ...options,
-            fetching: false, // fetchingだけ絶対falseにする
-          })
+          updateOptions(options)
           resolve(options)
         },
       )

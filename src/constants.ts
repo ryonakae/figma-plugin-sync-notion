@@ -11,7 +11,7 @@ export const DEFAULT_OPTIONS: Options = {
   databaseId: '',
   keyPropertyName: '',
   valuePropertyName: '',
-  withHighlight: false,
-  usingCache: false,
-  fetching: false,
+  targetTextRange: 'selection',
+  includeComponents: true,
+  includeInstances: false,
 }

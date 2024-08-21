@@ -1,6 +1,6 @@
 /** @jsx h */
 import { type JSX, h } from 'preact'
-import { useRef } from 'preact/hooks'
+import { useRef, useState } from 'preact/hooks'
 
 import {
   Button,
@@ -29,6 +29,7 @@ export default function Fetch() {
   const { resizeWindow } = useResizeWindow()
   const { fetchNotion } = useNotion()
   const { saveCacheToDocument } = useCache()
+  const [fetching, setFetching] = useState(false)
   const keyValuesRef = useRef<NotionKeyValue[]>([])
 
   function handleInput(key: keyof Options) {
@@ -40,7 +41,7 @@ export default function Fetch() {
   }
 
   async function handleFetchClick() {
-    updateOptions({ fetching: true })
+    setFetching(true)
 
     emit<NotifyHandler>('NOTIFY', {
       message: 'Please wait a moment.',
@@ -63,7 +64,7 @@ export default function Fetch() {
           error: true,
         },
       })
-      updateOptions({ fetching: false })
+      setFetching(false)
       throw new Error(error.message)
     })
 
@@ -75,7 +76,7 @@ export default function Fetch() {
     // keyValuesをドキュメントにキャッシュ
     saveCacheToDocument(keyValuesRef.current)
 
-    updateOptions({ fetching: false })
+    setFetching(false)
 
     emit<NotifyHandler>('NOTIFY', {
       message: 'Fetch finish.',
@@ -126,7 +127,7 @@ export default function Fetch() {
             onInput={handleInput('proxyUrl')}
             value={options.proxyUrl}
             placeholder="https://reverse-proxy.yourname.workers.dev/"
-            disabled={options.fetching}
+            disabled={fetching}
           />
         </div>
 
@@ -136,7 +137,7 @@ export default function Fetch() {
             variant="border"
             onInput={handleInput('databaseId')}
             value={options.databaseId}
-            disabled={options.fetching}
+            disabled={fetching}
           />
         </div>
 
@@ -146,7 +147,7 @@ export default function Fetch() {
             variant="border"
             onInput={handleInput('integrationToken')}
             value={options.integrationToken}
-            disabled={options.fetching}
+            disabled={fetching}
           />
         </div>
 
@@ -156,7 +157,7 @@ export default function Fetch() {
             variant="border"
             onInput={handleInput('keyPropertyName')}
             value={options.keyPropertyName}
-            disabled={options.fetching}
+            disabled={fetching}
           />
         </div>
 
@@ -166,12 +167,12 @@ export default function Fetch() {
             variant="border"
             onInput={handleInput('valuePropertyName')}
             value={options.valuePropertyName}
-            disabled={options.fetching}
+            disabled={fetching}
           />
         </div>
       </Stack>
 
-      <VerticalSpace space="medium" />
+      <VerticalSpace space="large" />
 
       <Stack space="small">
         <div className="flex flex-col gap-1">
@@ -184,9 +185,9 @@ export default function Fetch() {
               !options.integrationToken ||
               !options.keyPropertyName ||
               !options.valuePropertyName ||
-              options.fetching
+              fetching
             }
-            loading={options.fetching}
+            loading={fetching}
           >
             Fetch text from Notion
           </Button>
@@ -198,6 +199,7 @@ export default function Fetch() {
         </div>
 
         <Button
+          danger
           secondary
           fullWidth
           onClick={handleClearClick}

@@ -146,7 +146,7 @@ export default function List() {
 
           {/* status bar */}
           <div className="p-2 flex justify-between text-secondary">
-            <span>Click row to apply key & value to text</span>
+            <span>Click row to apply key & value to text or copy</span>
             <span>{rows.length} items</span>
           </div>
         </Fragment>

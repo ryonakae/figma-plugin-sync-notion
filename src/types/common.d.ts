@@ -1,5 +1,7 @@
 export type SelectedTab = 'Fetch' | 'List' | 'Utilities'
 
+export type TargetTextRange = 'selection' | 'currentPage' | 'allPages'
+
 export type Options = {
   selectedTab: SelectedTab
   proxyUrl: string
@@ -7,9 +9,9 @@ export type Options = {
   databaseId: string
   keyPropertyName: string
   valuePropertyName: string
-  withHighlight: boolean
-  usingCache: boolean
-  fetching: boolean
+  targetTextRange: TargetTextRange
+  includeComponents: boolean
+  includeInstances: boolean
 }
 
 export type NotionTitle = {
