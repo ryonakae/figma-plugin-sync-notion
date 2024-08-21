@@ -12,16 +12,23 @@ import {
   Text,
   VerticalSpace,
 } from '@create-figma-plugin/ui'
+import { emit } from '@create-figma-plugin/utilities'
 import { useMount, useUnmount } from 'react-use'
 
-import { useStore } from '@/ui/Store'
+import { useKeyValuesStore, useStore } from '@/ui/Store'
 import useOptions from '@/ui/hooks/useOptions'
 import useResizeWindow from '@/ui/hooks/useResizeWindow'
 
 import type { TargetTextRange } from '@/types/common'
+import type {
+  ApplyValueHandler,
+  HighlightTextHandler,
+  RenameLayerHandler,
+} from '@/types/eventHandler'
 
 export default function Utilities() {
   const options = useStore()
+  const { keyValues } = useKeyValuesStore()
   const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
 
@@ -48,12 +55,44 @@ export default function Utilities() {
     })
   }
 
-  function handleRenameClick() {
-    console.log('handleRenameClick')
+  function handleCheckboxClick(
+    option: 'includeComponents' | 'includeInstances',
+  ) {
+    return (event: JSX.TargetedEvent<HTMLInputElement>) => {
+      console.log('handleCheckboxClick', option)
+
+      if (option === 'includeComponents') {
+        updateOptions({
+          includeComponents: event.currentTarget.checked,
+        })
+      } else if (option === 'includeInstances') {
+        updateOptions({
+          includeInstances: event.currentTarget.checked,
+        })
+      }
+    }
   }
 
-  function handleHighlightClick() {
-    console.log('handleHighlightClick')
+  function handleActionClick(
+    action: 'applyValue' | 'renameLayer' | 'highlightText',
+  ) {
+    return (event: JSX.TargetedEvent<HTMLButtonElement>) => {
+      console.log('handleActionClick', action)
+
+      const actionOptions = {
+        targetTextRange: options.targetTextRange,
+        includeComponents: options.includeComponents,
+        includeInstances: options.includeInstances,
+      }
+
+      if (action === 'applyValue') {
+        emit<ApplyValueHandler>('APPLY_VALUE', keyValues, actionOptions)
+      } else if (action === 'renameLayer') {
+        emit<RenameLayerHandler>('RENAME_LAYER', keyValues, actionOptions)
+      } else if (action === 'highlightText') {
+        emit<HighlightTextHandler>('HIGHLIGHT_TEXT', keyValues, actionOptions)
+      }
+    }
   }
 
   useMount(() => {
@@ -81,14 +120,14 @@ export default function Utilities() {
         </div>
 
         <Checkbox
-          // onChange={}
+          onChange={handleCheckboxClick('includeComponents')}
           value={options.includeComponents}
         >
           <Text>Include text in components</Text>
         </Checkbox>
 
         <Checkbox
-          // onChange={}
+          onChange={handleCheckboxClick('includeInstances')}
           value={options.includeInstances}
         >
           <Text>Include text in instances</Text>
@@ -99,10 +138,7 @@ export default function Utilities() {
 
       <Stack space="small">
         <div className="flex flex-col gap-1">
-          <Button
-            fullWidth
-            // onClick={}
-          >
+          <Button fullWidth onClick={handleActionClick('applyValue')}>
             Apply value to text content
           </Button>
           <p className="text-secondary">
@@ -113,7 +149,7 @@ export default function Utilities() {
         </div>
 
         <div className="flex flex-col gap-1">
-          <Button fullWidth onClick={handleRenameClick}>
+          <Button fullWidth onClick={handleActionClick('renameLayer')}>
             Rename layer from text content
           </Button>
           <p className="text-secondary">
@@ -124,7 +160,7 @@ export default function Utilities() {
         </div>
 
         <div className="flex flex-col gap-1">
-          <Button fullWidth onClick={handleHighlightClick}>
+          <Button fullWidth onClick={handleActionClick('highlightText')}>
             Highlight text layer
           </Button>
           <p className="text-secondary">

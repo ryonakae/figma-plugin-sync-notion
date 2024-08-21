@@ -13,11 +13,14 @@ import applyKeyValue from '@/main/applyKeyValue'
 import type { NotionKeyValue, Options } from '@/types/common'
 import type {
   ApplyKeyValueHandler,
+  ApplyValueHandler,
+  HighlightTextHandler,
   LoadCacheFromMainHandler,
   LoadCacheFromUIHandler,
   LoadOptionsFromMainHandler,
   LoadOptionsFromUIHandler,
   NotifyHandler,
+  RenameLayerHandler,
   ResizeWindowHandler,
   SaveCacheHandler,
   SaveOptionsHandler,
@@ -79,5 +82,17 @@ export default async function () {
 
   on<ApplyKeyValueHandler>('APPLY_KEY_VALUE', keyValue => {
     applyKeyValue(keyValue)
+  })
+
+  on<ApplyValueHandler>('APPLY_VALUE', (keyValues, options) => {
+    console.log('applyValue', keyValues, options)
+  })
+
+  on<RenameLayerHandler>('RENAME_LAYER', (keyValues, options) => {
+    console.log('renameLayer', keyValues, options)
+  })
+
+  on<HighlightTextHandler>('HIGHLIGHT_TEXT', (keyValues, options) => {
+    console.log('highlightText', keyValues, options)
   })
 }

@@ -1,4 +1,4 @@
-import type { NotionKeyValue, Options } from '@/types/common'
+import type { NotionKeyValue, Options, TargetTextRange } from '@/types/common'
 import type { EventHandler } from '@create-figma-plugin/utilities'
 
 interface LoadOptionsFromUIHandler extends EventHandler {
@@ -44,4 +44,40 @@ interface SaveCacheHandler extends EventHandler {
 interface ApplyKeyValueHandler extends EventHandler {
   name: 'APPLY_KEY_VALUE'
   handler: (keyValue: NotionKeyValue) => void
+}
+
+interface ApplyValueHandler extends EventHandler {
+  name: 'APPLY_VALUE'
+  handler: (
+    keyValues: NotionKeyValue[],
+    options: {
+      targetTextRange: TargetTextRange
+      includeComponents: boolean
+      includeInstances: boolean
+    },
+  ) => void
+}
+
+interface RenameLayerHandler extends EventHandler {
+  name: 'RENAME_LAYER'
+  handler: (
+    keyValues: NotionKeyValue[],
+    options: {
+      targetTextRange: TargetTextRange
+      includeComponents: boolean
+      includeInstances: boolean
+    },
+  ) => void
+}
+
+interface HighlightTextHandler extends EventHandler {
+  name: 'HIGHLIGHT_TEXT'
+  handler: (
+    keyValues: NotionKeyValue[],
+    options: {
+      targetTextRange: TargetTextRange
+      includeComponents: boolean
+      includeInstances: boolean
+    },
+  ) => void
 }

@@ -20,6 +20,7 @@
     "@create-figma-plugin/ui": "^3.2.0",
     "@create-figma-plugin/utilities": "^3.2.0",
     "clsx": "^2.1.1",
+    "lodash": "^4.17.21",
     "query-string": "^9.0.0",
     "react-use": "^17.5.0",
     "zustand": "^4.5.4"
@@ -29,7 +30,7 @@
     "@create-figma-plugin/build": "^3.2.0",
     "@create-figma-plugin/tsconfig": "^3.2.0",
     "@figma/plugin-typings": "1.97.0",
-    "@types/lodash": "^4.17.6",
+    "@types/lodash": "^4.17.7",
     "concurrently": "^8.2.2",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.7",

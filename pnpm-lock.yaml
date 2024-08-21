@@ -17,6 +17,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       query-string:
         specifier: ^9.0.0
         version: 9.1.0
@@ -40,7 +43,7 @@ importers:
         specifier: 1.97.0
         version: 1.97.0
       '@types/lodash':
-        specifier: ^4.17.6
+        specifier: ^4.17.7
         version: 4.17.7
       concurrently:
         specifier: ^8.2.2
