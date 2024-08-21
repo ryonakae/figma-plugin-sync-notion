@@ -1,12 +1,13 @@
 /** @jsx h */
 import { Fragment, type JSX, h } from 'preact'
-import { useCallback } from 'preact/hooks'
+import { useCallback, useRef } from 'preact/hooks'
 
 import { Button, Divider, Textbox } from '@create-figma-plugin/ui'
 import {
   useDebounce,
   useList,
   useMount,
+  useScroll,
   useUnmount,
   useUpdateEffect,
 } from 'react-use'
@@ -24,28 +25,8 @@ export default function List() {
   const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
   const [rows, { filter, reset }] = useList<NotionKeyValue>(keyValues)
-
-  // filterStringがアップデートされたらdebounceさせてから配列をフィルター
-  const [, cancel] = useDebounce(
-    () => {
-      console.log('debounced', options.filterString)
-
-      // リストをリセット
-      reset()
-
-      // filterStringがkeyもしくはvalue propertyを含んでいたらそれに絞り込む
-      filter(rows => {
-        const keyProperty = rows.key.toLowerCase()
-        const valueProperty = rows.value.toLowerCase()
-        return (
-          keyProperty.includes(options.filterString.toLowerCase()) ||
-          valueProperty.includes(options.filterString.toLowerCase())
-        )
-      })
-    },
-    100,
-    [options.filterString],
-  )
+  const listRef = useRef<HTMLUListElement>(null)
+  const { y: scrollPosition } = useScroll(listRef)
 
   function handleFilterInput(event: JSX.TargetedEvent<HTMLInputElement>) {
     const inputValue = event.currentTarget.value
@@ -76,12 +57,25 @@ export default function List() {
       } else {
         updateOptions({ selectedRowId: null })
       }
+
+      // スクロール位置もアップデート
+      updateOptions({ scrollPosition })
     },
     [options.selectedRowId],
   )
 
   useMount(() => {
     console.log('List mounted')
+
+    // スクロール位置を復元
+    console.log('restore scroll position', listRef, options.scrollPosition)
+    if (listRef.current) {
+      listRef.current.scrollTo({
+        top: options.scrollPosition,
+        behavior: 'instant',
+      })
+    }
+
     resizeWindow()
   })
 
@@ -89,9 +83,46 @@ export default function List() {
     console.log('List unmounted')
   })
 
+  // filterStringがアップデートされたらdebounceさせてから配列をフィルター
+  useDebounce(
+    () => {
+      console.log('filterString update (debounced)', options.filterString)
+
+      // リストをリセット
+      reset()
+
+      // filterStringがkeyもしくはvalue propertyを含んでいたらそれに絞り込む
+      filter(rows => {
+        const keyProperty = rows.key.toLowerCase()
+        const valueProperty = rows.value.toLowerCase()
+        return (
+          keyProperty.includes(options.filterString.toLowerCase()) ||
+          valueProperty.includes(options.filterString.toLowerCase())
+        )
+      })
+
+      // スクロール位置もアップデート
+      updateOptions({ scrollPosition })
+    },
+    100,
+    [options.filterString],
+  )
+
+  // リストのスクロール位置が更新されたらdebounceさせてからStoreに保存
+  useDebounce(
+    () => {
+      console.log('scrollPosition update (debounced)', scrollPosition)
+      updateOptions({ scrollPosition })
+    },
+    100,
+    [scrollPosition],
+  )
+
+  // listRefが変更されたらウインドウをリサイズ
   useUpdateEffect(() => {
-    resizeWindow()
-  }, [rows])
+    console.log('listRef.current update', listRef)
+    resizeWindow({ delay: 100 })
+  }, [listRef.current])
 
   return (
     <div>
@@ -125,7 +156,10 @@ export default function List() {
 
           {/* list */}
           {rows.length > 0 ? (
-            <ul className="h-500 overflow-x-hidden overflow-y-auto">
+            <ul
+              className="h-500 overflow-x-hidden overflow-y-auto"
+              ref={listRef}
+            >
               {rows.map((row, index) => (
                 <Row
                   key={row.id}
@@ -136,6 +170,7 @@ export default function List() {
               ))}
             </ul>
           ) : (
+            // empty
             <div className="h-500 flex flex-col items-center justify-center text-secondary">
               No items.
             </div>
@@ -153,6 +188,7 @@ export default function List() {
           </div>
         </Fragment>
       ) : (
+        // empty
         <div className="h-500 flex flex-col gap-4 items-center justify-center">
           <span className="text-secondary">No items.</span>
 

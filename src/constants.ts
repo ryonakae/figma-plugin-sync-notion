@@ -15,6 +15,7 @@ export const DEFAULT_OPTIONS: Options = {
   // list
   filterString: '',
   selectedRowId: null,
+  scrollPosition: 0,
   // utilities
   targetTextRange: 'selection',
   includeComponents: true,

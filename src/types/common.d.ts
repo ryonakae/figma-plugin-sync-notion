@@ -13,6 +13,7 @@ export type Options = {
   // list
   filterString: string
   selectedRowId: string | null
+  scrollPosition: number
   // utilities
   targetTextRange: TargetTextRange
   includeComponents: boolean
