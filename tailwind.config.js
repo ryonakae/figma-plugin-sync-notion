@@ -31,7 +31,7 @@ export default {
       height: {
         500: '500px',
       },
-      inset: {
+      spacing: {
         '0_5': '2px',
         '1_5': '6px',
       },

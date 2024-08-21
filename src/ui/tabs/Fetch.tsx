@@ -192,9 +192,9 @@ export default function Fetch() {
             Fetch text from Notion
           </Button>
           <p className="text-secondary">
-            Fetches text from a database in Notion. The data is cached in the
-            plugin and restored the next time it is launched. If you have
-            updated the Notion database, click this button again.
+            Fetches text from a database in Notion. The data is cached to this
+            document and restored at next time it is launched. If you have
+            updated Notion database, click this button again.
           </p>
         </div>
 

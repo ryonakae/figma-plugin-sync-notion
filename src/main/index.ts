@@ -8,8 +8,11 @@ import {
 } from '@create-figma-plugin/utilities'
 
 import { DEFAULT_OPTIONS, DEFAULT_WIDTH, SETTINGS_KEY } from '@/constants'
-
 import applyKeyValue from '@/main/applyKeyValue'
+import applyValue from '@/main/applyValue'
+import highlightText from '@/main/highlightText'
+import renameLayer from '@/main/renameLayer'
+
 import type { NotionKeyValue, Options } from '@/types/common'
 import type {
   ApplyKeyValueHandler,
@@ -85,14 +88,14 @@ export default async function () {
   })
 
   on<ApplyValueHandler>('APPLY_VALUE', (keyValues, options) => {
-    console.log('applyValue', keyValues, options)
+    applyValue(keyValues, options)
   })
 
   on<RenameLayerHandler>('RENAME_LAYER', (keyValues, options) => {
-    console.log('renameLayer', keyValues, options)
+    renameLayer(keyValues, options)
   })
 
   on<HighlightTextHandler>('HIGHLIGHT_TEXT', (keyValues, options) => {
-    console.log('highlightText', keyValues, options)
+    highlightText(keyValues, options)
   })
 }

@@ -83,7 +83,7 @@ export default function Row({ keyValue, onClick, selected }: RowProps) {
             <span>{keyValue.key}</span>
             <CopyButton
               title="Key property"
-              value={keyValue.key}
+              value={`#${keyValue.key}`}
               selected={selected}
               className="absolute -right-0_5 -bottom-0_5 hidden group-hover:block"
             />
@@ -113,12 +113,11 @@ export default function Row({ keyValue, onClick, selected }: RowProps) {
       </div>
 
       {selected && (
-        <Fragment>
-          <VerticalSpace space="extraSmall" />
+        <div className="mt-1">
           <Button secondary fullWidth onClick={handleApplyClick}>
             Apply key & value to selected text
           </Button>
-        </Fragment>
+        </div>
       )}
     </li>
   )

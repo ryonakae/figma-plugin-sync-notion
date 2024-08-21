@@ -1,6 +1,6 @@
 /** @jsx h */
 import { Fragment, type JSX, h } from 'preact'
-import { useCallback, useState } from 'preact/hooks'
+import { useCallback } from 'preact/hooks'
 
 import { Button, Divider, Textbox } from '@create-figma-plugin/ui'
 import {
@@ -11,7 +11,7 @@ import {
   useUpdateEffect,
 } from 'react-use'
 
-import { useKeyValuesStore } from '@/ui/Store'
+import { useKeyValuesStore, useStore } from '@/ui/Store'
 import useOptions from '@/ui/hooks/useOptions'
 import useResizeWindow from '@/ui/hooks/useResizeWindow'
 
@@ -19,17 +19,16 @@ import type { NotionKeyValue } from '@/types/common'
 import Row from '@/ui/components/Row'
 
 export default function List() {
+  const options = useStore()
   const { keyValues } = useKeyValuesStore()
   const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
   const [rows, { filter, reset }] = useList<NotionKeyValue>(keyValues)
-  const [filterString, setFilterString] = useState('')
-  const [selectedRowId, setSelectedRowId] = useState<string | null>(null)
 
   // filterStringがアップデートされたらdebounceさせてから配列をフィルター
   const [, cancel] = useDebounce(
     () => {
-      console.log('debounced', filterString)
+      console.log('debounced', options.filterString)
 
       // リストをリセット
       reset()
@@ -39,13 +38,13 @@ export default function List() {
         const keyProperty = rows.key.toLowerCase()
         const valueProperty = rows.value.toLowerCase()
         return (
-          keyProperty.includes(filterString.toLowerCase()) ||
-          valueProperty.includes(filterString.toLowerCase())
+          keyProperty.includes(options.filterString.toLowerCase()) ||
+          valueProperty.includes(options.filterString.toLowerCase())
         )
       })
     },
     100,
-    [filterString],
+    [options.filterString],
   )
 
   function handleFilterInput(event: JSX.TargetedEvent<HTMLInputElement>) {
@@ -53,12 +52,12 @@ export default function List() {
     console.log('handleFilterInput', inputValue)
 
     // stateを更新
-    setFilterString(inputValue)
+    updateOptions({ filterString: inputValue })
   }
 
   function handleClearClick() {
     console.log('handleClearClick')
-    setFilterString('')
+    updateOptions({ filterString: '' })
   }
 
   function handleFetchClick() {
@@ -68,17 +67,17 @@ export default function List() {
 
   const handleRowClick = useCallback(
     (id: string) => {
-      console.log('handleRowClick', id, selectedRowId)
+      console.log('handleRowClick', id, options.selectedRowId)
 
       // 選択されてなければ選択済みにする
       // すでに選択済みだったら選択解除
-      if (id !== selectedRowId) {
-        setSelectedRowId(id)
+      if (id !== options.selectedRowId) {
+        updateOptions({ selectedRowId: id })
       } else {
-        setSelectedRowId(null)
+        updateOptions({ selectedRowId: null })
       }
     },
-    [selectedRowId],
+    [options.selectedRowId],
   )
 
   useMount(() => {
@@ -105,13 +104,13 @@ export default function List() {
                 variant="border"
                 onInput={handleFilterInput}
                 icon={<span className="icon">filter_list</span>}
-                value={filterString}
+                value={options.filterString}
                 placeholder="Filter key or value property"
               />
             </div>
 
             {/* clear button */}
-            {filterString.length > 0 && (
+            {options.filterString.length > 0 && (
               <button
                 type="button"
                 className="h-7 p-1 hover:bg-hover rounded-2 text-link"
@@ -132,7 +131,7 @@ export default function List() {
                   key={row.id}
                   keyValue={row}
                   onClick={handleRowClick}
-                  selected={row.id === selectedRowId}
+                  selected={row.id === options.selectedRowId}
                 />
               ))}
             </ul>
@@ -146,7 +145,10 @@ export default function List() {
 
           {/* status bar */}
           <div className="p-2 flex justify-between text-secondary">
-            <span>Click row to apply key & value to text or copy</span>
+            <div className="flex gap-1">
+              <span className="icon">highlight_mouse_cursor</span>
+              <span>Click row to apply key & value to text or copy</span>
+            </div>
             <span>{rows.length} items</span>
           </div>
         </Fragment>

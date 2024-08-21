@@ -3,12 +3,17 @@ export type SelectedTab = 'Fetch' | 'List' | 'Utilities'
 export type TargetTextRange = 'selection' | 'currentPage' | 'allPages'
 
 export type Options = {
+  // fetch
   selectedTab: SelectedTab
   proxyUrl: string
   integrationToken: string
   databaseId: string
   keyPropertyName: string
   valuePropertyName: string
+  // list
+  filterString: string
+  selectedRowId: string | null
+  // utilities
   targetTextRange: TargetTextRange
   includeComponents: boolean
   includeInstances: boolean

@@ -142,9 +142,10 @@ export default function Utilities() {
             Apply value to text content
           </Button>
           <p className="text-secondary">
-            Rename layer to key property obtained from text content. It is
-            useful when text in Figma and Notion are the same, but renaming the
-            layers is cumbersome.
+            Apply value property to text content obtained from layer name
+            renamed to key property. You can pass parameters (e.g.,
+            #userInfo?name=John&age=24). If there are variables in Notion
+            database value, it will replace the text with that value in it.
           </p>
         </div>
 
@@ -153,9 +154,11 @@ export default function Utilities() {
             Rename layer from text content
           </Button>
           <p className="text-secondary">
-            Rename layer to key property obtained from text content. It is
-            useful when text in Figma and Notion are the same, but renaming the
-            layers is cumbersome.
+            Rename layer to key property obtained from text content. The text
+            content and the value property in Notion database must match
+            exactly. Parameters are not supported. <br />
+            It is useful when text in Figma and Notion are the same, but
+            renaming the layers is cumbersome.
           </p>
         </div>
 
@@ -165,9 +168,11 @@ export default function Utilities() {
           </Button>
           <p className="text-secondary">
             Highlight text layer that has correct layer name format (# + Key
-            property). Text is highlighted in blue if the key is correct and in
-            red if it's incorrect. It is useful to check that the layer names
-            are formatted correctly or that they have no typos.
+            property) and the key exists in Notion database. Text is highlighted
+            in blue if the key is correct and exists. Text is highlighted in red
+            if it's incorrect. <br />
+            It is useful to check that the layer names are formatted correctly
+            or that they have no typos.
           </p>
         </div>
       </Stack>

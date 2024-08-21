@@ -21,7 +21,7 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       query-string:
-        specifier: ^9.0.0
+        specifier: ^9.1.0
         version: 9.1.0
       react-use:
         specifier: ^17.5.0

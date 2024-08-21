@@ -21,7 +21,7 @@
     "@create-figma-plugin/utilities": "^3.2.0",
     "clsx": "^2.1.1",
     "lodash": "^4.17.21",
-    "query-string": "^9.0.0",
+    "query-string": "^9.1.0",
     "react-use": "^17.5.0",
     "zustand": "^4.5.4"
   },
@@ -41,12 +41,12 @@
   "figma-plugin": {
     "editorType": ["figma"],
     "id": "1116202373222780315",
-    "name": "Sync Notion",
+    "name": "Sync Text with Notion",
     "main": "src/main/index.ts",
     "ui": "src/ui/index.tsx",
     "relaunchButtons": {
       "open": {
-        "name": "Sync Notion",
+        "name": "Sync Text with Notion",
         "main": "src/main/index.ts",
         "ui": "src/ui/index.tsx"
       }

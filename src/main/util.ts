@@ -114,25 +114,25 @@ export async function getTextNodes(targetTextRange: TargetTextRange) {
 export function filterTextNodes(
   textNodes: TextNode[],
   options: {
-    isIncludeComponents: boolean
-    isIncludeInstances: boolean
+    includeComponents: boolean
+    includeInstances: boolean
   },
 ) {
   // 削除予定のtextNodeを格納する配列
   let textNodesToRemove: TextNode[] = []
 
-  // isIncludeComponentsがfalse
+  // includeComponentsがfalse
   // → コンポーネントまたはバリアントの子要素をtextNodesToRemoveに追加
-  if (!options.isIncludeComponents) {
+  if (!options.includeComponents) {
     textNodes.forEach(textNode => {
       console.log(
-        'Checking textNode (component/variant child):',
+        'Checking textNode is component/variant child:',
         textNode.characters,
       )
 
       if (getIsNodeParentComponentOrVariants(textNode)) {
         console.log(
-          'Removing textNode (component/variant child):',
+          'Removing textNode is component/variant child:',
           textNode.characters,
         )
         textNodesToRemove.push(textNode)
@@ -140,16 +140,16 @@ export function filterTextNodes(
     })
   }
 
-  // isIncludeInstances
+  // includeInstances
   // → インスタンスの子要素をtextNodesToRemoveに追加
-  if (!options.isIncludeInstances) {
+  if (!options.includeInstances) {
     console.log('textNodes', textNodes)
     textNodes.forEach(textNode => {
-      console.log('Checking textNode (instance child):', textNode.characters)
+      console.log('Checking textNode is instance child:', textNode.characters)
 
       const ancestorInstances = getAncestorInstances(textNode)
       if (ancestorInstances.length > 0) {
-        console.log('Removing textNode (instance child):', textNode.characters)
+        console.log('Removing textNode is instance child:', textNode.characters)
         textNodesToRemove.push(textNode)
       }
     })
