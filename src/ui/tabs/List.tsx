@@ -7,6 +7,7 @@ import {
   useDebounce,
   useList,
   useMount,
+  useMountedState,
   useScroll,
   useUnmount,
   useUpdateEffect,
@@ -27,6 +28,7 @@ export default function List() {
   const [rows, { filter, reset }] = useList<NotionKeyValue>(keyValues)
   const listRef = useRef<HTMLUListElement>(null)
   const { y: scrollPosition } = useScroll(listRef)
+  const isMounted = useMountedState()
 
   function handleFilterInput(event: JSX.TargetedEvent<HTMLInputElement>) {
     const inputValue = event.currentTarget.value
@@ -67,6 +69,8 @@ export default function List() {
   useMount(() => {
     console.log('List mounted')
 
+    resizeWindow()
+
     // スクロール位置を復元
     console.log('restore scroll position', listRef, options.scrollPosition)
     if (listRef.current) {
@@ -75,8 +79,6 @@ export default function List() {
         behavior: 'instant',
       })
     }
-
-    resizeWindow()
   })
 
   useUnmount(() => {
@@ -155,26 +157,28 @@ export default function List() {
           <Divider />
 
           {/* list */}
-          {rows.length > 0 ? (
-            <ul
-              className="h-500 overflow-x-hidden overflow-y-auto"
-              ref={listRef}
-            >
-              {rows.map((row, index) => (
-                <Row
-                  key={row.id}
-                  keyValue={row}
-                  onClick={handleRowClick}
-                  selected={row.id === options.selectedRowId}
-                />
-              ))}
-            </ul>
-          ) : (
-            // empty
-            <div className="h-500 flex flex-col items-center justify-center text-secondary">
-              No items.
-            </div>
-          )}
+          <div className="h-500">
+            {rows.length > 0 ? (
+              <ul
+                className="h-full overflow-x-hidden overflow-y-auto"
+                ref={listRef}
+              >
+                {rows.map((row, index) => (
+                  <Row
+                    key={row.id}
+                    keyValue={row}
+                    onClick={handleRowClick}
+                    selected={row.id === options.selectedRowId}
+                  />
+                ))}
+              </ul>
+            ) : (
+              // empty
+              <div className="h-full flex flex-col items-center justify-center text-secondary">
+                No items.
+              </div>
+            )}
+          </div>
 
           <Divider />
 

@@ -38,8 +38,9 @@ export default async function applyKeyValue(keyValue: NotionKeyValue) {
 
   // textNodeごとに処理を実行
   textNodes.forEach(textNode => {
-    // レイヤー名を# + keyPropertyにする
-    textNode.name = `#${keyValue.key}`
+    // レイヤー名をkeyPropertyにする
+    // UI側で`#${keyValue.key}?${queryString}`に加工したもの
+    textNode.name = keyValue.key
 
     // テキスト本文をvaluePropertyにする
     textNode.characters = keyValue.value

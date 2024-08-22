@@ -1,17 +1,20 @@
 /** @jsx h */
-import { Fragment, type JSX, h } from 'preact'
+import { type JSX, h } from 'preact'
 
-import { Button, VerticalSpace } from '@create-figma-plugin/ui'
+import { Button } from '@create-figma-plugin/ui'
 import { emit } from '@create-figma-plugin/utilities'
 import clsx from 'clsx'
 import { useCopyToClipboard } from 'react-use'
+
+import useNotionKeyValue from '@/ui/hooks/useNotionKeyValue'
 
 import type { NotionKeyValue } from '@/types/common'
 import type { ApplyKeyValueHandler, NotifyHandler } from '@/types/eventHandler'
 
 type CopyButtonProps = {
+  type: 'key' | 'value'
   title: string
-  value: string
+  keyValue: NotionKeyValue
   selected: boolean
   className?: string
 }
@@ -21,15 +24,33 @@ type RowProps = {
   selected: boolean
 }
 
-function CopyButton({ title, value, selected, className }: CopyButtonProps) {
+function CopyButton({
+  type,
+  title,
+  keyValue,
+  selected,
+  className,
+}: CopyButtonProps) {
   const [state, copyToClipboard] = useCopyToClipboard()
+  const { getKeyWithQueryStrings } = useNotionKeyValue()
 
   function handleClick(event: JSX.TargetedMouseEvent<HTMLButtonElement>) {
     // 親要素へのバブリングを止める
     event.stopPropagation()
 
-    copyToClipboard(value)
-    console.log('copied', value)
+    let copyValue = ''
+
+    // typeがkeyの場合
+    if (type === 'key') {
+      copyValue = getKeyWithQueryStrings(keyValue)
+    }
+    // typeがvalueの場合
+    else if (type === 'value') {
+      copyValue = keyValue.value
+    }
+
+    copyToClipboard(copyValue)
+    console.log('copied', copyValue)
 
     emit<NotifyHandler>('NOTIFY', {
       message: `Copied ${title} to clipboard.`,
@@ -54,12 +75,20 @@ function CopyButton({ title, value, selected, className }: CopyButtonProps) {
 }
 
 export default function Row({ keyValue, onClick, selected }: RowProps) {
+  const { getKeyWithQueryStrings } = useNotionKeyValue()
+
   function handleApplyClick(event: JSX.TargetedMouseEvent<HTMLButtonElement>) {
     // 親要素へのバブリングを止める
     event.stopPropagation()
 
-    console.log('handleApplyClick', keyValue)
-    emit<ApplyKeyValueHandler>('APPLY_KEY_VALUE', keyValue)
+    const applyKeyValue: NotionKeyValue = {
+      id: keyValue.id,
+      key: getKeyWithQueryStrings(keyValue),
+      value: keyValue.value,
+    }
+
+    console.log('handleApplyClick', applyKeyValue)
+    emit<ApplyKeyValueHandler>('APPLY_KEY_VALUE', applyKeyValue)
   }
 
   return (
@@ -82,8 +111,9 @@ export default function Row({ keyValue, onClick, selected }: RowProps) {
           <div className="relative">
             <span>{keyValue.key}</span>
             <CopyButton
+              type="key"
               title="Key property"
-              value={`#${keyValue.key}`}
+              keyValue={keyValue}
               selected={selected}
               className="absolute -right-0_5 -bottom-0_5 hidden group-hover:block"
             />
@@ -103,8 +133,9 @@ export default function Row({ keyValue, onClick, selected }: RowProps) {
           <div className="relative">
             <span>{keyValue.value}</span>
             <CopyButton
+              type="value"
               title="Value property"
-              value={keyValue.value}
+              keyValue={keyValue}
               selected={selected}
               className="absolute -right-0_5 -bottom-0_5 hidden group-hover:block"
             />
