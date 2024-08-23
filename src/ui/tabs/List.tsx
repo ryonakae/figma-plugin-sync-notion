@@ -1,14 +1,12 @@
 /** @jsx h */
 import { Fragment, type JSX, h } from 'preact'
-import { useCallback, useRef } from 'preact/hooks'
+import { useState } from 'preact/hooks'
 
 import { Button, Divider, Textbox } from '@create-figma-plugin/ui'
 import {
   useDebounce,
   useList,
   useMount,
-  useMountedState,
-  useScroll,
   useUnmount,
   useUpdateEffect,
 } from 'react-use'
@@ -18,7 +16,7 @@ import useOptions from '@/ui/hooks/useOptions'
 import useResizeWindow from '@/ui/hooks/useResizeWindow'
 
 import type { NotionKeyValue } from '@/types/common'
-import Row from '@/ui/components/Row'
+import KeyValueList from '@/ui/components/KeyValueList'
 
 export default function List() {
   const options = useStore()
@@ -26,9 +24,7 @@ export default function List() {
   const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
   const [rows, { filter, reset }] = useList<NotionKeyValue>(keyValues)
-  const listRef = useRef<HTMLUListElement>(null)
-  const { y: scrollPosition } = useScroll(listRef)
-  const isMounted = useMountedState()
+  const [windowResized, setWindowResized] = useState(false)
 
   function handleFilterInput(event: JSX.TargetedEvent<HTMLInputElement>) {
     const inputValue = event.currentTarget.value
@@ -48,37 +44,9 @@ export default function List() {
     updateOptions({ selectedTab: 'Fetch' })
   }
 
-  const handleRowClick = useCallback(
-    (id: string) => {
-      console.log('handleRowClick', id, options.selectedRowId)
-
-      // 選択されてなければ選択済みにする
-      // すでに選択済みだったら選択解除
-      if (id !== options.selectedRowId) {
-        updateOptions({ selectedRowId: id })
-      } else {
-        updateOptions({ selectedRowId: null })
-      }
-
-      // スクロール位置もアップデート
-      updateOptions({ scrollPosition })
-    },
-    [options.selectedRowId],
-  )
-
   useMount(() => {
     console.log('List mounted')
-
     resizeWindow()
-
-    // スクロール位置を復元
-    console.log('restore scroll position', listRef, options.scrollPosition)
-    if (listRef.current) {
-      listRef.current.scrollTo({
-        top: options.scrollPosition,
-        behavior: 'instant',
-      })
-    }
   })
 
   useUnmount(() => {
@@ -102,29 +70,18 @@ export default function List() {
           valueProperty.includes(options.filterString.toLowerCase())
         )
       })
-
-      // スクロール位置もアップデート
-      updateOptions({ scrollPosition })
     },
     100,
     [options.filterString],
   )
 
-  // リストのスクロール位置が更新されたらdebounceさせてからStoreに保存
-  useDebounce(
-    () => {
-      console.log('scrollPosition update (debounced)', scrollPosition)
-      updateOptions({ scrollPosition })
-    },
-    100,
-    [scrollPosition],
-  )
-
-  // listRefが変更されたらウインドウをリサイズ
+  // windowResizedがfalseのときだけrowsが変更されたらウインドウをリサイズ
   useUpdateEffect(() => {
-    console.log('listRef.current update', listRef)
-    resizeWindow({ delay: 100 })
-  }, [listRef.current])
+    if (!windowResized) {
+      resizeWindow({ delay: 100 })
+      setWindowResized(true)
+    }
+  }, [rows, windowResized])
 
   return (
     <div>
@@ -158,26 +115,7 @@ export default function List() {
 
           {/* list */}
           <div className="h-500">
-            {rows.length > 0 ? (
-              <ul
-                className="h-full overflow-x-hidden overflow-y-auto"
-                ref={listRef}
-              >
-                {rows.map((row, index) => (
-                  <Row
-                    key={row.id}
-                    keyValue={row}
-                    onClick={handleRowClick}
-                    selected={row.id === options.selectedRowId}
-                  />
-                ))}
-              </ul>
-            ) : (
-              // empty
-              <div className="h-full flex flex-col items-center justify-center text-secondary">
-                No items.
-              </div>
-            )}
+            <KeyValueList rows={rows} />
           </div>
 
           <Divider />
