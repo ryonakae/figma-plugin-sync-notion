@@ -60,7 +60,7 @@ export default function App() {
     console.log('App mounted done')
     setMounted(true)
 
-    resizeWindow({ delay: 100 })
+    resizeWindow()
   })
 
   useUnmount(() => {

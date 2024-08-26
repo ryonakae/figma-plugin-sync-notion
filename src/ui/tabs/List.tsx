@@ -1,6 +1,5 @@
 /** @jsx h */
 import { Fragment, type JSX, h } from 'preact'
-import { useState } from 'preact/hooks'
 
 import {
   Button,
@@ -9,13 +8,7 @@ import {
   type DropdownOption,
   Textbox,
 } from '@create-figma-plugin/ui'
-import {
-  useDebounce,
-  useList,
-  useMount,
-  useUnmount,
-  useUpdateEffect,
-} from 'react-use'
+import { useDebounce, useList, useMount, useUnmount } from 'react-use'
 
 import { useKeyValuesStore, useStore } from '@/ui/Store'
 import useOptions from '@/ui/hooks/useOptions'
@@ -30,7 +23,6 @@ export default function List() {
   const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
   const [rows, { filter, sort, reset }] = useList<NotionKeyValue>(keyValues)
-  const [windowResized, setWindowResized] = useState(false)
 
   const sortValueOptions: DropdownOption[] &
     {
@@ -166,14 +158,6 @@ export default function List() {
     [options.filterString, options.sortValue, options.sortOrder],
   )
 
-  // windowResizedがfalseのときだけrowsが変更されたらウインドウをリサイズ
-  useUpdateEffect(() => {
-    if (!windowResized) {
-      resizeWindow({ delay: 100 })
-      setWindowResized(true)
-    }
-  }, [rows, windowResized])
-
   return (
     <div>
       {keyValues.length > 0 ? (
@@ -228,14 +212,12 @@ export default function List() {
           <Divider />
 
           {/* list */}
-          <div className="h-500">
-            <KeyValueList rows={rows} />
-          </div>
+          <KeyValueList rows={rows} className="h-500" />
 
           <Divider />
 
           {/* status bar */}
-          <div className="p-2 flex justify-between text-secondary">
+          <div className="px-2 h-8 flex items-center justify-between text-secondary">
             <div className="flex gap-1">
               <span className="icon">highlight_mouse_cursor</span>
               <span>Click row to apply key & value to text or copy</span>

@@ -2,12 +2,14 @@
 import { h } from 'preact'
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
 
+import clsx from 'clsx'
+import { useDebounce, useMount, useUnmount, useUpdateEffect } from 'react-use'
+
 import { useStore } from '@/ui/Store'
 import KeyValueRow from '@/ui/components/KeyValueRow'
 import useOptions from '@/ui/hooks/useOptions'
 
 import type { NotionKeyValue } from '@/types/common'
-import { useDebounce, useMount, useUnmount, useUpdateEffect } from 'react-use'
 
 type KeyValueProps = {
   rows: NotionKeyValue[]
@@ -110,7 +112,7 @@ export default function KeyValueList({ rows, className }: KeyValueProps) {
   }, [rows])
 
   return (
-    <div className={className}>
+    <div className={clsx('relative', className)}>
       {rows.length > 0 ? (
         <ul className="h-full overflow-x-hidden overflow-y-auto" ref={listRef}>
           {rows.map((row, index) => (
@@ -126,6 +128,13 @@ export default function KeyValueList({ rows, className }: KeyValueProps) {
         // empty
         <div className="h-full flex flex-col items-center justify-center text-secondary">
           No items.
+        </div>
+      )}
+
+      {/* loading */}
+      {!scrollPositionRestored && (
+        <div className="absolute inset-0 bg-primary flex flex-col items-center justify-center text-secondary">
+          Loading...
         </div>
       )}
     </div>
