@@ -3,6 +3,9 @@ export default {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        icon: 'Material Symbols Outlined',
+      },
       fontSize: {
         11: 'var(--font-size-11)',
         12: 'var(--font-size-12)',
