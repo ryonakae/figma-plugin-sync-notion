@@ -78,8 +78,12 @@ export default async function () {
   })
 
   on<SaveCacheHandler>('SAVE_CACHE', keyValues => {
+    // まずすでにあるキャッシュを削除
+    figma.root.setPluginData('cache', '')
+
     // キャッシュをDocumentに保存
     figma.root.setPluginData('cache', JSON.stringify(keyValues))
+
     console.log('save cache success', keyValues)
   })
 

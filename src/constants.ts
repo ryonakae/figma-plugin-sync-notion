@@ -14,6 +14,8 @@ export const DEFAULT_OPTIONS: Options = {
   valuePropertyName: '',
   // list
   filterString: '',
+  sortValue: 'created_time',
+  sortOrder: 'descending',
   selectedRowId: null,
   scrollPosition: 0,
   // utilities

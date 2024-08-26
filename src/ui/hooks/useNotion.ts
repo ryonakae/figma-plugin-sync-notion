@@ -95,6 +95,9 @@ export default function useNotion() {
         id: row.id,
         key,
         value,
+        created_time: row.created_time,
+        last_edited_time: row.last_edited_time,
+        url: row.url,
       })
     })
 

@@ -1,7 +1,7 @@
 /** @jsx h */
 import { type JSX, h } from 'preact'
 
-import { Button } from '@create-figma-plugin/ui'
+import { Button, Link } from '@create-figma-plugin/ui'
 import { emit } from '@create-figma-plugin/utilities'
 import clsx from 'clsx'
 import { useCopyToClipboard } from 'react-use'
@@ -82,13 +82,20 @@ export default function Row({ keyValue, onClick, selected }: RowProps) {
     event.stopPropagation()
 
     const applyKeyValue: NotionKeyValue = {
-      id: keyValue.id,
+      ...keyValue,
       key: getKeyWithQueryStrings(keyValue),
-      value: keyValue.value,
     }
 
     console.log('handleApplyClick', applyKeyValue)
     emit<ApplyKeyValueHandler>('APPLY_KEY_VALUE', applyKeyValue)
+  }
+
+  function handleOpenClick(event: JSX.TargetedMouseEvent<HTMLButtonElement>) {
+    // 親要素へのバブリングを止める
+    event.stopPropagation()
+
+    // ブラウザでkeyValue.urlを開く
+    window.open(keyValue.url, '_blank', 'noopener, noreferrer')
   }
 
   return (
@@ -144,9 +151,12 @@ export default function Row({ keyValue, onClick, selected }: RowProps) {
       </div>
 
       {selected && (
-        <div className="mt-1">
+        <div className="mt-1 flex flex-col gap-1">
           <Button secondary fullWidth onClick={handleApplyClick}>
             Apply key & value to selected text
+          </Button>
+          <Button secondary fullWidth onClick={handleOpenClick}>
+            Open in browser
           </Button>
         </div>
       )}

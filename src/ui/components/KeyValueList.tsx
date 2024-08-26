@@ -59,7 +59,7 @@ export default function KeyValueList({ rows, className }: KeyValueProps) {
     }
   }, [rows])
 
-  // scrollPositionが更新されたらdebounceさせてからStoreに保存
+  // tmpScrollPositionが更新されたらdebounceさせてからStoreに保存
   // scrollPositionRestoredがtrueのときだけ
   useDebounce(
     () => {
