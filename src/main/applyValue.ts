@@ -1,9 +1,9 @@
+import { loadFontsAsync } from '@create-figma-plugin/utilities'
 import queryString, { type ParsedQuery } from 'query-string'
 
 import { filterTextNodes, getTextNodes } from '@/main/util'
 
 import type { NotionKeyValue, TargetTextRange } from '@/types/common'
-import { loadFontsAsync } from '@create-figma-plugin/utilities'
 
 export default async function applyValue(
   keyValues: NotionKeyValue[],
@@ -13,7 +13,7 @@ export default async function applyValue(
     includeInstances: boolean
   },
 ) {
-  console.log(applyValue, keyValues, options)
+  console.log('applyValue', keyValues, options)
 
   // textNodeを取得
   let textNodes = await getTextNodes(options.targetTextRange)

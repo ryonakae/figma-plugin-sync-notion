@@ -138,7 +138,11 @@ export default function Utilities() {
 
       <Stack space="small">
         <div className="flex flex-col gap-1">
-          <Button fullWidth onClick={handleActionClick('applyValue')}>
+          <Button
+            fullWidth
+            onClick={handleActionClick('applyValue')}
+            disabled={keyValues.length === 0}
+          >
             Apply value to text content
           </Button>
           <p className="text-secondary">
@@ -150,7 +154,11 @@ export default function Utilities() {
         </div>
 
         <div className="flex flex-col gap-1">
-          <Button fullWidth onClick={handleActionClick('renameLayer')}>
+          <Button
+            fullWidth
+            onClick={handleActionClick('renameLayer')}
+            disabled={keyValues.length === 0}
+          >
             Rename layer from text content
           </Button>
           <p className="text-secondary">
@@ -163,7 +171,11 @@ export default function Utilities() {
         </div>
 
         <div className="flex flex-col gap-1">
-          <Button fullWidth onClick={handleActionClick('highlightText')}>
+          <Button
+            fullWidth
+            onClick={handleActionClick('highlightText')}
+            disabled={keyValues.length === 0}
+          >
             Highlight text layer
           </Button>
           <p className="text-secondary">

@@ -8,5 +8,5 @@ export default async function highlightText(
     includeInstances: boolean
   },
 ) {
-  console.log(highlightText, keyValues, options)
+  console.log('highlightText', keyValues, options)
 }
