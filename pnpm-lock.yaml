@@ -20,6 +20,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      preact:
+        specifier: ^10.22.1
+        version: 10.23.2
       query-string:
         specifier: ^9.1.0
         version: 9.1.0
@@ -60,9 +63,6 @@ importers:
       lint-staged:
         specifier: ^15.2.7
         version: 15.2.9
-      preact:
-        specifier: ^10.22.1
-        version: 10.23.2
       tailwindcss:
         specifier: ^3.4.10
         version: 3.4.10
