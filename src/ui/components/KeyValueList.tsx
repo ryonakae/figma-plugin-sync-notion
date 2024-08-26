@@ -133,7 +133,7 @@ export default function KeyValueList({ rows, className }: KeyValueProps) {
 
       {/* loading */}
       {!scrollPositionRestored && (
-        <div className="absolute inset-0 bg-primary flex flex-col items-center justify-center text-secondary">
+        <div className="absolute inset-0 z-10 bg-primary flex flex-col items-center justify-center text-secondary">
           Loading...
         </div>
       )}
