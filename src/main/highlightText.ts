@@ -71,9 +71,7 @@ async function createHighlightRectOnPage(
 
         // keyValueオブジェクトが見つかったら、rectを青で塗りつぶす
         if (matchedKeyValue) {
-          rect.fills = [
-            { type: 'SOLID', color: { r: 0, g: 0, b: 1 }, opacity: 0.3 },
-          ]
+          rect.fills = [figma.util.solidPaint({ r: 0, g: 0, b: 1, a: 0.3 })]
           rect.name = `⭕️ ${textNode.name}`
           // correctRectNodes配列にrectを追加
           correctRectNodes.push(rect)
@@ -81,9 +79,7 @@ async function createHighlightRectOnPage(
         // keyValueオブジェクトが見つからない場合
         // （レイヤー名は#で始まっているがkeyが間違っている場合）は、rectを赤で塗りつぶす
         else {
-          rect.fills = [
-            { type: 'SOLID', color: { r: 1, g: 0, b: 0 }, opacity: 0.3 },
-          ]
+          rect.fills = [figma.util.solidPaint({ r: 1, g: 0, b: 0, a: 0.3 })]
           rect.name = `❌ ${textNode.name}`
           // incorrectRectNodes配列にrectを追加
           incorrectRectNodes.push(rect)
