@@ -4,14 +4,12 @@
   "license": "MIT",
   "author": "Ryo Nakae",
   "scripts": {
-    "build": "NODE_ENV=production npm run build:css && npm run build:js",
+    "build": "NODE_ENV=production concurrently -P 'npm:build:* -- {*}' -- --minify",
     "build:css": "tailwindcss --input ./src/ui/styles/input.css --output ./src/ui/styles/output.css",
-    "build:js": "build-figma-plugin --typecheck --minify",
+    "build:js": "build-figma-plugin --typecheck",
     "check": "biome check",
     "prepare": "husky || true",
-    "watch": "npm run build:css && concurrently npm:watch:css npm:watch:js",
-    "watch:css": "tailwindcss --input ./src/ui/styles/input.css --output ./src/ui/styles/output.css --watch",
-    "watch:js": "build-figma-plugin --typecheck --watch"
+    "watch": "npm run build:css && concurrently -P 'npm:build:* -- {*}' -- --watch"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,cjs,mjs,json}": ["biome check --apply"]

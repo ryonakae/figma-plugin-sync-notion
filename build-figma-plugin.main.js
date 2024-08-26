@@ -3,6 +3,7 @@ module.exports = buildOptions => {
 
   return {
     ...buildOptions,
+    minify: isProduction,
     drop: isProduction ? ['console', 'debugger'] : [],
   }
 }
