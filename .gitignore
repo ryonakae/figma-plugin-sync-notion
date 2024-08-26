@@ -7,3 +7,5 @@ node_modules/
 
 .yarn/
 src/ui/styles/output.css
+
+.env

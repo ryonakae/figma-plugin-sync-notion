@@ -4,7 +4,7 @@
   "license": "MIT",
   "author": "Ryo Nakae",
   "scripts": {
-    "build": "npm run build:css && npm run build:js",
+    "build": "NODE_ENV=production npm run build:css && npm run build:js",
     "build:css": "tailwindcss --input ./src/ui/styles/input.css --output ./src/ui/styles/output.css",
     "build:js": "build-figma-plugin --typecheck --minify",
     "check": "biome check",
@@ -31,7 +31,9 @@
     "@create-figma-plugin/tsconfig": "^3.2.0",
     "@figma/plugin-typings": "1.97.0",
     "@types/lodash": "^4.17.7",
+    "@types/node": "^22.5.0",
     "concurrently": "^8.2.2",
+    "dotenv": "^16.4.5",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.7",
     "preact": "^10.22.1",

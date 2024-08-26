@@ -51,7 +51,7 @@ export default function Fetch() {
     keyValuesRef.current = []
 
     await fetchNotion({
-      proxyUrl: options.proxyUrl,
+      proxyUrl: process.env.PROXY_URL as string,
       integrationToken: options.integrationToken,
       databaseId: options.databaseId,
       keyPropertyName: options.keyPropertyName,
@@ -112,26 +112,6 @@ export default function Fetch() {
 
       <Stack space="small">
         <div className="flex flex-col gap-1">
-          <div className="flex justify-between">
-            <div>Reverse proxy URL</div>
-            <Link
-              href="https://github.com/ryonakae/figma-plugin-sync-notion#%EF%B8%8F-create-a-reverse-proxy-to-avoid-cors-errors"
-              target="_blank"
-              rel="noreferrer"
-            >
-              More information
-            </Link>
-          </div>
-          <Textbox
-            variant="border"
-            onInput={handleInput('proxyUrl')}
-            value={options.proxyUrl}
-            placeholder="https://reverse-proxy.yourname.workers.dev/"
-            disabled={fetching}
-          />
-        </div>
-
-        <div className="flex flex-col gap-1">
           <div>Database ID</div>
           <Textbox
             variant="border"
@@ -180,7 +160,6 @@ export default function Fetch() {
             fullWidth
             onClick={handleFetchClick}
             disabled={
-              !options.proxyUrl ||
               !options.databaseId ||
               !options.integrationToken ||
               !options.keyPropertyName ||
