@@ -7,7 +7,12 @@ import {
   showUI,
 } from '@create-figma-plugin/utilities'
 
-import { DEFAULT_OPTIONS, DEFAULT_WIDTH, SETTINGS_KEY } from '@/constants'
+import {
+  CACHE_KEY,
+  DEFAULT_OPTIONS,
+  DEFAULT_WIDTH,
+  SETTINGS_KEY,
+} from '@/constants'
 import applyKeyValue from '@/main/applyKeyValue'
 import applyValue from '@/main/applyValue'
 import highlightText from '@/main/highlightText'
@@ -64,7 +69,7 @@ export default async function () {
     let cache: NotionKeyValue[]
 
     // キャッシュのデータをDodumentから取得
-    const data = figma.root.getPluginData('cache')
+    const data = figma.root.getPluginData(CACHE_KEY)
 
     // データがあったらパース、無かったら空配列を返す
     if (data) {
@@ -79,10 +84,10 @@ export default async function () {
 
   on<SaveCacheHandler>('SAVE_CACHE', keyValues => {
     // まずすでにあるキャッシュを削除
-    figma.root.setPluginData('cache', '')
+    figma.root.setPluginData(CACHE_KEY, '')
 
     // キャッシュをDocumentに保存
-    figma.root.setPluginData('cache', JSON.stringify(keyValues))
+    figma.root.setPluginData(CACHE_KEY, JSON.stringify(keyValues))
 
     console.log('save cache success', keyValues)
   })

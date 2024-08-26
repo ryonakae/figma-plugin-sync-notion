@@ -1,3 +1,4 @@
+import { GROUP_ID_KEY } from '@/constants'
 import { getTextNodes } from '@/main/util'
 
 import type { NotionKeyValue, TargetTextRange } from '@/types/common'
@@ -35,7 +36,7 @@ async function createHighlightRectOnPage(
   }
 
   // 以前生成したgroupを探して、削除
-  const generatedGroupId = pageNode.getPluginData('generatedGroupId')
+  const generatedGroupId = pageNode.getPluginData(GROUP_ID_KEY)
   const previousGeneratedGroup = pageNode.findOne(
     node => node.id === generatedGroupId,
   )
@@ -109,7 +110,7 @@ async function createHighlightRectOnPage(
     group.expanded = false
 
     // 生成したgroupのidをcurrentPageのgeneratedGroupIdに保存する
-    pageNode.setPluginData('generatedGroupId', group.id)
+    pageNode.setPluginData(GROUP_ID_KEY, group.id)
   }
 }
 
