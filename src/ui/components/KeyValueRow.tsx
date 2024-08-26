@@ -1,7 +1,7 @@
 /** @jsx h */
 import { type JSX, h } from 'preact'
 
-import { Button, Link } from '@create-figma-plugin/ui'
+import { Button } from '@create-figma-plugin/ui'
 import { emit } from '@create-figma-plugin/utilities'
 import clsx from 'clsx'
 import { useCopyToClipboard } from 'react-use'
@@ -74,7 +74,7 @@ function CopyButton({
   )
 }
 
-export default function Row({ keyValue, onClick, selected }: RowProps) {
+export default function KeyValueRow({ keyValue, onClick, selected }: RowProps) {
   const { getKeyWithQueryStrings } = useNotionKeyValue()
 
   function handleApplyClick(event: JSX.TargetedMouseEvent<HTMLButtonElement>) {

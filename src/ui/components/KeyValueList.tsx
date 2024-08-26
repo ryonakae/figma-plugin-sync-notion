@@ -3,7 +3,7 @@ import { h } from 'preact'
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
 
 import { useStore } from '@/ui/Store'
-import Row from '@/ui/components/Row'
+import KeyValueRow from '@/ui/components/KeyValueRow'
 import useOptions from '@/ui/hooks/useOptions'
 
 import type { NotionKeyValue } from '@/types/common'
@@ -44,21 +44,6 @@ export default function KeyValueList({ rows, className }: KeyValueProps) {
     }
   }, [])
 
-  // rowsが変更される度にイベントリスナを再設定
-  useEffect(() => {
-    const listElement = listRef.current
-
-    if (listElement) {
-      listElement.addEventListener('scroll', handleScroll)
-    }
-
-    return () => {
-      if (listElement) {
-        listElement.removeEventListener('scroll', handleScroll)
-      }
-    }
-  }, [rows])
-
   // tmpScrollPositionが更新されたらdebounceさせてからStoreに保存
   // scrollPositionRestoredがtrueのときだけ
   useDebounce(
@@ -80,25 +65,56 @@ export default function KeyValueList({ rows, className }: KeyValueProps) {
     console.log('KeyValueList unmounted')
   })
 
-  // scrollPositionRestoredがfalseのときだけrowが変更されたらスクロール位置を復元
+  // rowsが変更されたら
+  // スクロール位置が復元されていない→スクロール位置を復元
+  // スクロール位置が復元済み（フィルター or ソート時）→スクロール位置を0にする
   useUpdateEffect(() => {
-    if (!scrollPositionRestored && listRef.current) {
+    console.log(
+      'rows updated',
+      `scrollPositionRestored: ${scrollPositionRestored}`,
+    )
+
+    if (!listRef.current) {
+      return
+    }
+
+    if (!scrollPositionRestored) {
       console.log('restore scroll position', options.scrollPosition)
       listRef.current.scrollTo({
         top: options.scrollPosition,
-        behavior: 'instant',
       })
       setTmpScrollPosition(options.scrollPosition)
       setScrollPositionRestored(true)
+    } else {
+      console.log('reset scroll position to top')
+      listRef.current.scrollTo({
+        top: 0,
+      })
+      setTmpScrollPosition(0)
     }
-  }, [rows, scrollPositionRestored])
+  }, [rows])
+
+  // rowsが変更される度にイベントリスナを再設定
+  useUpdateEffect(() => {
+    const listElement = listRef.current
+
+    if (listElement) {
+      listElement.addEventListener('scroll', handleScroll)
+    }
+
+    return () => {
+      if (listElement) {
+        listElement.removeEventListener('scroll', handleScroll)
+      }
+    }
+  }, [rows])
 
   return (
     <div className={className}>
       {rows.length > 0 ? (
         <ul className="h-full overflow-x-hidden overflow-y-auto" ref={listRef}>
           {rows.map((row, index) => (
-            <Row
+            <KeyValueRow
               key={row.id}
               keyValue={row}
               onClick={handleRowClick}

@@ -1,6 +1,6 @@
 /** @jsx h */
 import { Fragment, type JSX, h } from 'preact'
-import { useEffect, useRef, useState } from 'preact/hooks'
+import { useState } from 'preact/hooks'
 
 import {
   Button,
@@ -21,12 +21,7 @@ import { useKeyValuesStore, useStore } from '@/ui/Store'
 import useOptions from '@/ui/hooks/useOptions'
 import useResizeWindow from '@/ui/hooks/useResizeWindow'
 
-import type {
-  NotionKeyValue,
-  Options,
-  SortOrder,
-  SortValue,
-} from '@/types/common'
+import type { NotionKeyValue, SortOrder, SortValue } from '@/types/common'
 import KeyValueList from '@/ui/components/KeyValueList'
 
 export default function List() {
@@ -162,7 +157,9 @@ export default function List() {
         options.sortValue,
         options.sortOrder,
       )
-      filterList(options.filterString)
+      if (options.filterString) {
+        filterList(options.filterString)
+      }
       sortList(options.sortValue, options.sortOrder)
     },
     100,
