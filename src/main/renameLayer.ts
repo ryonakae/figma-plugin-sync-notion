@@ -59,11 +59,13 @@ export default async function renameLayer(
   textNodes.forEach(textNode => {
     // keyValuesからvalueがtextNode.charactersと一致するものを探す
     const matchedKeyValue = valueKeyMap.get(textNode.characters)
-    console.log('matchedKeyValue', textNode.characters, matchedKeyValue)
 
     // matchedKeyValueがある場合、keyをtextNodeのレイヤー名にする
     if (matchedKeyValue) {
+      console.log('matchedKeyValue exist', textNode.characters, matchedKeyValue)
       textNode.name = `#${matchedKeyValue.key}`
+    } else {
+      console.log('no matchedKeyValue', textNode.characters)
     }
   })
 
