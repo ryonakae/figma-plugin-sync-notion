@@ -55,63 +55,8 @@ export function getAncestorInstances(node: SceneNode) {
   return instanceArray
 }
 
-// targetTextRangeに応じてtextNodeを取得する関数
-export async function getTextNodes(targetTextRange: TargetTextRange) {
-  // textNodeを格納する配列を用意
-  let textNodes: TextNode[] = []
-
-  if (targetTextRange === 'currentPage') {
-    // targetTextRangeに応じてtextNodeを検索、配列に追加
-    textNodes = figma.currentPage.findAllWithCriteria({ types: ['TEXT'] })
-  } else if (targetTextRange === 'allPages') {
-    // 各ページごとに処理を実行
-    for (const page of figma.root.children) {
-      // ページを読み込む
-      await page.loadAsync()
-
-      // ページは以下にあるすべてのテキストをtextNodesに追加
-      textNodes = [
-        ...textNodes,
-        ...page.findAllWithCriteria({ types: ['TEXT'] }),
-      ]
-    }
-  } else if (targetTextRange === 'selection') {
-    // 何も選択していない場合は処理を終了
-    if (figma.currentPage.selection.length === 0) {
-      figma.notify('1つ以上の要素を選択してください')
-      return textNodes
-    }
-
-    figma.currentPage.selection.forEach(node => {
-      // 要素がテキストの場合、textNodesに追加
-      if (node.type === 'TEXT') {
-        textNodes.push(node)
-      }
-
-      // 要素がグループ、フレーム、コンポーネント、インスタンスなら、要素内のすべてのテキストをtextNodesに追加
-      else if (
-        node.type === 'GROUP' ||
-        node.type === 'FRAME' ||
-        node.type === 'COMPONENT' ||
-        node.type === 'COMPONENT_SET' ||
-        node.type === 'INSTANCE'
-      ) {
-        textNodes = [
-          ...textNodes,
-          ...node.findAllWithCriteria({ types: ['TEXT'] }),
-        ]
-      }
-
-      // それ以外の場合は何もしない
-      // else {}
-    })
-  }
-
-  return textNodes
-}
-
 // textNodesをフィルタリングする関数
-export function filterTextNodes(
+function filterTextNodes(
   textNodes: TextNode[],
   options: {
     includeComponents: boolean
@@ -169,4 +114,73 @@ export function filterTextNodes(
 
   // filteredTextNodesを返す
   return filteredTextNodes
+}
+
+// targetTextRangeに応じてtextNodeを取得する関数
+export async function getTextNodes(options: {
+  targetTextRange: TargetTextRange
+  includeComponents: boolean
+  includeInstances: boolean
+}) {
+  console.log('getTextNodes', options.targetTextRange, options)
+
+  // textNodeを格納する配列を用意
+  let textNodes: TextNode[] = []
+
+  if (options.targetTextRange === 'currentPage') {
+    // targetTextRangeに応じてtextNodeを検索、配列に追加
+    textNodes = figma.currentPage.findAllWithCriteria({ types: ['TEXT'] })
+  } else if (options.targetTextRange === 'allPages') {
+    // 各ページごとに処理を実行
+    for (const page of figma.root.children) {
+      // ページを読み込む
+      await page.loadAsync()
+
+      // ページは以下にあるすべてのテキストをtextNodesに追加
+      textNodes = [
+        ...textNodes,
+        ...page.findAllWithCriteria({ types: ['TEXT'] }),
+      ]
+    }
+  } else if (options.targetTextRange === 'selection') {
+    // 何も選択していない場合は処理を終了
+    if (figma.currentPage.selection.length === 0) {
+      figma.notify('1つ以上の要素を選択してください')
+      return textNodes
+    }
+
+    figma.currentPage.selection.forEach(node => {
+      // 要素がテキストの場合、textNodesに追加
+      if (node.type === 'TEXT') {
+        textNodes.push(node)
+      }
+
+      // 要素がグループ、フレーム、コンポーネント、インスタンスなら、要素内のすべてのテキストをtextNodesに追加
+      else if (
+        node.type === 'GROUP' ||
+        node.type === 'FRAME' ||
+        node.type === 'COMPONENT' ||
+        node.type === 'COMPONENT_SET' ||
+        node.type === 'INSTANCE'
+      ) {
+        textNodes = [
+          ...textNodes,
+          ...node.findAllWithCriteria({ types: ['TEXT'] }),
+        ]
+      }
+
+      // それ以外の場合は何もしない
+      // else {}
+    })
+  }
+
+  // includeComponentsがfalse、またはincludeInstancesがfalseの場合、filterTextNodesを実行
+  if (!options.includeComponents || !options.includeInstances) {
+    textNodes = filterTextNodes(textNodes, {
+      includeComponents: options.includeComponents,
+      includeInstances: options.includeInstances,
+    })
+  }
+
+  return textNodes
 }

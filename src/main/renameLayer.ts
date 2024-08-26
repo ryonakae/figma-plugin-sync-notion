@@ -1,6 +1,6 @@
 import { loadFontsAsync } from '@create-figma-plugin/utilities'
 
-import { filterTextNodes, getTextNodes } from '@/main/util'
+import { getTextNodes } from '@/main/util'
 
 import type { NotionKeyValue, TargetTextRange } from '@/types/common'
 
@@ -15,19 +15,9 @@ export default async function renameLayer(
   console.log('renameLayer', keyValues, options)
 
   // textNodeを取得
-  let textNodes = await getTextNodes(options.targetTextRange)
+  const textNodes = await getTextNodes(options)
 
   console.log('textNodes', textNodes)
-
-  // includeComponentsがfalse、またはincludeInstancesがfalseの場合、filterTextNodesを実行
-  if (!options.includeComponents || !options.includeInstances) {
-    textNodes = filterTextNodes(textNodes, {
-      includeComponents: options.includeComponents,
-      includeInstances: options.includeInstances,
-    })
-  }
-
-  console.log('filterd textNodes', textNodes)
 
   // textNodeが1つもなかったら処理を終了
   if (textNodes.length === 0) {
