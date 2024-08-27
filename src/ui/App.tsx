@@ -35,19 +35,19 @@ export default function App() {
     }[] = [
     {
       children: <Fetch />,
-      value: t('tab.fetch'),
+      value: t('Tabs.fetch'),
     },
     {
       children: <List />,
-      value: t('tab.list'),
+      value: t('Tabs.list'),
     },
     {
       children: <Utilities />,
-      value: t('tab.utilities'),
+      value: t('Tabs.utilities'),
     },
     {
       children: <Settings />,
-      value: t('tab.settings'),
+      value: t('Tabs.settings'),
     },
   ]
 

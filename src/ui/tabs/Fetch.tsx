@@ -11,6 +11,7 @@ import {
   VerticalSpace,
 } from '@create-figma-plugin/ui'
 import { emit } from '@create-figma-plugin/utilities'
+import { useTranslation } from 'react-i18next'
 import { useMount, useUnmount } from 'react-use'
 
 import { useKeyValuesStore, useStore } from '@/ui/Store'
@@ -23,6 +24,7 @@ import type { NotionKeyValue, Options } from '@/types/common'
 import type { NotifyHandler } from '@/types/eventHandler'
 
 export default function Fetch() {
+  const { t } = useTranslation()
   const options = useStore()
   const { keyValues } = useKeyValuesStore()
   const { updateOptions } = useOptions()
@@ -44,7 +46,7 @@ export default function Fetch() {
     setFetching(true)
 
     emit<NotifyHandler>('NOTIFY', {
-      message: 'Please wait a moment.',
+      message: t('notifications.Fetch.loading'),
     })
 
     // keyValuesRefをクリア
@@ -79,7 +81,7 @@ export default function Fetch() {
     setFetching(false)
 
     emit<NotifyHandler>('NOTIFY', {
-      message: 'Fetch finish.',
+      message: t('notifications.Fetch.finish'),
     })
   }
 
@@ -93,7 +95,7 @@ export default function Fetch() {
     saveCacheToDocument([])
 
     emit<NotifyHandler>('NOTIFY', {
-      message: 'Cache cleared.',
+      message: t('notifications.Fetch.clearCache'),
     })
   }
 
@@ -112,7 +114,7 @@ export default function Fetch() {
 
       <Stack space="small">
         <div className="flex flex-col gap-1">
-          <div>Database ID</div>
+          <div>{t('Fetch.databaseId')}</div>
           <Textbox
             variant="border"
             onInput={handleInput('databaseId')}
@@ -122,7 +124,7 @@ export default function Fetch() {
         </div>
 
         <div className="flex flex-col gap-1">
-          <div>Integration token</div>
+          <div>{t('Fetch.integrationToken')}</div>
           <Textbox
             variant="border"
             onInput={handleInput('integrationToken')}
@@ -132,7 +134,7 @@ export default function Fetch() {
         </div>
 
         <div className="flex flex-col gap-1">
-          <div>Key property name</div>
+          <div>{t('Fetch.keyPropertyName')}</div>
           <Textbox
             variant="border"
             onInput={handleInput('keyPropertyName')}
@@ -142,7 +144,7 @@ export default function Fetch() {
         </div>
 
         <div className="flex flex-col gap-1">
-          <div>Value property name</div>
+          <div>{t('Fetch.valuePropertyName')}</div>
           <Textbox
             variant="border"
             onInput={handleInput('valuePropertyName')}
@@ -168,13 +170,9 @@ export default function Fetch() {
             }
             loading={fetching}
           >
-            Fetch text from Notion
+            {t('Fetch.fetchButton.label')}
           </Button>
-          <p className="text-secondary">
-            Fetches text from a database in Notion. The data is cached to this
-            document and restored at next time it is launched. If you have
-            updated Notion database, click this button again.
-          </p>
+          <p className="text-secondary">{t('Fetch.fetchButton.description')}</p>
         </div>
 
         <Button
@@ -184,7 +182,7 @@ export default function Fetch() {
           onClick={handleClearClick}
           disabled={keyValues.length === 0}
         >
-          Clear cache ({keyValues.length} items)
+          {t('Fetch.clearCacheButton', { length: keyValues.length })}
         </Button>
       </Stack>
 

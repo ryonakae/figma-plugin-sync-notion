@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 import type {
   NotionFomula,
   NotionKeyValue,
@@ -7,6 +9,8 @@ import type {
 } from '@/types/common'
 
 export default function useNotion() {
+  const { t } = useTranslation()
+
   async function fetchNotion(options: {
     proxyUrl: string
     integrationToken: string
@@ -41,7 +45,7 @@ export default function useNotion() {
         body: JSON.stringify(reqParams),
       },
     ).catch(() => {
-      throw new Error('Failed to fetch database.')
+      throw new Error(t('notifications.Fetch.error.failedFetch'))
     })
     const resJson = await res.json()
     console.log(resJson)
@@ -49,19 +53,19 @@ export default function useNotion() {
 
     if (!pages) {
       // pagesが無かったら処理中断
-      throw new Error('No pages in this database.')
+      throw new Error(t('notifications.Fetch.error.noPages'))
     }
 
     // pageごとに処理実行
     pages.forEach(row => {
       // keyPropertyNameと同じプロパティが無かったら処理中断
       if (!row.properties[options.keyPropertyName]) {
-        throw new Error('Key property name is wrong.')
+        throw new Error(t('notifications.Fetch.error.wrongKeyName'))
       }
 
       // valuePropertyNameと同じプロパティが無かったら処理中断
       if (!row.properties[options.valuePropertyName]) {
-        throw new Error('Value property name is wrong.')
+        throw new Error(t('notifications.Fetch.error.wrongValueName'))
       }
 
       // keyPropertyNameからpropertyを探す
@@ -72,7 +76,7 @@ export default function useNotion() {
         keyProperty.type !== 'rich_text' &&
         keyProperty.type !== 'formula'
       ) {
-        throw new Error('Key property type is wrong.')
+        throw new Error(t('notifications.Fetch.error.wrongKeyType'))
       }
       // propertyのtypeを判別してkeyを取得する
       const key = getPropertyValue(keyProperty)
@@ -85,7 +89,7 @@ export default function useNotion() {
         valueProperty.type !== 'rich_text' &&
         valueProperty.type !== 'formula'
       ) {
-        throw new Error('Value property type is wrong.')
+        throw new Error(t('notifications.Fetch.error.wrongValueType'))
       }
       // propertyのtypeを判別してvalueを取得する
       const value = getPropertyValue(valueProperty)

@@ -12,6 +12,7 @@ import {
   VerticalSpace,
 } from '@create-figma-plugin/ui'
 import { emit } from '@create-figma-plugin/utilities'
+import { useTranslation } from 'react-i18next'
 import { useMount, useUnmount } from 'react-use'
 
 import { useKeyValuesStore, useStore } from '@/ui/Store'
@@ -26,6 +27,7 @@ import type {
 } from '@/types/eventHandler'
 
 export default function Utilities() {
+  const { t } = useTranslation()
   const options = useStore()
   const { keyValues } = useKeyValuesStore()
   const { updateOptions } = useOptions()
@@ -36,15 +38,15 @@ export default function Utilities() {
       value?: TargetTextRange
     }[] = [
     {
-      text: 'Selection',
+      text: t('Utilities.targetTextRange.options.selection'),
       value: 'selection',
     },
     {
-      text: 'Current page',
+      text: t('Utilities.targetTextRange.options.currentPage'),
       value: 'currentPage',
     },
     {
-      text: 'All pages',
+      text: t('Utilities.targetTextRange.options.allPages'),
       value: 'allPages',
     },
   ]
@@ -112,7 +114,7 @@ export default function Utilities() {
 
       <Stack space="extraSmall">
         <div className="flex flex-col gap-1">
-          <span>Target text range</span>
+          <span>{t('Utilities.targetTextRange.label')}</span>
           <Dropdown
             onChange={handleTextRangeDropdownChange}
             options={targetTextRangeDropdownOptions}
@@ -125,14 +127,14 @@ export default function Utilities() {
           onChange={handleCheckboxClick('includeComponents')}
           value={options.includeComponents}
         >
-          <Text>Include text in components</Text>
+          <Text>{t('Utilities.includeComponents')}</Text>
         </Checkbox>
 
         <Checkbox
           onChange={handleCheckboxClick('includeInstances')}
           value={options.includeInstances}
         >
-          <Text>Include text in instances</Text>
+          <Text>{t('Utilities.includeInstances')}</Text>
         </Checkbox>
       </Stack>
 
@@ -145,13 +147,10 @@ export default function Utilities() {
             onClick={handleActionClick('applyValue')}
             disabled={keyValues.length === 0}
           >
-            Apply value to text content
+            {t('Utilities.applyValueButton.label')}
           </Button>
           <p className="text-secondary">
-            Apply value property to text content obtained from layer name
-            renamed to key property. You can pass parameters (e.g.,
-            #userInfo?name=John&age=24). If there are variables in Notion
-            database value, it will replace the text with that value in it.
+            {t('Utilities.applyValueButton.description')}
           </p>
         </div>
 
@@ -161,14 +160,10 @@ export default function Utilities() {
             onClick={handleActionClick('renameLayer')}
             disabled={keyValues.length === 0}
           >
-            Rename layer from text content
+            {t('Utilities.renameLayerButton.label')}
           </Button>
           <p className="text-secondary">
-            Rename layer to key property obtained from text content. The text
-            content and the value property in Notion database must match
-            exactly. Parameters are not supported. <br />
-            It is useful when text in Figma and Notion are the same, but
-            renaming the layers is cumbersome.
+            {t('Utilities.renameLayerButton.description')}
           </p>
         </div>
 
@@ -178,15 +173,10 @@ export default function Utilities() {
             onClick={handleActionClick('highlightText')}
             disabled={keyValues.length === 0}
           >
-            Highlight text layer
+            {t('Utilities.highlightTextButton.label')}
           </Button>
           <p className="text-secondary">
-            Highlight text layer that has correct layer name format (# + Key
-            property) and the key exists in Notion database. Text is highlighted
-            in blue if the key is correct and exists. Text is highlighted in red
-            if it's incorrect. <br />
-            It is useful to check that the layer names are formatted correctly
-            or that they have no typos.
+            {t('Utilities.highlightTextButton.description')}
           </p>
         </div>
       </Stack>

@@ -11,6 +11,7 @@ import {
   VerticalSpace,
 } from '@create-figma-plugin/ui'
 import { emit } from '@create-figma-plugin/utilities'
+import { useTranslation } from 'react-i18next'
 import { useMount, useUnmount } from 'react-use'
 
 import { useStore } from '@/ui/Store'
@@ -21,6 +22,7 @@ import type { PluginLanguage } from '@/types/common'
 import type { NotifyHandler } from '@/types/eventHandler'
 
 export default function Settings() {
+  const { t } = useTranslation()
   const options = useStore()
   const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
@@ -30,11 +32,11 @@ export default function Settings() {
       value?: PluginLanguage
     }[] = [
     {
-      text: 'English',
+      text: t('Settings.language.options.english'),
       value: 'en',
     },
     {
-      text: 'Japanese',
+      text: t('Settings.language.options.japanese'),
       value: 'ja',
     },
   ]
@@ -46,17 +48,17 @@ export default function Settings() {
       pluginLanguage: event.currentTarget.value as PluginLanguage,
     })
     emit<NotifyHandler>('NOTIFY', {
-      message: 'Language updated.',
+      message: t('notifications.Settings.updateLanguage'),
     })
   }
 
   useMount(() => {
-    console.log('Utilities mounted')
+    console.log('Settings mounted')
     resizeWindow()
   })
 
   useUnmount(() => {
-    console.log('Utilities unmounted')
+    console.log('Settings unmounted')
   })
 
   return (
@@ -64,7 +66,7 @@ export default function Settings() {
       <VerticalSpace space="medium" />
 
       <div className="flex flex-col gap-1">
-        <span>Language</span>
+        <span>{t('Settings.language.label')}</span>
         <Dropdown
           onChange={handleLanguageDropdownChange}
           options={languageDropdownOptions}
@@ -87,7 +89,7 @@ export default function Settings() {
             )
           }
         >
-          Plugin page
+          {t('Settings.buttons.pluginPage')}
         </Button>
 
         <Button
@@ -101,7 +103,7 @@ export default function Settings() {
             )
           }
         >
-          GitHub
+          {t('Settings.buttons.github')}
         </Button>
       </Stack>
 

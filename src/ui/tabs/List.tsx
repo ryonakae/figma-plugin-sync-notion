@@ -8,6 +8,7 @@ import {
   type DropdownOption,
   Textbox,
 } from '@create-figma-plugin/ui'
+import { useTranslation } from 'react-i18next'
 import { useDebounce, useList, useMount, useUnmount } from 'react-use'
 
 import { useKeyValuesStore, useStore } from '@/ui/Store'
@@ -18,6 +19,7 @@ import type { NotionKeyValue, SortOrder, SortValue } from '@/types/common'
 import KeyValueList from '@/ui/components/KeyValueList'
 
 export default function List() {
+  const { t } = useTranslation()
   const options = useStore()
   const { keyValues } = useKeyValuesStore()
   const { updateOptions } = useOptions()
@@ -29,19 +31,19 @@ export default function List() {
       value?: SortValue
     }[] = [
     {
-      text: 'Key',
+      text: t('List.sortValue.key'),
       value: 'key',
     },
     {
-      text: 'Value',
+      text: t('List.sortValue.value'),
       value: 'value',
     },
     {
-      text: 'Created (default)',
+      text: t('List.sortValue.created_time'),
       value: 'created_time',
     },
     {
-      text: 'Last edited',
+      text: t('List.sortValue.last_edited_time'),
       value: 'last_edited_time',
     },
   ]
@@ -50,11 +52,11 @@ export default function List() {
       value?: SortOrder
     }[] = [
     {
-      text: 'Ascending',
+      text: t('List.sortOrder.ascending'),
       value: 'ascending',
     },
     {
-      text: 'Descending (Default)',
+      text: t('List.sortOrder.descending'),
       value: 'descending',
     },
   ]
@@ -173,7 +175,7 @@ export default function List() {
                   variant="border"
                   onInput={handleFilterInput}
                   value={options.filterString}
-                  placeholder="Filter key or value property"
+                  placeholder={t('List.filter.placeholder')}
                 />
               </div>
 
@@ -184,7 +186,7 @@ export default function List() {
                   className="h-7 p-1 hover:bg-hover rounded-2 text-link"
                   onClick={handleClearClick}
                 >
-                  Clear
+                  {t('List.filter.clearButton')}
                 </button>
               )}
             </div>
@@ -220,18 +222,18 @@ export default function List() {
           <div className="px-2 h-8 flex items-center justify-between text-secondary">
             <div className="flex gap-1">
               <span className="icon">highlight_mouse_cursor</span>
-              <span>Click row to apply key & value to text or copy</span>
+              <span>{t('List.statusBar.text')}</span>
             </div>
-            <span>{rows.length} items</span>
+            <span>{t('List.statusBar.count', { length: rows.length })}</span>
           </div>
         </Fragment>
       ) : (
         // empty
         <div className="h-500 flex flex-col gap-4 items-center justify-center">
-          <span className="text-secondary">No items.</span>
+          <span className="text-secondary">{t('List.empty.text')}</span>
 
           <Button secondary onClick={handleFetchClick}>
-            Fetch text from Notion
+            {t('List.empty.fetchButton')}
           </Button>
         </div>
       )}
