@@ -1,111 +1,111 @@
 {
   "Tabs": {
-    "fetch": "Fetch",
-    "list": "List",
-    "utilities": "Utilities",
-    "settings": "Settings"
+    "fetch": "取得",
+    "list": "リスト",
+    "utilities": "ユーティリティ",
+    "settings": "設定"
   },
   "Fetch": {
-    "databaseId": "Database ID",
-    "integrationToken": "Integration token",
-    "keyPropertyName": "Key property name",
-    "valuePropertyName": "Value property name",
+    "databaseId": "データベースID",
+    "integrationToken": "インテグレーショントークン",
+    "keyPropertyName": "キープロパティ名",
+    "valuePropertyName": "バリュープロパティ名",
     "fetchButton": {
-      "label": "Fetch text from Notion",
-      "description": "Fetches text from a database in Notion. The data is cached to this document and restored at next time it is launched. If you have updated Notion database, click this button again."
+      "label": "Notionからテキストを取得",
+      "description": "Notionのデータベースからテキストを取得します。データはこのドキュメントにキャッシュされ、次回起動時に復元されます。Notionデータベースを更新した場合は、このボタンを再度クリックしてください。"
     },
-    "clearCacheButton": "Clear cache ({{length}} items)"
+    "clearCacheButton": "キャッシュをクリア（{{length}}項目）"
   },
   "List": {
     "filter": {
-      "placeholder": "Filter key or value property",
-      "clearButton": "Clear"
+      "placeholder": "キーまたはバリュープロパティでフィルター",
+      "clearButton": "クリア"
     },
     "sortValue": {
-      "key": "Key",
-      "value": "Value",
-      "created_time": "Created (default)",
-      "last_edited_time": "Last edited"
+      "key": "キー",
+      "value": "バリュー",
+      "created_time": "作成日時（デフォルト）",
+      "last_edited_time": "最終編集日時"
     },
     "sortOrder": {
-      "ascending": "Ascending",
-      "descending": "Descending (Default)"
+      "ascending": "昇順",
+      "descending": "降順（デフォルト）"
     },
     "statusBar": {
-      "text": "Click row to apply key & value to text or copy",
-      "count": "{{length}} items"
+      "text": "行をクリックしてテキストにキーとバリューを適用またはコピー",
+      "count": "{{length}}項目"
     },
     "empty": {
-      "text": "No items.",
-      "fetchButton": "Fetch text from Notion"
+      "text": "項目がありません。",
+      "fetchButton": "Notionからテキストを取得"
     }
   },
   "Utilities": {
     "targetTextRange": {
-      "label": "Target text range",
+      "label": "対象テキスト範囲",
       "options": {
-        "selection": "Selection",
-        "currentPage": "Current page",
-        "allPages": "All pages"
+        "selection": "選択範囲",
+        "currentPage": "現在のページ",
+        "allPages": "すべてのページ"
       }
     },
-    "includeComponents": "Include text in components",
-    "includeInstances": "Include text in instances",
+    "includeComponents": "コンポーネント内のテキストを含める",
+    "includeInstances": "インスタンス内のテキストを含める",
     "applyValueButton": {
-      "label": "Apply value to text content",
-      "description": "Apply value property to text content obtained from layer name renamed to key property. You can pass parameters (e.g., #userInfo?name=John&age=24). If there are variables in Notion database value, it will replace the text with that value in it."
+      "label": "テキスト内容にバリューを適用",
+      "description": "キープロパティにリネームされたレイヤー名から取得したテキスト内容にバリュープロパティを適用します。パラメータを渡すことができます（例：#userInfo?name=John&age=24）。Notionデータベースのバリューに変数がある場合、その値でテキストを置き換えます。"
     },
     "renameLayerButton": {
-      "label": "Rename layer from text content",
-      "description": "Rename layer to key property obtained from text content. The text content and the value property in Notion database must match exactly. Parameters are not supported. It is useful when text in Figma and Notion are the same, but renaming the layers is cumbersome."
+      "label": "テキスト内容からレイヤーをリネーム",
+      "description": "テキスト内容から取得したキープロパティにレイヤーをリネームします。テキスト内容とNotionデータベースのバリュープロパティが完全に一致する必要があります。パラメータはサポートされていません。FigmaとNotionのテキストが同じで、レイヤーのリネームが面倒な場合に便利です。"
     },
     "highlightTextButton": {
-      "label": "Highlight text layer",
-      "description": "Highlight text layer that has correct layer name format (# + Key property) and the key exists in Notion database. Text is highlighted in blue if the key is correct and exists. Text is highlighted in red if it's incorrect. It is useful to check that the layer names are formatted correctly or that they have no typos."
+      "label": "テキストレイヤーをハイライト",
+      "description": "正しいレイヤー名形式（# + キープロパティ）を持ち、キーがNotionデータベースに存在するテキストレイヤーをハイライトします。キーが正しく存在する場合、テキストは青色でハイライトされます。不正確な場合は赤色でハイライトされます。レイヤー名が正しくフォーマットされているか、タイプミスがないかを確認するのに便利です。"
     }
   },
   "Settings": {
     "language": {
-      "label": "Language",
+      "label": "言語",
       "options": {
-        "english": "English",
-        "japanese": "Japanese"
+        "english": "英語",
+        "japanese": "日本語"
       }
     },
     "buttons": {
-      "pluginPage": "Plugin page",
+      "pluginPage": "プラグインページ",
       "github": "GitHub"
     }
   },
   "KeyValueList": {
-    "empty": "No items.",
-    "loading": "Loading..."
+    "empty": "項目がありません。",
+    "loading": "読み込み中..."
   },
   "KeyValueRow": {
-    "key": "Key",
-    "value": "Value",
-    "applyKeyValueButton": "Apply key & value to selected text",
-    "openBrowserButton": "Open in browser"
+    "key": "キー",
+    "value": "バリュー",
+    "applyKeyValueButton": "選択したテキストにキーとバリューを適用",
+    "openBrowserButton": "ブラウザで開く"
   },
   "notifications": {
     "Fetch": {
-      "loading": "Please wait a moment.",
+      "loading": "しばらくお待ちください。",
       "error": {
-        "failedFetch": "Failed to fetch database.",
-        "noPages": "No pages in this database.",
-        "wrongKeyName": "Key property name is wrong.",
-        "wrongValueName": "Value property name is wrong.",
-        "wrongKeyType": "Key property type is wrong.",
-        "wrongValueType": "Value property type is wrong."
+        "failedFetch": "データベースの取得に失敗しました。",
+        "noPages": "このデータベースにページがありません。",
+        "wrongKeyName": "キープロパティ名が間違っています。",
+        "wrongValueName": "バリュープロパティ名が間違っています。",
+        "wrongKeyType": "キープロパティの型が間違っています。",
+        "wrongValueType": "バリュープロパティの型が間違っています。"
       },
-      "finish": "Fetch finish.",
-      "clearCache": "Cache cleared."
+      "finish": "取得が完了しました。",
+      "clearCache": "キャッシュがクリアされました。"
     },
     "Settings": {
-      "updateLanguage": "Language updated."
+      "updateLanguage": "言語が更新されました。"
     },
     "KeyValueRow": {
-      "copy": "Copied {{title}} to clipboard."
+      "copy": "{{title}}をクリップボードにコピーしました。"
     }
   }
 }

@@ -18,7 +18,7 @@ import Utilities from '@/ui/tabs/Utilities'
 import type { SelectedTab } from '@/types/common'
 
 export default function App() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const options = useStore()
   const {
     updateOptions,
@@ -81,6 +81,11 @@ export default function App() {
   useUpdateEffect(() => {
     saveOptionsToClientStorage(options)
   }, [options])
+
+  // options.pluginLanguageが変更されたら言語を切り替え
+  useUpdateEffect(() => {
+    i18n.changeLanguage(options.pluginLanguage)
+  }, [options.pluginLanguage])
 
   if (!mounted) {
     return null

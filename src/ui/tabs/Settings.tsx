@@ -6,7 +6,6 @@ import {
   Container,
   Dropdown,
   type DropdownOption,
-  Link,
   Stack,
   VerticalSpace,
 } from '@create-figma-plugin/ui'
@@ -22,7 +21,7 @@ import type { PluginLanguage } from '@/types/common'
 import type { NotifyHandler } from '@/types/eventHandler'
 
 export default function Settings() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const options = useStore()
   const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
@@ -44,9 +43,15 @@ export default function Settings() {
   function handleLanguageDropdownChange(
     event: JSX.TargetedEvent<HTMLInputElement>,
   ) {
+    const newLanguage = event.currentTarget.value as PluginLanguage
+
+    // options.pluginLanguageをアップデート
+    // i18n.changeLanguageはApp.tsxで実行
     updateOptions({
-      pluginLanguage: event.currentTarget.value as PluginLanguage,
+      pluginLanguage: newLanguage,
     })
+
+    // 完了通知
     emit<NotifyHandler>('NOTIFY', {
       message: t('notifications.Settings.updateLanguage'),
     })
