@@ -16,10 +16,9 @@ import Settings from '@/ui/tabs/Settings'
 import Utilities from '@/ui/tabs/Utilities'
 
 import type { SelectedTab } from '@/types/common'
-import i18n from '@/ui/i18n'
 
 export default function App() {
-  const { t, ready } = useTranslation()
+  const { t } = useTranslation()
   const options = useStore()
   const {
     updateOptions,
@@ -36,19 +35,19 @@ export default function App() {
     }[] = [
     {
       children: <Fetch />,
-      value: 'Fetch',
+      value: t('tab.fetch'),
     },
     {
       children: <List />,
-      value: 'List',
+      value: t('tab.list'),
     },
     {
       children: <Utilities />,
-      value: 'Utilities',
+      value: t('tab.utilities'),
     },
     {
       children: <Settings />,
-      value: 'Settings',
+      value: t('tab.settings'),
     },
   ]
 
@@ -94,10 +93,6 @@ export default function App() {
         onChange={handleTabChange}
         value={options.selectedTab}
       />
-      <div>{t('tab.fetch')}</div>
-      <div>{t('tab.list')}</div>
-      <div>{i18n.t('tab.settings')}</div>
-      <div>{ready ? 'loading' : 'ready'}</div>
     </div>
   )
 }
