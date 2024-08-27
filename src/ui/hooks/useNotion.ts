@@ -136,5 +136,5 @@ export default function useNotion() {
     return value
   }
 
-  return { fetchNotion, getPropertyValue }
+  return { fetchNotion }
 }

@@ -24,4 +24,6 @@ export const DEFAULT_OPTIONS: Options = {
   targetTextRange: 'selection',
   includeComponents: true,
   includeInstances: false,
+  // settings
+  pluginLanguage: 'en',
 }

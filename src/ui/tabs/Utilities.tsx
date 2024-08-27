@@ -5,7 +5,6 @@ import {
   Button,
   Checkbox,
   Container,
-  Divider,
   Dropdown,
   type DropdownOption,
   Stack,
@@ -32,18 +31,21 @@ export default function Utilities() {
   const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
 
-  const targetTextRangeDropdownOptions: DropdownOption[] = [
+  const targetTextRangeDropdownOptions: DropdownOption[] &
+    {
+      value?: TargetTextRange
+    }[] = [
     {
       text: 'Selection',
-      value: 'selection' as TargetTextRange,
+      value: 'selection',
     },
     {
       text: 'Current page',
-      value: 'currentPage' as TargetTextRange,
+      value: 'currentPage',
     },
     {
       text: 'All pages',
-      value: 'allPages' as TargetTextRange,
+      value: 'allPages',
     },
   ]
 
