@@ -1,4 +1,9 @@
-import type { NotionKeyValue, Options, TargetTextRange } from '@/types/common'
+import type {
+  NotionKeyValue,
+  Options,
+  PluginLanguage,
+  TargetTextRange,
+} from '@/types/common'
 import type { EventHandler } from '@create-figma-plugin/utilities'
 
 interface LoadOptionsFromUIHandler extends EventHandler {
@@ -80,4 +85,9 @@ interface HighlightTextHandler extends EventHandler {
       includeInstances: boolean
     },
   ) => void
+}
+
+interface ChangeLanguageHandler extends EventHandler {
+  name: 'CHANGE_LANGUAGE'
+  handler: (language: PluginLanguage) => void
 }

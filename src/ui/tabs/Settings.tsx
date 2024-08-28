@@ -21,7 +21,7 @@ import type { PluginLanguage } from '@/types/common'
 import type { NotifyHandler } from '@/types/eventHandler'
 
 export default function Settings() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const options = useStore()
   const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
@@ -40,15 +40,13 @@ export default function Settings() {
     },
   ]
 
-  function handleLanguageDropdownChange(
+  async function handleLanguageDropdownChange(
     event: JSX.TargetedEvent<HTMLInputElement>,
   ) {
-    const newLanguage = event.currentTarget.value as PluginLanguage
-
-    // options.pluginLanguageをアップデート
-    // i18n.changeLanguageはApp.tsxで実行
+    // pluginLanguageをアップデート
+    // 言語切替はApp.tsxでやる
     updateOptions({
-      pluginLanguage: newLanguage,
+      pluginLanguage: event.currentTarget.value as PluginLanguage,
     })
 
     // 完了通知

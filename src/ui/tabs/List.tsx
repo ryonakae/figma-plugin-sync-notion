@@ -130,7 +130,7 @@ export default function List() {
 
   function handleFetchClick() {
     console.log('handleFetchClick')
-    updateOptions({ selectedTab: 'Fetch' })
+    updateOptions({ selectedTabKey: 'fetch' })
   }
 
   useMount(() => {

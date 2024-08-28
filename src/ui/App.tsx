@@ -3,6 +3,7 @@ import { type JSX, h } from 'preact'
 import { useState } from 'preact/hooks'
 
 import { Tabs, type TabsOption } from '@create-figma-plugin/ui'
+import { emit } from '@create-figma-plugin/utilities'
 import { useTranslation } from 'react-i18next'
 import { useMount, useUnmount, useUpdateEffect } from 'react-use'
 
@@ -15,7 +16,8 @@ import List from '@/ui/tabs/List'
 import Settings from '@/ui/tabs/Settings'
 import Utilities from '@/ui/tabs/Utilities'
 
-import type { SelectedTab } from '@/types/common'
+import type { SelectedTabKey, SelectedTabValue } from '@/types/common'
+import type { ChangeLanguageHandler } from '@/types/eventHandler'
 
 export default function App() {
   const { t, i18n } = useTranslation()
@@ -28,10 +30,12 @@ export default function App() {
   const { resizeWindow } = useResizeWindow()
   const { loadCacheFromDocument } = useCache()
   const [mounted, setMounted] = useState(false)
+  const [selectedTabValue, setSelectedTabValue] =
+    useState<SelectedTabValue>('Fetch')
 
   const tabOptions: TabsOption[] &
     {
-      value: SelectedTab
+      value: SelectedTabValue
     }[] = [
     {
       children: <Fetch />,
@@ -52,8 +56,21 @@ export default function App() {
   ]
 
   function handleTabChange(event: JSX.TargetedEvent<HTMLInputElement>) {
+    const newTabValue = event.currentTarget.value as SelectedTabValue
+    let newTabKey: SelectedTabKey = 'fetch'
+
+    if (newTabValue === t('Tabs.fetch')) {
+      newTabKey = 'fetch'
+    } else if (newTabValue === t('Tabs.list')) {
+      newTabKey = 'list'
+    } else if (newTabValue === t('Tabs.utilities')) {
+      newTabKey = 'utilities'
+    } else if (newTabValue === t('Tabs.settings')) {
+      newTabKey = 'settings'
+    }
+
     updateOptions({
-      selectedTab: event.currentTarget.value as SelectedTab,
+      selectedTabKey: newTabKey,
     })
   }
 
@@ -82,9 +99,25 @@ export default function App() {
     saveOptionsToClientStorage(options)
   }, [options])
 
-  // options.pluginLanguageが変更されたら言語を切り替え
+  // selectedTab(key)がアップデートされたらselectedTabValueをアップデート
   useUpdateEffect(() => {
-    i18n.changeLanguage(options.pluginLanguage)
+    const translatedTabValue = t(`Tabs.${options.selectedTabKey}` as const)
+    setSelectedTabValue(translatedTabValue as SelectedTabValue)
+  }, [options.selectedTabKey])
+
+  // options.pluginLanguageが変更されたら言語を切り替え
+  useUpdateEffect(async () => {
+    console.log('pluginLanguage update on App', options.pluginLanguage)
+
+    // UI側の言語を切り替え
+    await i18n.changeLanguage(options.pluginLanguage)
+
+    // main側の言語も切り替える
+    emit<ChangeLanguageHandler>('CHANGE_LANGUAGE', options.pluginLanguage)
+
+    // selectedTabValueを言語に合わせてアップデート
+    const translatedTabValue = t(`Tabs.${options.selectedTabKey}` as const)
+    setSelectedTabValue(translatedTabValue as SelectedTabValue)
   }, [options.pluginLanguage])
 
   if (!mounted) {
@@ -96,7 +129,7 @@ export default function App() {
       <Tabs
         options={tabOptions}
         onChange={handleTabChange}
-        value={options.selectedTab}
+        value={selectedTabValue}
       />
     </div>
   )

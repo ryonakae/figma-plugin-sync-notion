@@ -12,18 +12,18 @@
     "valuePropertyName": "バリュープロパティ名",
     "fetchButton": {
       "label": "Notionからテキストを取得",
-      "description": "Notionのデータベースからテキストを取得します。データはこのドキュメントにキャッシュされ、次回起動時に復元されます。Notionデータベースを更新した場合は、このボタンを再度クリックしてください。"
+      "description": "Notionのデータベースからテキストを取得します。データはこのドキュメントにキャッシュされ、次回起動時に復元されます。Notionデータベースを更新した場合は、このボタンを再度クリックしてください"
     },
     "clearCacheButton": "キャッシュをクリア（{{length}}項目）"
   },
   "List": {
     "filter": {
-      "placeholder": "キーまたはバリュープロパティでフィルター",
+      "placeholder": "キーまたは値でフィルター",
       "clearButton": "クリア"
     },
     "sortValue": {
       "key": "キー",
-      "value": "バリュー",
+      "value": "値",
       "created_time": "作成日時（デフォルト）",
       "last_edited_time": "最終編集日時"
     },
@@ -32,19 +32,19 @@
       "descending": "降順（デフォルト）"
     },
     "statusBar": {
-      "text": "行をクリックしてテキストにキーとバリューを適用またはコピー",
+      "text": "行をクリックしてテキストにキーと値を適用またはコピー",
       "count": "{{length}}項目"
     },
     "empty": {
-      "text": "項目がありません。",
+      "text": "項目がありません",
       "fetchButton": "Notionからテキストを取得"
     }
   },
   "Utilities": {
     "targetTextRange": {
-      "label": "対象テキスト範囲",
+      "label": "対象テキストの範囲",
       "options": {
-        "selection": "選択範囲",
+        "selection": "選択した要素",
         "currentPage": "現在のページ",
         "allPages": "すべてのページ"
       }
@@ -52,7 +52,7 @@
     "includeComponents": "コンポーネント内のテキストを含める",
     "includeInstances": "インスタンス内のテキストを含める",
     "applyValueButton": {
-      "label": "テキスト内容にバリューを適用",
+      "label": "テキスト内容に値を適用",
       "description": "キープロパティにリネームされたレイヤー名から取得したテキスト内容にバリュープロパティを適用します。パラメータを渡すことができます（例：#userInfo?name=John&age=24）。Notionデータベースのバリューに変数がある場合、その値でテキストを置き換えます。"
     },
     "renameLayerButton": {
@@ -78,34 +78,56 @@
     }
   },
   "KeyValueList": {
-    "empty": "項目がありません。",
+    "empty": "項目がありません",
     "loading": "読み込み中..."
   },
   "KeyValueRow": {
     "key": "キー",
     "value": "バリュー",
-    "applyKeyValueButton": "選択したテキストにキーとバリューを適用",
+    "applyKeyValueButton": "選択したテキストにキーと値を適用",
     "openBrowserButton": "ブラウザで開く"
   },
   "notifications": {
     "Fetch": {
-      "loading": "しばらくお待ちください。",
+      "loading": "しばらくお待ちください",
       "error": {
-        "failedFetch": "データベースの取得に失敗しました。",
-        "noPages": "このデータベースにページがありません。",
-        "wrongKeyName": "キープロパティ名が間違っています。",
-        "wrongValueName": "バリュープロパティ名が間違っています。",
-        "wrongKeyType": "キープロパティの型が間違っています。",
-        "wrongValueType": "バリュープロパティの型が間違っています。"
+        "failedFetch": "データベースの取得に失敗しました",
+        "noPages": "このデータベースにページがありません",
+        "wrongKeyName": "キープロパティ名が間違っています",
+        "wrongValueName": "バリュープロパティ名が間違っています",
+        "wrongKeyType": "キープロパティの形式が間違っています",
+        "wrongValueType": "バリュープロパティの形式が間違っています"
       },
-      "finish": "取得が完了しました。",
-      "clearCache": "キャッシュがクリアされました。"
+      "finish": "取得が完了しました",
+      "clearCache": "キャッシュがクリアされました"
     },
     "Settings": {
-      "updateLanguage": "言語が更新されました。"
+      "updateLanguage": "言語が更新されました"
     },
     "KeyValueRow": {
-      "copy": "{{title}}をクリップボードにコピーしました。"
+      "copy": "{{title}}をクリップボードにコピーしました"
+    },
+    "main": {
+      "noSelections": "1つ以上の要素を選択してください",
+      "noTextInSelection": "No text layers in selection.",
+      "noTextInCurrentPage": "No text layers in this page.",
+      "noTextInAllPages": "No text layers in all pages.",
+      "errorLoadFonts": "フォントの読み込みでエラーが発生しました"
+    },
+    "applyKeyValue": {
+      "finish": "選択したテキストにキーと値を適用しました"
+    },
+    "applyValue": {
+      "noMatchingText": "No matching text.",
+      "finishSelection": "Apply value to text content in selection.",
+      "finishCurrentPage": "Apply value to text content in this page.",
+      "finishAllPages": "Apply value to text content in all pages."
+    },
+    "renameLayer": {
+      "finish": "Renamed layer name of selected text."
+    },
+    "highlightText": {
+      "finish": "Highlighted text layer."
     }
   }
 }

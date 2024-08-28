@@ -1,12 +1,15 @@
-import type { NotionKeyValue } from '@/types/common'
 import { loadFontsAsync } from '@create-figma-plugin/utilities'
+
+import i18n from '@/i18n/main'
+
+import type { NotionKeyValue } from '@/types/common'
 
 export default async function applyKeyValue(keyValue: NotionKeyValue) {
   console.log('applyKeyValue', keyValue)
 
   // 何も選択していない場合は処理を終了
   if (figma.currentPage.selection.length === 0) {
-    figma.notify('Please select at least one layer.')
+    figma.notify(i18n.t('notifications.main.noSelections'))
     return
   }
 
@@ -25,13 +28,13 @@ export default async function applyKeyValue(keyValue: NotionKeyValue) {
 
   // textNodeが1つも無かったら処理を中断
   if (textNodes.length === 0) {
-    figma.notify('No text layers in selection.')
+    figma.notify(i18n.t('notifications.main.noTextInSelection'))
     return
   }
 
   // 事前にフォントをロード
   await loadFontsAsync(textNodes).catch((error: Error) => {
-    const errorMessage = 'Error on loading font.'
+    const errorMessage = i18n.t('notifications.main.errorLoadFonts')
     figma.notify(errorMessage, { error: true })
     throw new Error(errorMessage)
   })
@@ -47,5 +50,5 @@ export default async function applyKeyValue(keyValue: NotionKeyValue) {
   })
 
   // 完了通知
-  figma.notify('Applied key & value to selected text.')
+  figma.notify(i18n.t('notifications.applyKeyValue.finish'))
 }

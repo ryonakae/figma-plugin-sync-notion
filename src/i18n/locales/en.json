@@ -106,6 +106,28 @@
     },
     "KeyValueRow": {
       "copy": "Copied {{title}} to clipboard."
+    },
+    "main": {
+      "noSelections": "Please select at least one layer.",
+      "noTextInSelection": "No text layers in selection.",
+      "noTextInCurrentPage": "No text layers in this page.",
+      "noTextInAllPages": "No text layers in all pages.",
+      "errorLoadFonts": "Error on loading font."
+    },
+    "applyKeyValue": {
+      "finish": "Applied key & value to selected text."
+    },
+    "applyValue": {
+      "noMatchingText": "No matching text.",
+      "finishSelection": "Apply value to text content in selection.",
+      "finishCurrentPage": "Apply value to text content in this page.",
+      "finishAllPages": "Apply value to text content in all pages."
+    },
+    "renameLayer": {
+      "finish": "Renamed layer name of selected text."
+    },
+    "highlightText": {
+      "finish": "Highlighted text layer."
     }
   }
 }

@@ -1,4 +1,5 @@
-export type SelectedTab = 'Fetch' | 'List' | 'Utilities' | 'Settings'
+export type SelectedTabKey = 'fetch' | 'list' | 'utilities' | 'settings'
+export type SelectedTabValue = 'Fetch' | 'List' | 'Utilities' | 'Settings'
 
 export type SortValue = 'key' | 'value' | 'created_time' | 'last_edited_time'
 
@@ -10,7 +11,7 @@ export type PluginLanguage = 'en' | 'ja'
 
 export type Options = {
   // fetch
-  selectedTab: SelectedTab
+  selectedTabKey: SelectedTabKey
   proxyUrl: string
   integrationToken: string
   databaseId: string

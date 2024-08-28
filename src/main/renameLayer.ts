@@ -1,5 +1,6 @@
 import { loadFontsAsync } from '@create-figma-plugin/utilities'
 
+import i18n from '@/i18n/main'
 import { getTextNodes } from '@/main/util'
 
 import type { NotionKeyValue, TargetTextRange } from '@/types/common'
@@ -23,11 +24,11 @@ export default async function renameLayer(
   if (textNodes.length === 0) {
     // 選択状態によってトーストを出し分け
     if (options.targetTextRange === 'selection') {
-      figma.notify('No text layers in selection.')
+      figma.notify(i18n.t('notifications.main.noTextInSelection'))
     } else if (options.targetTextRange === 'currentPage') {
-      figma.notify('No text layers in this page.')
+      figma.notify(i18n.t('notifications.main.noTextInCurrentPage'))
     } else if (options.targetTextRange === 'allPages') {
-      figma.notify('No text layers in all pages.')
+      figma.notify(i18n.t('notifications.main.noTextInAllPages'))
     }
 
     return
@@ -35,7 +36,7 @@ export default async function renameLayer(
 
   // 事前にフォントをロード
   await loadFontsAsync(textNodes).catch((error: Error) => {
-    const errorMessage = 'Error on loading font.'
+    const errorMessage = i18n.t('notifications.main.errorLoadFonts')
     figma.notify(errorMessage, { error: true })
     throw new Error(errorMessage)
   })
@@ -60,5 +61,5 @@ export default async function renameLayer(
   })
 
   // 完了通知
-  figma.notify('Renamed layer name of selected text.')
+  figma.notify(i18n.t('notifications.renameLayer.finish'))
 }

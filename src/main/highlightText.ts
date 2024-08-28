@@ -1,4 +1,5 @@
 import { GROUP_ID_KEY } from '@/constants'
+import i18n from '@/i18n/main'
 import { getTextNodes } from '@/main/util'
 
 import type { NotionKeyValue, TargetTextRange } from '@/types/common'
@@ -145,5 +146,5 @@ export default async function highlightText(
   }
 
   // 完了通知
-  figma.notify('Highlighted text layer.')
+  figma.notify(i18n.t('notifications.highlightText.finish'))
 }

@@ -13,6 +13,7 @@ import {
   DEFAULT_WIDTH,
   SETTINGS_KEY,
 } from '@/constants'
+import i18n from '@/i18n/main'
 import applyKeyValue from '@/main/applyKeyValue'
 import applyValue from '@/main/applyValue'
 import highlightText from '@/main/highlightText'
@@ -22,6 +23,7 @@ import type { NotionKeyValue, Options } from '@/types/common'
 import type {
   ApplyKeyValueHandler,
   ApplyValueHandler,
+  ChangeLanguageHandler,
   HighlightTextHandler,
   LoadCacheFromMainHandler,
   LoadCacheFromUIHandler,
@@ -50,6 +52,12 @@ export default async function () {
       DEFAULT_OPTIONS,
       SETTINGS_KEY,
     )
+
+    // main側の言語を切り替え
+    await i18n.changeLanguage(options.pluginLanguage)
+    console.log('language in main updated.', options.pluginLanguage, i18n)
+
+    // uiにoptionsを送る
     emit<LoadOptionsFromMainHandler>('LOAD_OPTIONS_FROM_MAIN', options)
   })
 
@@ -106,5 +114,11 @@ export default async function () {
 
   on<HighlightTextHandler>('HIGHLIGHT_TEXT', (keyValues, options) => {
     highlightText(keyValues, options)
+  })
+
+  on<ChangeLanguageHandler>('CHANGE_LANGUAGE', async language => {
+    // main側の言語を切り替え
+    await i18n.changeLanguage(language)
+    console.log('language in main updated.', language, i18n)
   })
 }
