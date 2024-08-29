@@ -52,23 +52,23 @@
     "includeComponents": "コンポーネント内のテキストを含める",
     "includeInstances": "インスタンス内のテキストを含める",
     "applyValueButton": {
-      "label": "テキストの内容に値を適用",
-      "description": "キープロパティにリネームされたレイヤー名から取得したテキスト内容にバリュープロパティを適用します。パラメータを渡すことができます（例：#userInfo?name=John&age=24）。Notionデータベースのバリューに変数がある場合、その値でテキストを置き換えます。"
+      "label": "テキストに値を適用",
+      "description": "テキストレイヤーの名前が#<キー>になっている場合(例: #userInfo)、テキストの内容を置き換えます。値に変数が埋め込まれている場合、レイヤー名にパラメータを渡すことができます(例: #userInfo?name=John&age=24)。値が「Name: {name} / Age: {age}」の場合、テキストの内容は「Name: Jogn / Age: 24」となります。"
     },
     "renameLayerButton": {
-      "label": "テキストの内容からレイヤー名を変更",
-      "description": "テキスト内容から取得したキープロパティにレイヤーをリネームします。テキスト内容とNotionデータベースのバリュープロパティが完全に一致する必要があります。パラメータはサポートされていません。FigmaとNotionのテキストが同じで、レイヤーのリネームが面倒な場合に便利です。"
+      "label": "レイヤー名を変更",
+      "description": "テキストの内容がデータベースの値と一致している場合、レイヤー名を#<キー>に変更します。レイヤーのリネームが面倒な場合に便利です。"
     },
     "highlightTextButton": {
       "label": "テキストをハイライト",
-      "description": "正しいレイヤー名形式（# + キープロパティ）を持ち、キーがNotionデータベースに存在するテキストレイヤーをハイライトします。キーが正しく存在する場合、テキストは青色でハイライトされます。不正確な場合は赤色でハイライトされます。レイヤー名が正しくフォーマットされているか、タイプミスがないかを確認するのに便利です。"
+      "description": "テキストレイヤーの名前が#<キー>になっているものをハイライトします。キーがデータベースに存在する場合は青色、存在しない場合またはキーが間違っている場合は赤色でハイライトされます。レイヤー名が正しくフォーマットされているか、またはタイプミスがないかを確認するのに便利です。"
     }
   },
   "Settings": {
     "language": {
       "label": "言語",
       "options": {
-        "english": "英語",
+        "english": "英語 (デフォルト)",
         "japanese": "日本語"
       }
     },
@@ -83,7 +83,7 @@
   },
   "KeyValueRow": {
     "key": "キー",
-    "value": "バリュー",
+    "value": "値",
     "applyKeyValueButton": "選択したテキストにキーと値を適用",
     "openBrowserButton": "ブラウザで開く"
   },
@@ -93,10 +93,10 @@
       "error": {
         "failedFetch": "データベースの取得に失敗しました",
         "noPages": "このデータベースにページがありません",
-        "wrongKeyName": "キープロパティ名が間違っています",
-        "wrongValueName": "バリュープロパティ名が間違っています",
-        "wrongKeyType": "キープロパティの形式が間違っています",
-        "wrongValueType": "バリュープロパティの形式が間違っています"
+        "wrongKeyName": "キーのプロパティ名が間違っています",
+        "wrongValueName": "値のプロパティ名が間違っています",
+        "wrongKeyType": "キーのプロパティの形式が間違っています",
+        "wrongValueType": "値のプロパティの形式が間違っています"
       },
       "finish": "取得が完了しました",
       "clearCache": "キャッシュがクリアされました"
@@ -109,25 +109,25 @@
     },
     "main": {
       "noSelections": "1つ以上の要素を選択してください",
-      "noTextInSelection": "No text layers in selection.",
-      "noTextInCurrentPage": "No text layers in this page.",
-      "noTextInAllPages": "No text layers in all pages.",
+      "noTextInSelection": "選択した要素内にテキストがありません",
+      "noTextInCurrentPage": "このページにテキストがありません",
+      "noTextInAllPages": "すべてのページにテキストがありません",
       "errorLoadFonts": "フォントの読み込みでエラーが発生しました"
     },
     "applyKeyValue": {
       "finish": "選択したテキストにキーと値を適用しました"
     },
     "applyValue": {
-      "noMatchingText": "No matching text.",
-      "finishSelection": "Apply value to text content in selection.",
-      "finishCurrentPage": "Apply value to text content in this page.",
-      "finishAllPages": "Apply value to text content in all pages."
+      "noMatchingText": "一致するテキストがありません",
+      "finishSelection": "選択したテキストに値を適用しました",
+      "finishCurrentPage": "このページのテキストに値を適用しました",
+      "finishAllPages": "すべてのページのテキストに値を適用しました"
     },
     "renameLayer": {
-      "finish": "Renamed layer name of selected text."
+      "finish": "テキストのレイヤー名を変更しました"
     },
     "highlightText": {
-      "finish": "Highlighted text layer."
+      "finish": "テキストをハイライトしました"
     }
   }
 }

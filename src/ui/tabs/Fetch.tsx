@@ -5,7 +5,6 @@ import { useRef, useState } from 'preact/hooks'
 import {
   Button,
   Container,
-  Link,
   Stack,
   Textbox,
   VerticalSpace,

@@ -1,6 +1,6 @@
 /** @jsx h */
 import { h } from 'preact'
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
+import { useCallback, useRef, useState } from 'preact/hooks'
 
 import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
