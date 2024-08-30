@@ -98,7 +98,7 @@ async function createHighlightRectOnPage(
     const group = figma.group(rectNodes, figma.currentPage)
 
     // グループをリネーム
-    group.name = `${rectNodes.length} Highlights (⭕️ ${correctRectNodes.length} / ❌ ${incorrectRectNodes.length}) - Generated with Sync Notion`
+    group.name = `${rectNodes.length} Highlights (⭕️ ${correctRectNodes.length} / ❌ ${incorrectRectNodes.length}) - Generated with Sync Text with Notion`
 
     // グループをロック
     group.locked = true

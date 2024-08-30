@@ -1,4 +1,4 @@
-# Sync Notion Figma Plugin
+# Sync Text with Notion Figma Plugin
 
 ![](./cover.png)
 
