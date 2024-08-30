@@ -1,0 +1,133 @@
+{
+  "Tabs": {
+    "fetch": "取得",
+    "list": "リスト",
+    "utilities": "ユーティリティ",
+    "settings": "設定"
+  },
+  "Fetch": {
+    "databaseId": "データベースID",
+    "integrationToken": "インテグレーショントークン",
+    "keyPropertyName": "キーのプロパティ名",
+    "valuePropertyName": "値のプロパティ名",
+    "fetchButton": {
+      "label": "Notionからテキストを取得",
+      "description": "Notionのデータベースからテキストを取得します。データはこのドキュメントにキャッシュされ、次回起動時に復元されます。Notionデータベースを更新した場合は、このボタンを再度クリックしてください"
+    },
+    "clearCacheButton": "{{length}}項目のキャッシュを削除"
+  },
+  "List": {
+    "filter": {
+      "placeholder": "キーまたは値で絞り込む",
+      "clearButton": "消去"
+    },
+    "sortValue": {
+      "key": "キー",
+      "value": "値",
+      "created_time": "作成日時 (デフォルト)",
+      "last_edited_time": "最終編集日時"
+    },
+    "sortOrder": {
+      "ascending": "昇順",
+      "descending": "降順 (デフォルト)"
+    },
+    "statusBar": {
+      "text": "行をクリックしてテキストにキーと値を適用またはコピー",
+      "count": "{{length}}項目"
+    },
+    "empty": {
+      "text": "項目がありません",
+      "fetchButton": "Notionからテキストを取得"
+    }
+  },
+  "Utilities": {
+    "targetTextRange": {
+      "label": "対象テキストの範囲",
+      "options": {
+        "selection": "選択した要素",
+        "currentPage": "現在のページ",
+        "allPages": "すべてのページ"
+      }
+    },
+    "includeComponents": "コンポーネント内のテキストを含める",
+    "includeInstances": "インスタンス内のテキストを含める",
+    "applyValueButton": {
+      "label": "テキストに値を適用",
+      "description": "テキストレイヤーの名前が#<キー>になっている場合(例: #userInfo)、テキストの内容を置き換えます。値に変数が埋め込まれている場合、レイヤー名にパラメータを渡すことができます(例: #userInfo?name=John&age=24)。値が「Name: {name} / Age: {age}」の場合、テキストの内容は「Name: Jogn / Age: 24」となります。"
+    },
+    "renameLayerButton": {
+      "label": "レイヤー名を変更",
+      "description": "テキストの内容がデータベースの値と一致している場合、レイヤー名を#<キー>に変更します。レイヤーのリネームが面倒な場合に便利です。"
+    },
+    "highlightTextButton": {
+      "label": "テキストをハイライト",
+      "description": "テキストレイヤーの名前が#<キー>になっているものをハイライトします。キーがデータベースに存在する場合は青色、存在しない場合またはキーが間違っている場合は赤色でハイライトされます。レイヤー名が正しくフォーマットされているか、またはタイプミスがないかを確認するのに便利です。"
+    }
+  },
+  "Settings": {
+    "language": {
+      "label": "言語",
+      "options": {
+        "english": "英語 (デフォルト)",
+        "japanese": "日本語"
+      }
+    },
+    "buttons": {
+      "pluginPage": "プラグインページ",
+      "github": "GitHub"
+    }
+  },
+  "KeyValueList": {
+    "empty": "項目がありません",
+    "loading": "読み込み中..."
+  },
+  "KeyValueRow": {
+    "key": "キー",
+    "value": "値",
+    "applyKeyValueButton": "選択したテキストにキーと値を適用",
+    "openBrowserButton": "ブラウザで開く"
+  },
+  "notifications": {
+    "Fetch": {
+      "loading": "しばらくお待ちください",
+      "error": {
+        "failedFetch": "データベースの取得に失敗しました",
+        "noPages": "このデータベースにページがありません",
+        "wrongKeyName": "キーのプロパティ名が間違っています",
+        "wrongValueName": "値のプロパティ名が間違っています",
+        "wrongKeyType": "キーのプロパティの形式が間違っています",
+        "wrongValueType": "値のプロパティの形式が間違っています"
+      },
+      "finish": "取得が完了しました",
+      "clearCache": "キャッシュがクリアされました"
+    },
+    "Settings": {
+      "updateLanguage": "言語が更新されました"
+    },
+    "KeyValueRow": {
+      "copy": "{{title}}をクリップボードにコピーしました"
+    },
+    "main": {
+      "noSelections": "1つ以上の要素を選択してください",
+      "noTextInSelection": "選択した要素内にテキストがありません",
+      "noTextInCurrentPage": "このページにテキストがありません",
+      "noTextInAllPages": "すべてのページにテキストがありません",
+      "errorLoadFonts": "フォントの読み込みでエラーが発生しました"
+    },
+    "applyKeyValue": {
+      "finish": "選択したテキストにキーと値を適用しました"
+    },
+    "applyValue": {
+      "noMatchingText": "一致するテキストがありません",
+      "finishSelection": "選択したテキストに値を適用しました",
+      "finishCurrentPage": "このページのテキストに値を適用しました",
+      "finishAllPages": "すべてのページのテキストに値を適用しました"
+    },
+    "renameLayer": {
+      "finish": "テキストのレイヤー名を変更しました"
+    },
+    "highlightText": {
+      "finish": "テキストをハイライトしました"
+    }
+  }
+}
