@@ -52,6 +52,13 @@
         "main": "src/main/index.ts",
         "ui": "src/ui/index.tsx"
       }
+    },
+    "networkAccess": {
+      "allowedDomains": [
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com",
+        "https://*.workers.dev"
+      ]
     }
   }
 }
