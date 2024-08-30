@@ -1,8 +1,9 @@
 /** @jsx h */
 import { h } from 'preact'
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
+import { useCallback, useRef, useState } from 'preact/hooks'
 
 import clsx from 'clsx'
+import { useTranslation } from 'react-i18next'
 import { useDebounce, useMount, useUnmount, useUpdateEffect } from 'react-use'
 
 import { useStore } from '@/ui/Store'
@@ -17,6 +18,7 @@ type KeyValueProps = {
 }
 
 export default function KeyValueList({ rows, className }: KeyValueProps) {
+  const { t } = useTranslation()
   const options = useStore()
   const { updateOptions } = useOptions()
   const listRef = useRef<HTMLUListElement>(null)
@@ -127,14 +129,14 @@ export default function KeyValueList({ rows, className }: KeyValueProps) {
       ) : (
         // empty
         <div className="h-full flex flex-col items-center justify-center text-secondary">
-          No items.
+          {t('KeyValueList.empty')}
         </div>
       )}
 
       {/* loading */}
       {!scrollPositionRestored && (
         <div className="absolute inset-0 z-10 bg-primary flex flex-col items-center justify-center text-secondary">
-          Loading...
+          {t('KeyValueList.loading')}
         </div>
       )}
     </div>

@@ -1,4 +1,5 @@
-export type SelectedTab = 'Fetch' | 'List' | 'Utilities'
+export type SelectedTabKey = 'fetch' | 'list' | 'utilities' | 'settings'
+export type SelectedTabValue = 'Fetch' | 'List' | 'Utilities' | 'Settings'
 
 export type SortValue = 'key' | 'value' | 'created_time' | 'last_edited_time'
 
@@ -6,9 +7,11 @@ export type SortOrder = 'ascending' | 'descending'
 
 export type TargetTextRange = 'selection' | 'currentPage' | 'allPages'
 
+export type PluginLanguage = 'en' | 'ja'
+
 export type Options = {
   // fetch
-  selectedTab: SelectedTab
+  selectedTabKey: SelectedTabKey
   proxyUrl: string
   integrationToken: string
   databaseId: string
@@ -24,6 +27,8 @@ export type Options = {
   targetTextRange: TargetTextRange
   includeComponents: boolean
   includeInstances: boolean
+  // settings
+  pluginLanguage: PluginLanguage
 }
 
 export type NotionTitle = {

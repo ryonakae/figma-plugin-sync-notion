@@ -8,7 +8,7 @@ export const DEFAULT_WIDTH = 400
 
 export const DEFAULT_OPTIONS: Options = {
   // fetch
-  selectedTab: 'Fetch',
+  selectedTabKey: 'fetch',
   proxyUrl: '',
   integrationToken: '',
   databaseId: '',
@@ -24,4 +24,6 @@ export const DEFAULT_OPTIONS: Options = {
   targetTextRange: 'selection',
   includeComponents: true,
   includeInstances: false,
+  // settings
+  pluginLanguage: 'en',
 }

@@ -1,6 +1,7 @@
 import { loadFontsAsync } from '@create-figma-plugin/utilities'
 import queryString, { type ParsedQuery } from 'query-string'
 
+import i18n from '@/i18n/main'
 import { getTextNodes } from '@/main/util'
 
 import type { NotionKeyValue, TargetTextRange } from '@/types/common'
@@ -24,11 +25,11 @@ export default async function applyValue(
   if (textNodes.length === 0) {
     // 選択状態によってトーストを出し分け
     if (options.targetTextRange === 'selection') {
-      figma.notify('No text layers in selection.')
+      figma.notify(i18n.t('notifications.main.noTextInSelection'))
     } else if (options.targetTextRange === 'currentPage') {
-      figma.notify('No text layers in this page.')
+      figma.notify(i18n.t('notifications.main.noTextInCurrentPage'))
     } else if (options.targetTextRange === 'allPages') {
-      figma.notify('No text layers in all pages.')
+      figma.notify(i18n.t('notifications.main.noTextInAllPages'))
     }
 
     return
@@ -46,13 +47,13 @@ export default async function applyValue(
 
   // matchedTextNodesが空なら処理を終了
   if (matchedTextNodes.length === 0) {
-    figma.notify('No matching text.')
+    figma.notify(i18n.t('notifications.applyValue.noMatchingText'))
     return
   }
 
   // 事前にフォントをロード
   await loadFontsAsync(matchedTextNodes).catch((error: Error) => {
-    const errorMessage = 'Error on loading font.'
+    const errorMessage = i18n.t('notifications.main.errorLoadFonts')
     figma.notify(errorMessage, { error: true })
     throw new Error(errorMessage)
   })
@@ -131,10 +132,10 @@ export default async function applyValue(
   // 完了通知
   // 選択状態によってトーストを出し分け
   if (options.targetTextRange === 'selection') {
-    figma.notify('Apply value to text content in selection.')
+    figma.notify(i18n.t('notifications.applyValue.finishSelection'))
   } else if (options.targetTextRange === 'currentPage') {
-    figma.notify('Apply value to text content in this page.')
+    figma.notify(i18n.t('notifications.applyValue.finishCurrentPage'))
   } else if (options.targetTextRange === 'allPages') {
-    figma.notify('Apply value to text content in all pages.')
+    figma.notify(i18n.t('notifications.applyValue.finishAllPages'))
   }
 }

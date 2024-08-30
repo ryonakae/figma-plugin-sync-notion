@@ -4,6 +4,7 @@ import { type JSX, h } from 'preact'
 import { Button } from '@create-figma-plugin/ui'
 import { emit } from '@create-figma-plugin/utilities'
 import clsx from 'clsx'
+import { useTranslation } from 'react-i18next'
 import { useCopyToClipboard } from 'react-use'
 
 import useNotionKeyValue from '@/ui/hooks/useNotionKeyValue'
@@ -31,6 +32,7 @@ function CopyButton({
   selected,
   className,
 }: CopyButtonProps) {
+  const { t } = useTranslation()
   const [state, copyToClipboard] = useCopyToClipboard()
   const { getKeyWithQueryStrings } = useNotionKeyValue()
 
@@ -53,7 +55,7 @@ function CopyButton({
     console.log('copied', copyValue)
 
     emit<NotifyHandler>('NOTIFY', {
-      message: `Copied ${title} to clipboard.`,
+      message: t('notifications.KeyValueRow.copy', { title }),
     })
   }
 
@@ -75,6 +77,7 @@ function CopyButton({
 }
 
 export default function KeyValueRow({ keyValue, onClick, selected }: RowProps) {
+  const { t } = useTranslation()
   const { getKeyWithQueryStrings } = useNotionKeyValue()
 
   function handleApplyClick(event: JSX.TargetedMouseEvent<HTMLButtonElement>) {
@@ -108,7 +111,7 @@ export default function KeyValueRow({ keyValue, onClick, selected }: RowProps) {
     >
       {/* key property */}
       <div className="w-full flex">
-        <div className="w-10 py-1 text-secondary">Key</div>
+        <div className="w-10 py-1 text-secondary">{t('KeyValueRow.key')}</div>
         <div
           className={clsx(
             'flex-1 p-1 rounded-2 group hover:bg-hover',
@@ -119,7 +122,7 @@ export default function KeyValueRow({ keyValue, onClick, selected }: RowProps) {
             <span>{keyValue.key}</span>
             <CopyButton
               type="key"
-              title="Key property"
+              title={t('KeyValueRow.key')}
               keyValue={keyValue}
               selected={selected}
               className="absolute -right-0_5 -bottom-0_5 hidden group-hover:block"
@@ -130,7 +133,7 @@ export default function KeyValueRow({ keyValue, onClick, selected }: RowProps) {
 
       {/* value property */}
       <div className="w-full flex">
-        <div className="w-10 py-1 text-secondary">Value</div>
+        <div className="w-10 py-1 text-secondary">{t('KeyValueRow.value')}</div>
         <div
           className={clsx(
             'flex-1 p-1 rounded-2 group hover:bg-hover',
@@ -141,7 +144,7 @@ export default function KeyValueRow({ keyValue, onClick, selected }: RowProps) {
             <span>{keyValue.value}</span>
             <CopyButton
               type="value"
-              title="Value property"
+              title={t('KeyValueRow.value')}
               keyValue={keyValue}
               selected={selected}
               className="absolute -right-0_5 -bottom-0_5 hidden group-hover:block"
@@ -153,10 +156,10 @@ export default function KeyValueRow({ keyValue, onClick, selected }: RowProps) {
       {selected && (
         <div className="mt-1 flex flex-col gap-1">
           <Button secondary fullWidth onClick={handleApplyClick}>
-            Apply key & value to selected text
+            {t('KeyValueRow.applyKeyValueButton')}
           </Button>
           <Button secondary fullWidth onClick={handleOpenClick}>
-            Open in browser
+            {t('KeyValueRow.openBrowserButton')}
           </Button>
         </div>
       )}

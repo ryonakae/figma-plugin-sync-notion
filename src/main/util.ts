@@ -1,6 +1,8 @@
 import times from 'lodash/times'
 import uniqBy from 'lodash/uniqBy'
 
+import i18n from '@/i18n/main'
+
 import type { TargetTextRange } from '@/types/common'
 
 // nodeの親がコンポーネント or Variantsかどうかを返す再帰関数
@@ -145,7 +147,7 @@ export async function getTextNodes(options: {
   } else if (options.targetTextRange === 'selection') {
     // 何も選択していない場合は処理を終了
     if (figma.currentPage.selection.length === 0) {
-      figma.notify('1つ以上の要素を選択してください')
+      figma.notify(i18n.t('notifications.main.noSelections'))
       return textNodes
     }
 
