@@ -53,6 +53,7 @@
         "ui": "src/ui/index.tsx"
       }
     },
+    "documentAccess": "dynamic-page",
     "networkAccess": {
       "allowedDomains": [
         "https://fonts.googleapis.com",

@@ -130,6 +130,9 @@ export async function getTextNodes(options: {
   let textNodes: TextNode[] = []
 
   if (options.targetTextRange === 'currentPage') {
+    // ページを読み込む
+    await figma.currentPage.loadAsync()
+
     // targetTextRangeに応じてtextNodeを検索、配列に追加
     textNodes = figma.currentPage.findAllWithCriteria({ types: ['TEXT'] })
   } else if (options.targetTextRange === 'allPages') {
