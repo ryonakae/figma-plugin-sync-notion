@@ -3,107 +3,105 @@
 ![](./cover.png)
 
 Sync text from Notion database to Figma document.  
-Useful when managing app text in Notion or for multilingual support.
+Useful when managing app text in Notion or for multilingual support.  
+\-  
+NotionのデータベースからFigmaのドキュメントにテキストを同期するプラグインです。  
+アプリケーションのテキストをNotionで管理したい場合や多言語対応をしたい場合に便利です。
 
-I have written a detailed description of how to set up this plugin. <a href="https://github.com/ryonakae/figma-plugin-sync-notion/wiki/Sync-Notion%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AE%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97%E6%96%B9%E6%B3%95">Please check here.</a>
 
-## 🔥 How to use
+## 🔥 How to use / 使い方
 
-- \[Notion\] Create a reverse proxy to avoid [CORS errors](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors).
-  - [More information](#%EF%B8%8F-create-a-reverse-proxy-to-avoid-cors-errors)
-- \[Notion\] [Create a Notion integration.](https://developers.notion.com/docs/getting-started#step-1-create-an-integration)
-- \[Notion\] Create a database.
-- \[Notion\] [Share the database with your integration.](https://developers.notion.com/docs/getting-started#step-2-share-a-database-with-your-integration)
-- \[Notion\] Add pages with unique key (e.g., page title) and values to the database.
-  - Currently, title, formula and text properties are supported.
-  - Variables can be embedded. e.g., `{name} follows you. (Age: {age})`
-- \[Figma\] Rename text layers you want to sync to `#<Key Name of Notion>`.
-  - e.g., `#pageTitle`, `#description` and `#signInWithApple`
-  - You can pass parameters. e.g., `#notification?name=Alistair Warren&age=24`. If there are variables in Notion database value, it will replace the text with that value in it.
-  - In this example, the text will replaced by `Alistair Warren follows you. (Age: 24)`.
-  - Warning: If the text passed as a parameter contains `&`, replace it with `%26`.
-  - e.g., `#notification?name=Alistair Warren %26 Kevin Lara`. The text will replaced by `Alistair Warren & Kevin Lara follows you.`.
-- \[Figma\] Open this plugin and fill in each field.
-- \[Figma\] Press the "Sync Notion" button.
-- Enjoy😎🏝
+### Fetch tab / 「取得」タブ
+Fetches text from a database in Notion. The data is cached to this document and restored at next time it is launched. If you have updated Notion database, fetch again.  
+\-  
+Notionのデータベースからテキストを取得します。取得したテキストはこのドキュメントにキャッシュされ、次回起動時に復元されます。もしNotionのデータベースを更新した場合は、再度取得してください。
 
-### "Sync Notion" button
+#### 1. Database ID / データベースID
+Specify the Notion database ID ([Reference](https://developers.notion.com/reference/retrieve-a-database)).  
+\-  
+NotionのデータベースIDを指定します ([参考](https://developers.notion.com/reference/retrieve-a-database))。
 
-Sync all text contained in the selected element. If nothing is selected, all text on this page will be synced.
+#### 2. Integration token / インテグレーショントークン
+First, create a new integration in Notion ([Reference](https://developers.notion.com/docs/create-a-notion-integration#create-your-integration-in-notion)).  
+Next, give your integration page permissions ([Reference](https://developers.notion.com/docs/create-a-notion-integration#give-your-integration-page-permissions)).  
+Input the copied token.  
+\-  
+まず、Notionで新しくインテグレーションを作成します ([参考](https://developers.notion.com/docs/create-a-notion-integration#create-your-integration-in-notion))。  
+次に、作成したインテグレーションにデータベースへのアクセス権限を与えます ([参考](https://developers.notion.com/docs/create-a-notion-integration#give-your-integration-page-permissions))。  
+コピーしたトークンを入力してください。
 
-### "Using Cache" option
+#### 3. Key property name / キーのプロパティ名
+Specify the name of the property that is the key of the data to be fetched (e.g. Name, Key, Title, etc.).  
+Currently, title, formula and text properties are supported.  
+\-  
+取得するデータのキーとなるプロパティ名を指定します (例: Name、Key、Titleなど)。  
+現在、タイトル、フォーミュラ、テキストプロパティが対応しています。
 
-This plugin stores data in clientStorage during synchronization.  
-If this option is enabled, the cache is used for synchronization. If there is no cache, it cannot be enabled.  
-This option is useful if you have many pages and need to synchronize them many times.
+#### 4. Value property name / 値のプロパティ名
+Specify the name of the property that is the value of the data to be fetched (e.g. Value, en, ja, etc.).  
+Currently, title, formula and text properties are supported.  
+\-  
+取得するデータの値となるプロパティ名を指定します (例: Value、en、jaなど)。  
+現在、タイトル、フォーミュラ、テキストプロパティが対応しています。
 
-### "Overlay Highlight" option
+After entering the information for steps 1-4, click the "Fetch text from Notion" button to retrieve the text. Depending on the number of items in the database, this process may take some time.  
+To delete the cache, click the "Clear cache" button.  
+\-  
+1-4を入力したら、「Notionからテキストを取得」ボタンをクリックし、テキストを取得します。データベースの項目数によっては、しばらく待つ必要があります。  
+キャッシュを削除する場合は、「キャッシュを削除」ボタンをクリックしてください。
 
-If this option is enabled, highlight all text that has correct layer name format: `#<Key Name of Notion>`.  
-Text is highlighted in blue if the key is correct and in red if it's incorrect.  
-It is useful to check that the layer names are formatted correctly or that they have no typos.
+### List tab / 「リスト」タブ
+Text retrieved from Notion will be displayed. Keys and values can be copied.  
+You can also filter by key or value and change the sort order.  
+Click on a row to display the following two buttons.  
+\-  
+Notionから取得したテキストが表示されます。キーと値をコピーすることができます。  
+また、キーや値で絞り込むことができ、並び順も変更することができます。  
+行をクリックすると、以下の2つのボタンが表示されます。
 
-## ⚙️ Create a reverse proxy to avoid CORS errors
+#### "Apply key & value to selected text" button / 「選択したテキストにキーと値を適用」ボタン
+Select text in Figma and click the button to apply the key and value to the text.  
+\-  
+Figmaのテキストを選択し、ボタンをクリックすると、テキストにキーと値が適用されます。
 
-Here are the steps to create a reverse proxy in [Cloudflare Workers](https://workers.cloudflare.com/).  
-(This is just one example.)
+#### "Open in browser" button / 「ブラウザで開く」ボタン
+Open the page of text in Notion in browser.  
+\-  
+Notionの該当するテキストのページをブラウザで開きます。
 
-- Sign up or login to Cloudflare Workers.
-- Select "Workers" from the menu. Then create a new service.
-  - The service name can be any name you like.
-  - e.g., `https://reverse-proxy.yourname.workers.dev`
-- After the service is created, click "Quick Edit" to open the editor.
-- Enter the following code into your editor. Then click "Save and Deploy.
+### Utilities tab / 「ユーティリティ」タブ
+Several actions are available to help synchronize Notion text with Figma.  
+\-  
+NotionのテキストをFigmaと同期するのに便利な、いくつかのアクションが用意されています。
 
-```
-addEventListener("fetch", event => {
-  event.respondWith(handleRequest(event.request))
-})
+#### Target text range / 対象テキストの範囲
+Select the range of text to be the target of the action. You can choose from the selected elements, the current page, or all pages.  
+You can also choose to include text in components or instances.  
+\-  
+アクションの対象にするテキストの範囲を選択します。選択した要素、現在のページ、すべてのページから選択することができます。  
+また、コンポーネント内のテキストやインスタンス内のテキストを対象にすることもできます。
 
-async function handleRequest(request) {
-  try {
-    const url = new URL(request.url);
+#### "Apply value to text" button / 「テキストに値を適用」ボタン
+If the name of the text layer is #\<key\> (e.g. #userInfo), the text content will be replaced. If the value has an embedded variable, a parameter can be passed to the layer name (e.g. #userInfo?name=John&age=24). If the value is "Name: {name} / Age: {age}", the text content will be "Name: Jogn / Age: 24".
+\-  
+テキストレイヤーの名前が#<キー>になっている場合(例: #userInfo)、テキストの内容を置き換えます。値に変数が埋め込まれている場合、レイヤー名にパラメータを渡すことができます(例: #userInfo?name=John&age=24)。値が「Name: {name} / Age: {age}」の場合、テキストの内容は「Name: Jogn / Age: 24」となります。
 
-    if (url.pathname === "/") {
-      return new Response(`
-        Usage:\n
-          ${url.origin}/<url>
-      `);
-    }
+#### "Rename layer" button / 「レイヤー名を変更」ボタン
+If the text content has the same value in the database, rename the layer to #\<key\>. This is useful when renaming layers is troublesome.  
+\-  
+テキストの内容がデータベースの値と一致している場合、レイヤー名を#<キー>に変更します。レイヤーのリネームが面倒な場合に便利です。
 
-    if (request.method === "OPTIONS") {
-      return new Response(null, {
-        status: 200,
-        ok: true,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, HEAD, POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Authorization, Content-Type, Notion-Version"
-        }
-      });
-    }
+#### "Highlight text" button / 「テキストをハイライト」ボタン
+Highlight the text layer with the name #\<key\>. If the key exists in the database, it is highlighted in blue; if it does not exist or the key is incorrect, it is highlighted in red. This is useful to verify that layer names are formatted correctly or that there are no typos.  
+\-  
+テキストレイヤーの名前が#<キー>になっているものをハイライトします。キーがデータベースに存在する場合は青色、存在しない場合またはキーが間違っている場合は赤色でハイライトされます。レイヤー名が正しくフォーマットされているか、またはタイプミスがないかを確認するのに便利です。
 
-    let response = await fetch(request.url.slice(url.origin.length + 1), {
-      method: request.method,
-      headers: request.headers,
-      redirect: "follow",
-      body: request.body
-    });
-    response = new Response(response.body, response);
-    response.headers.set("Access-Control-Allow-Origin", "*");
-    response.headers.set("Access-Control-Allow-Methods", "GET, HEAD, POST, OPTIONS");
-    response.headers.set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Accept, Authorization, Content-Type, Notion-Version");
+### Settings tab / 「設定」タブ
+#### Language / 言語
+Select the language of this plugin. Currently, English and Japanese are available.  
+\-  
+このプラグインの言語を選択します。現在、英語と日本語が選択できます。
 
-    return response;
-  } catch (e) {
-    return new Response(e.stack || e, { status: 500 });
-  }
-}
-```
-
-- Now you can access any API with the URL: `https://reverse-proxy.yourname.workers.dev/https://any-api-url` without any CORS errors.
-
-The URL entered into the "Notion API URL" field of this Figma plugin is `https://reverse-proxy.yourname.workers.dev/https://api.notion.com` (not required for "v1" and later).
 
 ## 📮 Support
 
@@ -114,5 +112,5 @@ If you have any plobrem or feedback, please use the [GitHub Issues](https://gith
 This plugin is made by Ryo Nakae 🙎‍♂️.
 
 - https://brdr.jp
-- https://twitter.com/ryo_dg
+- https://x.com/ryo_dg
 - https://github.com/ryonakae
