@@ -1,0 +1,133 @@
+{
+  "Tabs": {
+    "fetch": "Fetch",
+    "list": "List",
+    "utilities": "Utilities",
+    "settings": "Settings"
+  },
+  "Fetch": {
+    "databaseId": "Database ID",
+    "integrationToken": "Integration token",
+    "keyPropertyName": "Key property name",
+    "valuePropertyName": "Value property name",
+    "fetchButton": {
+      "label": "Fetch text from Notion",
+      "description": "Fetches text from a database in Notion. The data is cached to this document and restored at next time it is launched. If you have updated Notion database, click this button again."
+    },
+    "clearCacheButton": "Clear cache ({{length}} items)"
+  },
+  "List": {
+    "filter": {
+      "placeholder": "Filter key or value property",
+      "clearButton": "Clear"
+    },
+    "sortValue": {
+      "key": "Key",
+      "value": "Value",
+      "created_time": "Created (default)",
+      "last_edited_time": "Last edited"
+    },
+    "sortOrder": {
+      "ascending": "Ascending",
+      "descending": "Descending (Default)"
+    },
+    "statusBar": {
+      "text": "Click row to apply key & value to text or copy",
+      "count": "{{length}} items"
+    },
+    "empty": {
+      "text": "No items.",
+      "fetchButton": "Fetch text from Notion"
+    }
+  },
+  "Utilities": {
+    "targetTextRange": {
+      "label": "Target text range",
+      "options": {
+        "selection": "Selection",
+        "currentPage": "Current page",
+        "allPages": "All pages"
+      }
+    },
+    "includeComponents": "Include text in components",
+    "includeInstances": "Include text in instances",
+    "applyValueButton": {
+      "label": "Apply value to text",
+      "description": "If the name of the text layer is #<key> (e.g. #userInfo), the text content will be replaced. If the value has an embedded variable, a parameter can be passed to the layer name (e.g. #userInfo?name=John&age=24). If the value is \"Name: {name} / Age: {age}\", the text content will be \"Name: Jogn / Age: 24\"."
+    },
+    "renameLayerButton": {
+      "label": "Rename layer",
+      "description": "If the text content has the same value in the database, rename the layer to #<key>. This is useful when renaming layers is troublesome."
+    },
+    "highlightTextButton": {
+      "label": "Highlight text",
+      "description": "Highlight the text layer with the name #<key>. If the key exists in the database, it is highlighted in blue; if it does not exist or the key is incorrect, it is highlighted in red. This is useful to verify that layer names are formatted correctly or that there are no typos."
+    }
+  },
+  "Settings": {
+    "language": {
+      "label": "Language",
+      "options": {
+        "english": "English (Default)",
+        "japanese": "Japanese"
+      }
+    },
+    "buttons": {
+      "pluginPage": "Plugin page",
+      "github": "GitHub"
+    }
+  },
+  "KeyValueList": {
+    "empty": "No items.",
+    "loading": "Loading..."
+  },
+  "KeyValueRow": {
+    "key": "Key",
+    "value": "Value",
+    "applyKeyValueButton": "Apply key & value to selected text",
+    "openBrowserButton": "Open in browser"
+  },
+  "notifications": {
+    "Fetch": {
+      "loading": "Please wait a moment.",
+      "error": {
+        "failedFetch": "Failed to fetch database.",
+        "noPages": "No pages in this database.",
+        "wrongKeyName": "Key property name is wrong.",
+        "wrongValueName": "Value property name is wrong.",
+        "wrongKeyType": "Key property type is wrong.",
+        "wrongValueType": "Value property type is wrong."
+      },
+      "finish": "Fetch finish.",
+      "clearCache": "Cache cleared."
+    },
+    "Settings": {
+      "updateLanguage": "Language updated."
+    },
+    "KeyValueRow": {
+      "copy": "Copied {{title}} to clipboard."
+    },
+    "main": {
+      "noSelections": "Please select at least one layer.",
+      "noTextInSelection": "No text layers in selection.",
+      "noTextInCurrentPage": "No text layers in this page.",
+      "noTextInAllPages": "No text layers in all pages.",
+      "errorLoadFonts": "Error on loading font."
+    },
+    "applyKeyValue": {
+      "finish": "Applied key & value to selected text."
+    },
+    "applyValue": {
+      "noMatchingText": "No matching text.",
+      "finishSelection": "Apply value to text content in selection.",
+      "finishCurrentPage": "Apply value to text content in this page.",
+      "finishAllPages": "Apply value to text content in all pages."
+    },
+    "renameLayer": {
+      "finish": "Renamed layer name."
+    },
+    "highlightText": {
+      "finish": "Highlighted text layer."
+    }
+  }
+}
