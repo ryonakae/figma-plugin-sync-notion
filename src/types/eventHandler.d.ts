@@ -89,5 +89,5 @@ interface HighlightTextHandler extends EventHandler {
 
 interface ChangeLanguageHandler extends EventHandler {
   name: 'CHANGE_LANGUAGE'
-  handler: (language: PluginLanguage) => void
+  handler: (language: PluginLanguage, options?: { notify?: boolean }) => void
 }

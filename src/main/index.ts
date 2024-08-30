@@ -116,9 +116,14 @@ export default async function () {
     highlightText(keyValues, options)
   })
 
-  on<ChangeLanguageHandler>('CHANGE_LANGUAGE', async language => {
+  on<ChangeLanguageHandler>('CHANGE_LANGUAGE', async (language, options) => {
     // main側の言語を切り替え
     await i18n.changeLanguage(language)
     console.log('language in main updated.', language, i18n)
+
+    // options.notifyがtrueの場合は完了通知
+    if (options?.notify) {
+      figma.notify(i18n.t('notifications.Settings.updateLanguage'))
+    }
   })
 }
