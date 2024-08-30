@@ -82,9 +82,9 @@ You can also choose to include text in components or instances.
 また、コンポーネント内のテキストやインスタンス内のテキストを対象にすることもできます。
 
 #### "Apply value to text" button / 「テキストに値を適用」ボタン
-If the name of the text layer is #\<key\> (e.g. #userInfo), the text content will be replaced. If the value has an embedded variable, a parameter can be passed to the layer name (e.g. #userInfo?name=John&age=24). If the value is "Name: {name} / Age: {age}", the text content will be "Name: Jogn / Age: 24".
+If the name of the text layer is #\<key\> (e.g. #userInfo), the text content will be replaced. If the value has an embedded variable, a parameter can be passed to the layer name (e.g. #userInfo?name=John&age=24). If the value is "Name: {name} / Age: {age}", the text content will be "Name: John / Age: 24".  
 \-  
-テキストレイヤーの名前が#<キー>になっている場合(例: #userInfo)、テキストの内容を置き換えます。値に変数が埋め込まれている場合、レイヤー名にパラメータを渡すことができます(例: #userInfo?name=John&age=24)。値が「Name: {name} / Age: {age}」の場合、テキストの内容は「Name: Jogn / Age: 24」となります。
+テキストレイヤーの名前が#<キー>になっている場合(例: #userInfo)、テキストの内容を置き換えます。値に変数が埋め込まれている場合、レイヤー名にパラメータを渡すことができます(例: #userInfo?name=ジョン&age=24)。値が「名前: {name} / 年齢: {age}」の場合、テキストの内容は「名前: ジョン / 年齢: 24」となります。
 
 #### "Rename layer" button / 「レイヤー名を変更」ボタン
 If the text content has the same value in the database, rename the layer to #\<key\>. This is useful when renaming layers is troublesome.  
