@@ -20,9 +20,9 @@ export default function useOptions(isApp?: boolean) {
     useStore.setState({ ...useStore.getState(), ...keyValue })
   }
 
-  function loadOptionsFromClientStorage() {
+  function loadOptionsFromMain() {
     return new Promise<Options>(resolve => {
-      console.log('loadOptionsFromClientStorage')
+      console.log('loadOptionsFromMain')
 
       once<LoadOptionsFromMainHandler>(
         'LOAD_OPTIONS_FROM_MAIN',
@@ -36,14 +36,14 @@ export default function useOptions(isApp?: boolean) {
     })
   }
 
-  function saveOptionsToClientStorage(options: Options) {
-    console.log('saveOptionsToClientStorage', options)
+  function saveOptionsToMain(options: Options) {
+    console.log('saveOptionsToMain', options)
     emit<SaveOptionsHandler>('SAVE_OPTIONS', options)
   }
 
   return {
     updateOptions,
-    loadOptionsFromClientStorage,
-    saveOptionsToClientStorage,
+    loadOptionsFromMain,
+    saveOptionsToMain,
   }
 }

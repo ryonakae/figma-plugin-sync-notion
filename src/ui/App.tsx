@@ -22,11 +22,7 @@ import type { ChangeLanguageHandler } from '@/types/eventHandler'
 export default function App() {
   const { t, i18n } = useTranslation()
   const options = useStore()
-  const {
-    updateOptions,
-    loadOptionsFromClientStorage,
-    saveOptionsToClientStorage,
-  } = useOptions()
+  const { updateOptions, loadOptionsFromMain, saveOptionsToMain } = useOptions()
   const { resizeWindow } = useResizeWindow()
   const { loadCacheFromClientStorage } = useCache()
   const [mounted, setMounted] = useState(false)
@@ -78,7 +74,7 @@ export default function App() {
     console.log('App mounted start')
 
     // 設定をclientStorageから取得
-    await loadOptionsFromClientStorage()
+    await loadOptionsFromMain()
 
     // keyValuesのキャッシュをclientStorageから取得
     await loadCacheFromClientStorage()
@@ -96,7 +92,7 @@ export default function App() {
 
   // UI側で設定が更新されたら設定をアップデート
   useUpdateEffect(() => {
-    saveOptionsToClientStorage(options)
+    saveOptionsToMain(options)
   }, [options])
 
   // selectedTab(key)がアップデートされたらselectedTabValueをアップデート
