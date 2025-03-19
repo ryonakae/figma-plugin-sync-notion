@@ -12,9 +12,9 @@ NotionのデータベースからFigmaのドキュメントにテキストを同
 ## 🔥 How to use / 使い方
 
 ### Fetch tab / 「取得」タブ
-Fetches text from a database in Notion. The data is cached to this document and restored at next time it is launched. If you have updated Notion database, fetch again.  
+Fetches text from a database in Notion. The data is cached to the ClientStorage and restored at next time it is launched. If you have updated Notion database, fetch again.  
 \-  
-Notionのデータベースからテキストを取得します。取得したテキストはこのドキュメントにキャッシュされ、次回起動時に復元されます。もしNotionのデータベースを更新した場合は、再度取得してください。
+Notionのデータベースからテキストを取得します。取得したテキストはClientStorageにキャッシュされ、次回起動時に復元されます。もしNotionのデータベースを更新した場合は、再度取得してください。
 
 #### 1. Database ID / データベースID
 Specify the Notion database ID ([Reference](https://developers.notion.com/reference/retrieve-a-database)).  
