@@ -10,9 +10,9 @@ import type {
 } from '@/types/eventHandler'
 
 export default function useCache() {
-  function loadCacheFromDocument() {
+  function loadCacheFromClientStorage() {
     return new Promise<NotionKeyValue[]>(resolve => {
-      console.log('loadCacheFromDocument')
+      console.log('loadCacheFromClientStorage')
 
       once<LoadCacheFromMainHandler>('LOAD_CACHE_FROM_MAIN', keyValues => {
         console.log('cached keyValues', keyValues)
@@ -24,10 +24,10 @@ export default function useCache() {
     })
   }
 
-  function saveCacheToDocument(keyValues: NotionKeyValue[]) {
-    console.log('saveCacheToDocument', keyValues)
+  function saveCacheToClientStorage(keyValues: NotionKeyValue[]) {
+    console.log('saveCacheToClientStorage', keyValues)
     emit<SaveCacheHandler>('SAVE_CACHE', keyValues)
   }
 
-  return { loadCacheFromDocument, saveCacheToDocument }
+  return { loadCacheFromClientStorage, saveCacheToClientStorage }
 }

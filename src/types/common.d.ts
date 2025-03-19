@@ -9,14 +9,17 @@ export type TargetTextRange = 'selection' | 'currentPage' | 'allPages'
 
 export type PluginLanguage = 'en' | 'ja'
 
-export type Options = {
+export type DocumentOptions = {
   // fetch
-  selectedTabKey: SelectedTabKey
-  proxyUrl: string
-  integrationToken: string
   databaseId: string
+  integrationToken: string
   keyPropertyName: string
   valuePropertyName: string
+}
+
+export type ClientStorageOptions = {
+  // common
+  selectedTabKey: SelectedTabKey
   // list
   filterString: string
   sortValue: SortValue
@@ -30,6 +33,8 @@ export type Options = {
   // settings
   pluginLanguage: PluginLanguage
 }
+
+export type Options = DocumentOptions & ClientStorageOptions
 
 export type NotionTitle = {
   type: 'title'

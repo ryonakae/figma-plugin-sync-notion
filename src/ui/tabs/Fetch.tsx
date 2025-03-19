@@ -29,7 +29,7 @@ export default function Fetch() {
   const { updateOptions } = useOptions()
   const { resizeWindow } = useResizeWindow()
   const { fetchNotion } = useNotion()
-  const { saveCacheToDocument } = useCache()
+  const { saveCacheToClientStorage } = useCache()
   const [fetching, setFetching] = useState(false)
   const keyValuesRef = useRef<NotionKeyValue[]>([])
 
@@ -74,8 +74,8 @@ export default function Fetch() {
     // keyValuesをkeyValuesStoreに保存
     useKeyValuesStore.setState({ keyValues: keyValuesRef.current })
 
-    // keyValuesをドキュメントにキャッシュ
-    saveCacheToDocument(keyValuesRef.current)
+    // keyValuesをclientStorageにキャッシュ
+    saveCacheToClientStorage(keyValuesRef.current)
 
     setFetching(false)
 
@@ -90,8 +90,8 @@ export default function Fetch() {
     // keyValuesStoreに空配列を入れる
     useKeyValuesStore.setState({ keyValues: [] })
 
-    // 空配列をドキュメントにキャッシュ
-    saveCacheToDocument([])
+    // 空配列をclientStorageにキャッシュ
+    saveCacheToClientStorage([])
 
     emit<NotifyHandler>('NOTIFY', {
       message: t('notifications.Fetch.clearCache'),
