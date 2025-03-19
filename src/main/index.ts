@@ -6,6 +6,7 @@ import {
   setRelaunchButton,
   showUI,
 } from '@create-figma-plugin/utilities'
+import values from 'lodash/values'
 
 import {
   CACHE_KEY,
@@ -46,6 +47,9 @@ export default async function () {
     height: 0,
   })
 
+  // setPluginDataで保存したキャッシュを削除（clientStorageに移行したため）
+  figma.root.setPluginData(CACHE_KEY, '')
+
   // register event handlers
   on<LoadOptionsFromUIHandler>('LOAD_OPTIONS_FROM_UI', async () => {
     const options = await loadSettingsAsync<Options>(
@@ -74,28 +78,26 @@ export default async function () {
   })
 
   on<LoadCacheFromUIHandler>('LOAD_CACHE_FROM_UI', async () => {
-    let cache: NotionKeyValue[]
+    // キャッシュのデータをclientStorageから取得
+    const data = await loadSettingsAsync<NotionKeyValue[]>([], CACHE_KEY)
+    console.log('cache data', data)
 
-    // キャッシュのデータをDodumentから取得
-    const data = figma.root.getPluginData(CACHE_KEY)
-
-    // データがあったらパース、無かったら空配列を返す
-    if (data) {
-      cache = JSON.parse(data)
-    } else {
-      cache = []
-    }
+    // なぜかdataがオブジェクトになっている場合があるので、配列に変換
+    const normalizedData = Array.isArray(data)
+      ? data
+      : values<NotionKeyValue>(data)
+    console.log('normalizedData', normalizedData)
 
     // UIに送る
-    emit<LoadCacheFromMainHandler>('LOAD_CACHE_FROM_MAIN', cache)
+    emit<LoadCacheFromMainHandler>('LOAD_CACHE_FROM_MAIN', normalizedData)
   })
 
-  on<SaveCacheHandler>('SAVE_CACHE', keyValues => {
+  on<SaveCacheHandler>('SAVE_CACHE', async keyValues => {
     // まずすでにあるキャッシュを削除
-    figma.root.setPluginData(CACHE_KEY, '')
+    await saveSettingsAsync<NotionKeyValue[]>([], CACHE_KEY)
 
-    // キャッシュをDocumentに保存
-    figma.root.setPluginData(CACHE_KEY, JSON.stringify(keyValues))
+    // キャッシュをclientStorageに保存
+    await saveSettingsAsync<NotionKeyValue[]>(keyValues, CACHE_KEY)
 
     console.log('save cache success', keyValues)
   })

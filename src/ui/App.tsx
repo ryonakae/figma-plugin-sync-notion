@@ -28,7 +28,7 @@ export default function App() {
     saveOptionsToClientStorage,
   } = useOptions()
   const { resizeWindow } = useResizeWindow()
-  const { loadCacheFromDocument } = useCache()
+  const { loadCacheFromClientStorage } = useCache()
   const [mounted, setMounted] = useState(false)
   const [selectedTabValue, setSelectedTabValue] =
     useState<SelectedTabValue>('Fetch')
@@ -80,8 +80,8 @@ export default function App() {
     // 設定をclientStorageから取得
     await loadOptionsFromClientStorage()
 
-    // keyValuesのキャッシュをドキュメントから取得
-    await loadCacheFromDocument()
+    // keyValuesのキャッシュをclientStorageから取得
+    await loadCacheFromClientStorage()
 
     // マウント完了
     console.log('App mounted done')
