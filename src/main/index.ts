@@ -6,7 +6,6 @@ import {
   setRelaunchButton,
   showUI,
 } from '@create-figma-plugin/utilities'
-import values from 'lodash/values'
 
 import {
   CACHE_KEY,
@@ -79,25 +78,17 @@ export default async function () {
 
   on<LoadCacheFromUIHandler>('LOAD_CACHE_FROM_UI', async () => {
     // キャッシュのデータをclientStorageから取得
-    const data = await loadSettingsAsync<NotionKeyValue[]>([], CACHE_KEY)
+    const data: NotionKeyValue[] =
+      (await figma.clientStorage.getAsync(CACHE_KEY)) || []
     console.log('cache data', data)
 
-    // なぜかdataがオブジェクトになっている場合があるので、配列に変換
-    const normalizedData = Array.isArray(data)
-      ? data
-      : values<NotionKeyValue>(data)
-    console.log('normalizedData', normalizedData)
-
     // UIに送る
-    emit<LoadCacheFromMainHandler>('LOAD_CACHE_FROM_MAIN', normalizedData)
+    emit<LoadCacheFromMainHandler>('LOAD_CACHE_FROM_MAIN', data)
   })
 
   on<SaveCacheHandler>('SAVE_CACHE', async keyValues => {
-    // まずすでにあるキャッシュを削除
-    await saveSettingsAsync<NotionKeyValue[]>([], CACHE_KEY)
-
     // キャッシュをclientStorageに保存
-    await saveSettingsAsync<NotionKeyValue[]>(keyValues, CACHE_KEY)
+    await figma.clientStorage.setAsync(CACHE_KEY, keyValues)
 
     console.log('save cache success', keyValues)
   })
